@@ -9,7 +9,8 @@ import numpy as np
 st.set_page_config(
     page_title="Student Score Predictor",
     page_icon="🎓",
-    layout="centered"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 # =====================================
@@ -19,10 +20,15 @@ model = joblib.load("student_model.pkl")
 columns = joblib.load("model_columns.pkl")
 
 # =====================================
-# CUSTOM CSS
+# CUSTOM CSS - MOBILE + LAPTOP FIX
 # =====================================
 st.markdown("""
 <style>
+    /* Force all text white on ALL devices */
+    * {
+        color: #ffffff !important;
+    }
+    
     /* Main background */
     .stApp {
         background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -32,7 +38,7 @@ st.markdown("""
     .main .block-container {
         background: rgba(18, 18, 30, 0.92);
         border-radius: 16px;
-        padding: 1.8rem;
+        padding: 1.5rem;
     }
     
     /* Title */
@@ -44,53 +50,37 @@ st.markdown("""
         margin-bottom: 1.8rem;
     }
     
-    /* Labels - Normal position (upar nahi honge) */
+    /* Labels */
     .stNumberInput label, .stSelectbox label {
-        color: #a0aec0 !important;
+        color: #cbd5e0 !important;
         font-weight: 500 !important;
         font-size: 0.8rem !important;
-        margin-bottom: 0.3rem !important;
-        display: block !important;
+        margin-bottom: 0.2rem !important;
     }
     
     /* Input fields */
     .stNumberInput input {
         background-color: #1a1a2e !important;
-        color: white !important;
+        color: #ffffff !important;
         border: 1px solid #2d2d44 !important;
         border-radius: 10px !important;
         padding: 0.5rem 0.8rem !important;
-        font-size: 0.9rem !important;
     }
     
     /* Select boxes */
-    .stSelectbox {
-        margin-bottom: 0.5rem !important;
-    }
-    
     div[data-baseweb="select"] > div {
         background-color: #1a1a2e !important;
         border: 1px solid #2d2d44 !important;
         border-radius: 10px !important;
         min-height: 38px !important;
-        padding: 0 10px !important;
     }
     
     div[data-baseweb="select"] input {
-        color: white !important;
-        font-size: 0.9rem !important;
+        color: #ffffff !important;
         background: transparent !important;
-        border: none !important;
     }
     
-    /* Remove focus rings */
-    div[data-baseweb="select"]:focus,
-    div[data-baseweb="select"] > div:focus {
-        outline: none !important;
-        box-shadow: none !important;
-    }
-    
-    /* Dropdown panel */
+    /* Dropdown */
     div[data-baseweb="popover"] > div {
         background-color: #1a1a2e !important;
         border: 1px solid #2d2d44 !important;
@@ -98,46 +88,35 @@ st.markdown("""
     }
     
     li[role="option"] {
-        color: white !important;
+        color: #ffffff !important;
         background-color: #1a1a2e !important;
-        padding: 8px 12px !important;
     }
     
     li[role="option"]:hover {
         background-color: #00adb5 !important;
     }
     
-    li[role="option"][aria-selected="true"] {
-        background-color: #00adb5 !important;
-    }
-    
-    /* BUTTON - MORE ROUND */
+    /* Button */
     .stButton > button {
         width: 100%;
         height: 52px;
         background: #00adb5 !important;
-        color: white;
-        font-size: 1rem;
-        font-weight: 700;
+        color: #ffffff !important;
         border: none;
         border-radius: 50px !important;
+        font-size: 1rem;
+        font-weight: 700;
         letter-spacing: 1.5px;
         margin-top: 1rem;
-        cursor: pointer;
         transition: all 0.3s ease;
     }
     
     .stButton > button:hover {
         background: #007a7f !important;
         transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(0, 173, 181, 0.4);
     }
     
-    .stButton > button:active {
-        transform: translateY(1px);
-    }
-    
-    /* Result Card - Smooth animation */
+    /* Result Card */
     .result-card {
         background: #1a1a2e;
         border: 2px solid #00adb5;
@@ -149,28 +128,27 @@ st.markdown("""
     }
     
     @keyframes slideDown {
-        0% {
+        from {
             opacity: 0;
             transform: translateY(-20px);
         }
-        100% {
+        to {
             opacity: 1;
             transform: translateY(0);
         }
     }
     
     .result-label {
-        color: #aaa;
+        color: #aaaaaa !important;
         font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 2px;
     }
     
     .result-score {
-        color: #00adb5;
+        color: #00adb5 !important;
         font-size: 2.8rem;
         font-weight: 800;
-        margin-top: 0.3rem;
     }
     
     /* Success message */
@@ -180,45 +158,52 @@ st.markdown("""
         border-radius: 12px;
         padding: 0.8rem;
         margin-top: 1rem;
-        animation: fadeIn 0.4s ease-out;
     }
     
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+    /* Fix columns - SAME HEIGHT on laptop & mobile */
+    div[data-testid="column"] {
+        padding: 0 0.8rem;
     }
     
-    /* Mobile responsive */
+    /* Mobile specific */
     @media (max-width: 768px) {
         .main .block-container {
-            padding: 1.2rem;
+            padding: 1rem;
         }
+        
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.5rem !important;
         }
-        div[data-baseweb="select"] > div {
-            min-height: 44px;
+        
+        /* Force columns to stay side by side on mobile */
+        div[data-testid="column"] {
+            padding: 0 0.3rem;
         }
+        
+        .stNumberInput input, div[data-baseweb="select"] > div {
+            min-height: 42px;
+        }
+        
         .stButton > button {
             height: 48px;
             font-size: 0.9rem;
         }
+        
         .result-score {
-            font-size: 2.2rem;
+            font-size: 2rem;
         }
     }
     
-    /* Fix spacing */
-    div[data-testid="column"] {
-        padding: 0 0.5rem;
+    /* Remove any default Streamlit blue */
+    .st-bw, .st-bx {
+        background-color: transparent !important;
     }
     
-    .row-widget {
-        margin-bottom: 0.3rem;
+    /* Fix number input buttons */
+    .stNumberInput button {
+        background-color: #2d2d44 !important;
+        border-color: #2d2d44 !important;
+        color: #ffffff !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -229,9 +214,9 @@ st.markdown("""
 st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
 
 # =====================================
-# TWO COLUMN LAYOUT
+# TWO COLUMNS - SIDE BY SIDE ON ALL DEVICES
 # =====================================
-col1, col2 = st.columns(2)
+col1, col2 = st.columns(2, gap="medium")
 
 with col1:
     hours = st.number_input("Hours Studied", min_value=0.0, max_value=24.0, value=5.0, step=0.5)
@@ -254,7 +239,7 @@ with col2:
 # =====================================
 # PREDICT BUTTON
 # =====================================
-if st.button("PREDICT SCORE"):
+if st.button("PREDICT SCORE", use_container_width=True):
     
     data = {
         "Hours_Studied": hours,
@@ -281,7 +266,7 @@ if st.button("PREDICT SCORE"):
     final_score = max(40, min(100, prediction[0]))
     final_score = int(round(final_score))
     
-    # Result with animation
+    # Result Card
     st.markdown(f"""
     <div class="result-card">
         <div class="result-label">PREDICTED EXAM SCORE</div>
@@ -289,7 +274,7 @@ if st.button("PREDICT SCORE"):
     </div>
     """, unsafe_allow_html=True)
     
-    # Success message with animation
+    # Success message
     if final_score >= 80:
         st.success(f"🎉 Predicted Exam Score: {final_score}")
         st.balloons()
