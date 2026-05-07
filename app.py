@@ -19,66 +19,64 @@ model = joblib.load("student_model.pkl")
 columns = joblib.load("model_columns.pkl")
 
 # =====================================
-# CUSTOM CSS - PURANA WALA PROFESSIONAL THEME
+# CUSTOM CSS - DARK THEME WITH BLACK TITLE
 # =====================================
 st.markdown("""
 <style>
-/* Main background */
+/* Main background - Dark */
 .stApp {
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    background: #0a0a0a;
 }
 
 /* Main container */
 .main .block-container {
-    background: rgba(18, 18, 30, 0.95);
-    border-radius: 15px;
+    background: #111111;
+    border-radius: 12px;
     padding: 2rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid #222222;
 }
 
-/* Title styling - 🎓 cap ke saath */
+/* Title - Black color, Cap bhi black */
 h1 {
     text-align: center;
-    font-size: 2.5rem !important;
+    font-size: 2.3rem !important;
     font-weight: 700 !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #000000 !important;
     margin-bottom: 2rem;
     font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: none !important;
+    -webkit-text-fill-color: #000000 !important;
 }
 
 /* Labels */
 .stNumberInput label, .stSelectbox label {
-    color: #e2e8f0 !important;
+    color: #cccccc !important;
     font-weight: 500 !important;
-    font-size: 0.9rem !important;
+    font-size: 0.85rem !important;
     margin-bottom: 0.3rem !important;
 }
 
 /* Input fields */
 .stNumberInput input {
-    background-color: #1e1e2e !important;
+    background-color: #1a1a1a !important;
     color: white !important;
-    border: 1px solid #334155 !important;
-    border-radius: 8px !important;
+    border: 1px solid #333333 !important;
+    border-radius: 6px !important;
     padding: 0.5rem !important;
 }
 
 .stNumberInput input:focus {
-    border-color: #667eea !important;
-    box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.3) !important;
+    border-color: #555555 !important;
+    outline: none !important;
 }
 
 /* Select boxes */
 div[data-baseweb="select"] > div {
-    background-color: #1e1e2e !important;
-    border: 1px solid #334155 !important;
-    border-radius: 8px !important;
-    color: white !important;
+    background-color: #1a1a1a !important;
+    border: 1px solid #333333 !important;
+    border-radius: 6px !important;
 }
 
 div[data-baseweb="select"] input {
@@ -87,45 +85,47 @@ div[data-baseweb="select"] input {
 
 /* Dropdown */
 div[data-baseweb="popover"] div {
-    background-color: #1e1e2e !important;
-    border: 1px solid #334155 !important;
+    background-color: #1a1a1a !important;
+    border: 1px solid #333333 !important;
 }
 
 li[role="option"] {
     color: white !important;
-    background-color: #1e1e2e !important;
+    background-color: #1a1a1a !important;
 }
 
 li[role="option"]:hover {
-    background-color: #2d2d44 !important;
+    background-color: #2a2a2a !important;
 }
 
-/* Button */
+/* Button - New Color (Teal/Green) */
 .stButton > button {
     width: 100%;
-    height: 50px;
+    height: 52px;
     border: none;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    background: #00adb5 !important;
     color: white;
     font-size: 1rem;
     font-weight: 600;
     transition: all 0.3s ease;
     margin-top: 1rem;
     cursor: pointer;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 .stButton > button:hover {
+    background: #007a7f !important;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(0, 173, 181, 0.3);
 }
 
-/* Result card */
+/* Result Card */
 .result-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #1a1a1a;
+    border: 1px solid #00adb5;
     padding: 2rem;
-    border-radius: 15px;
+    border-radius: 12px;
     text-align: center;
     margin-top: 1.5rem;
     animation: fadeIn 0.5s ease-out;
@@ -143,26 +143,27 @@ li[role="option"]:hover {
 }
 
 .result-score {
-    color: white;
-    font-size: 3rem;
+    color: #00adb5;
+    font-size: 3.2rem;
     font-weight: bold;
     margin: 0.5rem 0;
 }
 
 .result-label {
-    color: rgba(255,255,255,0.9);
-    font-size: 1rem;
+    color: #888888;
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
-/* Success message - clean */
+/* Success message */
 .stSuccess {
-    background-color: rgba(46, 125, 50, 0.2);
-    border-left: 3px solid #2e7d32;
-    border-radius: 8px;
+    background-color: rgba(0, 173, 181, 0.1);
+    border-left: 3px solid #00adb5;
+    border-radius: 6px;
     padding: 1rem;
     margin-top: 1rem;
+    color: #00adb5;
 }
 
 /* Divider */
@@ -170,20 +171,25 @@ hr {
     margin: 1.5rem 0;
     border: none;
     height: 1px;
-    background: linear-gradient(to right, transparent, #667eea, #764ba2, transparent);
+    background: #222222;
 }
 
 /* Number input buttons */
 .stNumberInput button {
-    background-color: #2d2d44 !important;
-    border-color: #334155 !important;
+    background-color: #1a1a1a !important;
+    border-color: #333333 !important;
     color: white !important;
+}
+
+/* Remove default blue outline */
+input:focus, select:focus, textarea:focus {
+    outline: none !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # =====================================
-# TITLE - 🎓 CAP KE SAATH
+# TITLE - BLACK COLOR
 # =====================================
 st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
 
@@ -193,10 +199,10 @@ st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 
 with col1:
-    hours = st.number_input("Hours Studied", 0.0, 24.0, step=0.5)
-    attendance = st.number_input("Attendance (%)", 0.0, 100.0, step=5.0)
-    previous = st.number_input("Previous Score", 0.0, 100.0, step=5.0)
-    sleep = st.number_input("Sleep Hours", 0.0, 12.0, step=0.5)
+    hours = st.number_input("Hours Studied", min_value=0.0, max_value=24.0, value=5.0, step=0.5)
+    attendance = st.number_input("Attendance (%)", min_value=0.0, max_value=100.0, value=75.0, step=5.0)
+    previous = st.number_input("Previous Score", min_value=0.0, max_value=100.0, value=60.0, step=5.0)
+    sleep = st.number_input("Sleep Hours", min_value=0.0, max_value=12.0, value=7.0, step=0.5)
     motivation = st.selectbox("Motivation Level", ["Low", "Medium", "High"])
     teacher = st.selectbox("Teacher Quality", ["Poor", "Average", "Good"])
     school = st.selectbox("School Type", ["Public", "Private"])
@@ -213,7 +219,7 @@ with col2:
 # =====================================
 # PREDICT BUTTON
 # =====================================
-if st.button("Predict Score"):
+if st.button("PREDICT SCORE"):
     
     # Input data
     data = {
@@ -245,12 +251,12 @@ if st.button("Predict Score"):
     # Prediction
     prediction = model.predict(input_df)
     
-    # Fix score range (40-100 as per your original code)
+    # Fix score range (40-100)
     final_score = max(40, min(100, prediction[0]))
     final_score = int(round(final_score))
     
     # =====================================
-    # OUTPUT - CLEAN RESULT CARD
+    # OUTPUT RESULT
     # =====================================
     st.markdown(f"""
     <div class="result-card">
@@ -259,9 +265,7 @@ if st.button("Predict Score"):
     </div>
     """, unsafe_allow_html=True)
     
-    # =====================================
-    # SIMPLE SUCCESS MESSAGE - NO EXTRA TEXT
-    # =====================================
+    # Simple success message
     if final_score >= 80:
         st.success(f"🎯 Exam Score: {final_score}")
         st.balloons()
