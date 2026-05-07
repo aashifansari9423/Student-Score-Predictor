@@ -19,64 +19,65 @@ model = joblib.load("student_model.pkl")
 columns = joblib.load("model_columns.pkl")
 
 # =====================================
-# CUSTOM CSS - DARK THEME WITH BLACK TITLE
+# CUSTOM CSS - PURANA WALA BACKGROUND + TEAL BUTTON
 # =====================================
 st.markdown("""
 <style>
-/* Main background - Dark */
+/* Main background - Purple Gradient (pehle jaisa) */
 .stApp {
-    background: #0a0a0a;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
 }
 
 /* Main container */
 .main .block-container {
-    background: #111111;
-    border-radius: 12px;
+    background: rgba(18, 18, 30, 0.92);
+    border-radius: 15px;
     padding: 2rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    border: 1px solid #222222;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Title - Black color, Cap bhi black */
+/* Title - White color (dikhega ab) */
 h1 {
     text-align: center;
-    font-size: 2.3rem !important;
+    font-size: 2.5rem !important;
     font-weight: 700 !important;
-    color: #000000 !important;
+    background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 2rem;
     font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-    background: none !important;
-    -webkit-text-fill-color: #000000 !important;
 }
 
 /* Labels */
 .stNumberInput label, .stSelectbox label {
-    color: #cccccc !important;
+    color: #e2e8f0 !important;
     font-weight: 500 !important;
-    font-size: 0.85rem !important;
+    font-size: 0.9rem !important;
     margin-bottom: 0.3rem !important;
 }
 
 /* Input fields */
 .stNumberInput input {
-    background-color: #1a1a1a !important;
+    background-color: #1e1e2e !important;
     color: white !important;
-    border: 1px solid #333333 !important;
-    border-radius: 6px !important;
+    border: 1px solid #334155 !important;
+    border-radius: 8px !important;
     padding: 0.5rem !important;
 }
 
 .stNumberInput input:focus {
-    border-color: #555555 !important;
-    outline: none !important;
+    border-color: #00adb5 !important;
+    box-shadow: 0 0 0 1px rgba(0, 173, 181, 0.3) !important;
 }
 
 /* Select boxes */
 div[data-baseweb="select"] > div {
-    background-color: #1a1a1a !important;
-    border: 1px solid #333333 !important;
-    border-radius: 6px !important;
+    background-color: #1e1e2e !important;
+    border: 1px solid #334155 !important;
+    border-radius: 8px !important;
 }
 
 div[data-baseweb="select"] input {
@@ -85,25 +86,25 @@ div[data-baseweb="select"] input {
 
 /* Dropdown */
 div[data-baseweb="popover"] div {
-    background-color: #1a1a1a !important;
-    border: 1px solid #333333 !important;
+    background-color: #1e1e2e !important;
+    border: 1px solid #334155 !important;
 }
 
 li[role="option"] {
     color: white !important;
-    background-color: #1a1a1a !important;
+    background-color: #1e1e2e !important;
 }
 
 li[role="option"]:hover {
-    background-color: #2a2a2a !important;
+    background-color: #2d2d44 !important;
 }
 
-/* Button - New Color (Teal/Green) */
+/* Button - Teal color (tumhare pasand wala) */
 .stButton > button {
     width: 100%;
     height: 52px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #00adb5 !important;
     color: white;
     font-size: 1rem;
@@ -112,20 +113,21 @@ li[role="option"]:hover {
     margin-top: 1rem;
     cursor: pointer;
     letter-spacing: 1px;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
 }
 
 .stButton > button:hover {
     background: #007a7f !important;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 173, 181, 0.3);
+    box-shadow: 0 5px 20px rgba(0, 173, 181, 0.4);
 }
 
 /* Result Card */
 .result-card {
-    background: #1a1a1a;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
     border: 1px solid #00adb5;
     padding: 2rem;
-    border-radius: 12px;
+    border-radius: 15px;
     text-align: center;
     margin-top: 1.5rem;
     animation: fadeIn 0.5s ease-out;
@@ -147,6 +149,7 @@ li[role="option"]:hover {
     font-size: 3.2rem;
     font-weight: bold;
     margin: 0.5rem 0;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
 }
 
 .result-label {
@@ -154,13 +157,14 @@ li[role="option"]:hover {
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 2px;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
 }
 
 /* Success message */
 .stSuccess {
     background-color: rgba(0, 173, 181, 0.1);
     border-left: 3px solid #00adb5;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 1rem;
     margin-top: 1rem;
     color: #00adb5;
@@ -171,25 +175,35 @@ hr {
     margin: 1.5rem 0;
     border: none;
     height: 1px;
-    background: #222222;
+    background: linear-gradient(to right, transparent, #00adb5, transparent);
 }
 
 /* Number input buttons */
 .stNumberInput button {
-    background-color: #1a1a1a !important;
-    border-color: #333333 !important;
+    background-color: #2d2d44 !important;
+    border-color: #334155 !important;
     color: white !important;
 }
 
-/* Remove default blue outline */
-input:focus, select:focus, textarea:focus {
-    outline: none !important;
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e1e2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00adb5;
+    border-radius: 4px;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # =====================================
-# TITLE - BLACK COLOR
+# TITLE - 🎓 CAP KE SAATH
 # =====================================
 st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
 
