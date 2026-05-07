@@ -2,290 +2,203 @@ import streamlit as st
 import joblib
 import pandas as pd
 
-# =====================================
+# =========================
 # PAGE CONFIG
-# =====================================
+# =========================
 st.set_page_config(
     page_title="Student Score Predictor",
     page_icon="🎓",
-    layout="wide"
+    layout="centered"
 )
 
-# =====================================
+# =========================
 # LOAD MODEL
-# =====================================
+# =========================
 model = joblib.load("student_model.pkl")
 columns = joblib.load("model_columns.pkl")
 
-# =====================================
+# =========================
 # CUSTOM CSS
-# =====================================
+# =========================
 st.markdown("""
 <style>
 
-body {
-    background-color: #0E1117;
-}
-
 .main {
-    background: linear-gradient(to right, #0f172a, #111827);
-    color: white;
-}
-
-h1 {
-    text-align: center;
-    font-size: 50px !important;
-    font-weight: bold;
-    color: #ffffff;
-}
-
-.stMarkdown {
-    color: white;
+    background-color: #0E1117;
 }
 
 .block-container {
     padding-top: 2rem;
-    padding-bottom: 2rem;
 }
 
-.card {
-    background: rgba(255,255,255,0.05);
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0px 0px 20px rgba(0,0,0,0.3);
-    backdrop-filter: blur(10px);
-}
-
-.result-card {
-    background: linear-gradient(135deg,#6C63FF,#3B82F6);
-    padding: 30px;
-    border-radius: 20px;
+h1 {
     text-align: center;
     color: white;
-    margin-top: 20px;
-    box-shadow: 0px 0px 25px rgba(108,99,255,0.5);
-}
-
-.big-score {
-    font-size: 70px;
+    font-size: 50px !important;
     font-weight: bold;
 }
 
 .stButton > button {
     width: 100%;
     height: 55px;
-    border-radius: 12px;
-    border: none;
-    background: linear-gradient(to right,#6C63FF,#3B82F6);
+    background: linear-gradient(to right,#7F5AF0,#2CB67D);
     color: white;
+    border: none;
+    border-radius: 12px;
     font-size: 20px;
     font-weight: bold;
-    transition: 0.3s;
 }
 
 .stButton > button:hover {
-    transform: scale(1.03);
-    background: linear-gradient(to right,#574bdb,#2563eb);
+    opacity: 0.9;
 }
 
-div[data-baseweb="select"] > div {
-    border-radius: 10px;
-}
-
-input {
-    border-radius: 10px !important;
-}
-
-.footer {
+.result-box {
+    background: linear-gradient(to right,#7F5AF0,#2CB67D);
+    padding: 25px;
+    border-radius: 15px;
     text-align: center;
-    margin-top: 50px;
-    color: gray;
-    font-size: 15px;
+    color: white;
+    margin-top: 20px;
+}
+
+.big-text {
+    font-size: 55px;
+    font-weight: bold;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# =====================================
+# =========================
 # TITLE
-# =====================================
-st.markdown(
-    "<h1>🎓 Student Score Predictor</h1>",
-    unsafe_allow_html=True
+# =========================
+st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
+
+st.markdown("###")
+
+# =========================
+# INPUTS
+# =========================
+hours = st.number_input("Hours Studied", 0.0, 24.0)
+
+attendance = st.number_input("Attendance (%)", 0.0, 100.0)
+
+previous = st.number_input("Previous Score", 0.0, 100.0)
+
+sleep = st.number_input("Sleep Hours", 0.0, 12.0)
+
+motivation = st.selectbox(
+    "Motivation Level",
+    ["Low", "Medium", "High"]
 )
 
-st.markdown("---")
+teacher = st.selectbox(
+    "Teacher Quality",
+    ["Poor", "Average", "Good"]
+)
 
-# =====================================
-# LAYOUT
-# =====================================
-left_col, right_col = st.columns([2,1])
+school = st.selectbox(
+    "School Type",
+    ["Public", "Private"]
+)
 
-# =====================================
-# INPUT SECTION
-# =====================================
-with left_col:
+internet = st.selectbox(
+    "Internet Access",
+    ["Yes", "No"]
+)
 
-    st.markdown('<div class="card">', unsafe_allow_html=True)
+income = st.selectbox(
+    "Family Income",
+    ["Low", "Medium", "High"]
+)
 
-    st.subheader("📋 Enter Student Details")
+parent = st.selectbox(
+    "Parental Involvement",
+    ["Low", "Medium", "High"]
+)
 
-    col1, col2 = st.columns(2)
+education = st.selectbox(
+    "Parent Education",
+    ["School", "College"]
+)
 
-    with col1:
-        hours = st.number_input("Hours Studied", 0.0, 24.0)
-        attendance = st.number_input("Attendance (%)", 0.0, 100.0)
-        previous = st.number_input("Previous Score", 0.0, 100.0)
-        sleep = st.number_input("Sleep Hours", 0.0, 12.0)
+peer = st.selectbox(
+    "Peer Influence",
+    ["Negative", "Neutral", "Positive"]
+)
 
-        motivation = st.selectbox(
-            "Motivation Level",
-            ["Low", "Medium", "High"]
-        )
+resources = st.selectbox(
+    "Learning Resources",
+    ["Low", "Medium", "High"]
+)
 
-        teacher = st.selectbox(
-            "Teacher Quality",
-            ["Poor", "Average", "Good"]
-        )
+activities = st.selectbox(
+    "Extracurricular Activities",
+    ["Yes", "No"]
+)
 
-        school = st.selectbox(
-            "School Type",
-            ["Public", "Private"]
-        )
+# =========================
+# BUTTON
+# =========================
+if st.button("🚀 Predict Score"):
 
-    with col2:
+    data = {
+        "Hours_Studied": hours,
+        "Attendance": attendance,
+        "Previous_Scores": previous,
+        "Sleep_Hours": sleep,
 
-        internet = st.selectbox(
-            "Internet Access",
-            ["Yes", "No"]
-        )
+        "Motivation_Level": motivation,
+        "Teacher_Quality": teacher,
+        "School_Type": school,
+        "Internet_Access": internet,
+        "Family_Income": income,
+        "Parental_Involvement": parent,
+        "Parental_Education_Level": education,
+        "Peer_Influence": peer,
+        "Learning_Resources": resources,
+        "Extracurricular_Activities": activities
+    }
 
-        income = st.selectbox(
-            "Family Income",
-            ["Low", "Medium", "High"]
-        )
+    input_df = pd.DataFrame([data])
 
-        parent = st.selectbox(
-            "Parental Involvement",
-            ["Low", "Medium", "High"]
-        )
+    input_df = pd.get_dummies(input_df)
 
-        education = st.selectbox(
-            "Parent Education",
-            ["School", "College"]
-        )
+    input_df = input_df.reindex(
+        columns=columns,
+        fill_value=0
+    )
 
-        peer = st.selectbox(
-            "Peer Influence",
-            ["Negative", "Neutral", "Positive"]
-        )
+    prediction = model.predict(input_df)
 
-        resources = st.selectbox(
-            "Learning Resources",
-            ["Low", "Medium", "High"]
-        )
+    final_score = max(
+        40,
+        min(100, prediction[0])
+    )
 
-        activities = st.selectbox(
-            "Extracurricular Activities",
-            ["Yes", "No"]
-        )
+    final_score = int(round(final_score))
 
-    predict_button = st.button("🚀 Predict Score")
+    # RESULT BOX
+    st.markdown(f'''
+    <div class="result-box">
 
-    st.markdown('</div>', unsafe_allow_html=True)
+        <h2>Predicted Exam Score</h2>
 
-# =====================================
-# PREDICTION SECTION
-# =====================================
-with right_col:
-
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-
-    st.subheader("📊 Prediction Result")
-
-    if predict_button:
-
-        # Create Data
-        data = {
-            "Hours_Studied": hours,
-            "Attendance": attendance,
-            "Previous_Scores": previous,
-            "Sleep_Hours": sleep,
-
-            "Motivation_Level": motivation,
-            "Teacher_Quality": teacher,
-            "School_Type": school,
-            "Internet_Access": internet,
-            "Family_Income": income,
-            "Parental_Involvement": parent,
-            "Parental_Education_Level": education,
-            "Peer_Influence": peer,
-            "Learning_Resources": resources,
-            "Extracurricular_Activities": activities
-        }
-
-        # DataFrame
-        input_df = pd.DataFrame([data])
-
-        # Encoding
-        input_df = pd.get_dummies(input_df)
-
-        # Match columns
-        input_df = input_df.reindex(
-            columns=columns,
-            fill_value=0
-        )
-
-        # Prediction
-        prediction = model.predict(input_df)
-
-        # Score Range Fix
-        final_score = max(
-            40,
-            min(100, prediction[0])
-        )
-
-        final_score = int(round(final_score))
-
-        # Result Card
-        st.markdown(f"""
-        <div class="result-card">
-
-            <h2>Predicted Score</h2>
-
-            <div class="big-score">
-                {final_score}
-            </div>
-
-            <h3>/ 100</h3>
-
+        <div class="big-text">
+            {final_score}/100
         </div>
-        """, unsafe_allow_html=True)
 
-        # Progress Bar
-        st.progress(final_score)
+    </div>
+    ''', unsafe_allow_html=True)
 
-        # Performance Messages
-        if final_score >= 80:
-            st.success("🌟 Excellent Performance Predicted!")
-            st.balloons()
+    # PERFORMANCE MESSAGE
+    if final_score >= 80:
+        st.success("🌟 Excellent Performance!")
+        st.balloons()
 
-        elif final_score >= 60:
-            st.info("👍 Good Performance Predicted!")
-
-        else:
-            st.warning("📚 Student Needs Improvement!")
+    elif final_score >= 60:
+        st.info("👍 Good Performance!")
 
     else:
-        st.info("Enter details and click Predict Score.")
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-# =====================================
-# FOOTER
-# =====================================
-st.markdown("""
-<div class="footer">
-    Developed using Streamlit & Machine Learning
-</div>
-""", unsafe_allow_html=True)
+        st.warning("📚 Needs Improvement!")
