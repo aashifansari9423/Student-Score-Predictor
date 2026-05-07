@@ -2,73 +2,114 @@ import streamlit as st
 import joblib
 import pandas as pd
 
-# =========================
+# =====================================
 # PAGE CONFIG
-# =========================
+# =====================================
 st.set_page_config(
     page_title="Student Score Predictor",
     page_icon="🎓",
     layout="centered"
 )
 
-# =========================
+# =====================================
 # LOAD MODEL
-# =========================
+# =====================================
 model = joblib.load("student_model.pkl")
 columns = joblib.load("model_columns.pkl")
 
-# =========================
+# =====================================
 # CUSTOM CSS
-# =========================
+# =====================================
 st.markdown("""
 <style>
 
-.main {
+body {
     background-color: #0E1117;
+}
+
+.main {
+    background: linear-gradient(to bottom right, #111827, #0F172A);
+    color: white;
 }
 
 .block-container {
     padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 h1 {
     text-align: center;
+    font-size: 52px !important;
     color: white;
-    font-size: 50px !important;
     font-weight: bold;
+    margin-bottom: 30px;
 }
 
+/* Input Box */
+.stNumberInput input {
+    border-radius: 10px !important;
+}
+
+/* Select Box */
+div[data-baseweb="select"] > div {
+    border-radius: 10px !important;
+}
+
+/* Button */
 .stButton > button {
     width: 100%;
     height: 55px;
-    background: linear-gradient(to right,#4F46E5,#06B6D4);
-    color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
+    background: linear-gradient(to right, #2563EB, #7C3AED);
+    color: white;
     font-size: 20px;
     font-weight: bold;
+    transition: 0.3s;
 }
 
 .stButton > button:hover {
-    opacity: 0.9;
+    transform: scale(1.02);
+    opacity: 0.95;
+}
+
+/* Result Card */
+.result-card {
+    background: linear-gradient(135deg, #2563EB, #7C3AED);
+    padding: 35px;
+    border-radius: 22px;
+    text-align: center;
+    margin-top: 30px;
+    box-shadow: 0px 0px 25px rgba(0,0,0,0.35);
+}
+
+.result-title {
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.result-score {
+    color: white;
+    font-size: 75px;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# =========================
+# =====================================
 # TITLE
-# =========================
+# =====================================
 st.markdown(
     "<h1>🎓 Student Score Predictor</h1>",
     unsafe_allow_html=True
 )
 
-st.markdown("###")
-
-# =========================
+# =====================================
 # INPUT FIELDS
-# =========================
+# =====================================
 hours = st.number_input(
     "Hours Studied",
     0.0,
@@ -143,9 +184,9 @@ activities = st.selectbox(
     ["Yes", "No"]
 )
 
-# =========================
-# BUTTON
-# =========================
+# =====================================
+# PREDICT BUTTON
+# =====================================
 if st.button("🚀 Predict Score"):
 
     # Input Data
@@ -167,13 +208,13 @@ if st.button("🚀 Predict Score"):
         "Extracurricular_Activities": activities
     }
 
-    # Convert to DataFrame
+    # DataFrame
     input_df = pd.DataFrame([data])
 
     # Encoding
     input_df = pd.get_dummies(input_df)
 
-    # Match columns
+    # Match Columns
     input_df = input_df.reindex(
         columns=columns,
         fill_value=0
@@ -190,44 +231,29 @@ if st.button("🚀 Predict Score"):
 
     final_score = int(round(final_score))
 
-    # =========================
+    # =====================================
     # RESULT CARD
-    # =========================
+    # =====================================
     st.markdown(
         f"""
-        <div style="
-            background: linear-gradient(135deg, #4F46E5, #06B6D4);
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            margin-top: 25px;
-            box-shadow: 0px 0px 25px rgba(0,0,0,0.3);
-        ">
+        <div class="result-card">
 
-            <h2 style="
-                color:white;
-                margin-bottom:10px;
-                font-size:28px;
-            ">
+            <div class="result-title">
                 Predicted Exam Score
-            </h2>
+            </div>
 
-            <h1 style="
-                color:white;
-                font-size:70px;
-                margin:0;
-            ">
+            <div class="result-score">
                 {final_score}/100
-            </h1>
+            </div>
 
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    # =========================
+    # =====================================
     # PERFORMANCE MESSAGE
-    # =========================
+    # =====================================
     if final_score >= 80:
         st.success("🌟 Excellent Performance!")
         st.balloons()
