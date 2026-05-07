@@ -18,23 +18,46 @@ model = joblib.load("student_model.pkl")
 columns = joblib.load("model_columns.pkl")
 
 # =========================
-# SIDEBAR
+# CUSTOM CSS
 # =========================
-st.sidebar.title("📘 About Project")
-
-st.sidebar.info(
+st.markdown(
     """
-    This project predicts student exam scores
-    using Machine Learning based on:
+    <style>
+    .main {
+        background-color: #0E1117;
+    }
 
-    ✔ Hours Studied  
-    ✔ Attendance  
-    ✔ Sleep Hours  
-    ✔ Motivation Level  
-    ✔ Family Income  
-    ✔ Learning Resources  
-    ✔ And more...
-    """
+    h1 {
+        text-align: center;
+        color: white;
+        font-size: 45px;
+    }
+
+    .stButton > button {
+        width: 100%;
+        background-color: #6C63FF;
+        color: white;
+        font-size: 18px;
+        border-radius: 10px;
+        height: 3em;
+        border: none;
+    }
+
+    .stButton > button:hover {
+        background-color: #574bdb;
+        color: white;
+    }
+
+    div[data-baseweb="select"] > div {
+        border-radius: 10px;
+    }
+
+    input {
+        border-radius: 10px !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
 )
 
 # =========================
@@ -42,13 +65,7 @@ st.sidebar.info(
 # =========================
 st.title("🎓 Student Score Predictor")
 
-st.markdown(
-    "### Predict student exam performance using Machine Learning"
-)
-
-st.write(
-    "Fill all details below and click on Predict Score."
-)
+st.markdown("---")
 
 # =========================
 # INPUT FIELDS
@@ -154,23 +171,19 @@ if st.button("🚀 Predict Score"):
     # Convert to DataFrame
     input_df = pd.DataFrame([data])
 
-    # Apply encoding
+    # Apply Encoding
     input_df = pd.get_dummies(input_df)
 
-    # Match training columns
+    # Match Training Columns
     input_df = input_df.reindex(
         columns=columns,
         fill_value=0
     )
 
-    # =========================
-    # PREDICT
-    # =========================
+    # Prediction
     prediction = model.predict(input_df)
 
-    # =========================
-    # FIX SCORE RANGE
-    # =========================
+    # Fix Score Range
     final_score = max(
         40,
         min(100, prediction[0])
@@ -187,19 +200,12 @@ if st.button("🚀 Predict Score"):
         + " / 100"
     )
 
-    # Performance Message
     if final_score >= 80:
         st.balloons()
-        st.info(
-            "🌟 Excellent Performance Predicted!"
-        )
+        st.info("🌟 Excellent Performance!")
 
     elif final_score >= 60:
-        st.info(
-            "👍 Good Performance Predicted!"
-        )
+        st.info("👍 Good Performance!")
 
     else:
-        st.warning(
-            "📚 Student Needs Improvement!"
-        )
+        st.warning("📚 Needs Improvement!")
