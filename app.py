@@ -1,205 +1,49 @@
 import streamlit as st
 import joblib
 import pandas as pd
-import numpy as np
 
-# =====================================
-# PAGE CONFIG
-# =====================================
-st.set_page_config(
-    page_title="Student Score Predictor",
-    page_icon="🎓",
-    layout="centered"
-)
-
-# =====================================
+# =========================
 # LOAD MODEL
-# =====================================
+# =========================
 model = joblib.load("student_model.pkl")
 columns = joblib.load("model_columns.pkl")
 
-# =====================================
-# CUSTOM CSS
-# =====================================
-st.markdown("""
-<style>
-    /* Main background */
-    .stApp {
-        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    }
-    
-    /* Main container */
-    .main .block-container {
-        background: rgba(18, 18, 30, 0.92);
-        border-radius: 16px;
-        padding: 1.8rem;
-    }
-    
-    /* Title */
-    h1 {
-        text-align: center;
-        font-size: 2rem !important;
-        font-weight: 700 !important;
-        color: #ffffff !important;
-        margin-bottom: 1.5rem;
-    }
-    
-    /* Force all text white on mobile */
-    * {
-        color: #ffffff !important;
-    }
-    
-    /* Labels */
-    .stNumberInput label, .stSelectbox label {
-        color: #cbd5e0 !important;
-        font-weight: 500 !important;
-        font-size: 0.8rem !important;
-    }
-    
-    /* Input fields */
-    .stNumberInput input {
-        background-color: #1a1a2e !important;
-        color: #ffffff !important;
-        border: 1px solid #2d2d44 !important;
-        border-radius: 10px !important;
-        padding: 0.5rem 0.8rem !important;
-    }
-    
-    /* Select boxes */
-    div[data-baseweb="select"] > div {
-        background-color: #1a1a2e !important;
-        border: 1px solid #2d2d44 !important;
-        border-radius: 10px !important;
-        min-height: 38px !important;
-    }
-    
-    div[data-baseweb="select"] input {
-        color: #ffffff !important;
-    }
-    
-    /* Dropdown */
-    div[data-baseweb="popover"] > div {
-        background-color: #1a1a2e !important;
-        border: 1px solid #2d2d44 !important;
-    }
-    
-    li[role="option"] {
-        color: #ffffff !important;
-        background-color: #1a1a2e !important;
-    }
-    
-    li[role="option"]:hover {
-        background-color: #00adb5 !important;
-    }
-    
-    /* Button */
-    .stButton > button {
-        width: 100%;
-        background: #00adb5 !important;
-        color: white !important;
-        border: none;
-        border-radius: 50px !important;
-        padding: 0.6rem !important;
-        font-weight: 700;
-        margin-top: 1rem;
-    }
-    
-    .stButton > button:hover {
-        background: #007a7f !important;
-    }
-    
-    /* Result Card */
-    .result-card {
-        background: #1a1a2e;
-        border: 2px solid #00adb5;
-        border-radius: 20px;
-        padding: 1.2rem;
-        text-align: center;
-        margin-top: 1.5rem;
-        animation: slideDown 0.4s ease-out;
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .result-label {
-        color: #aaaaaa !important;
-        font-size: 0.75rem;
-        letter-spacing: 2px;
-    }
-    
-    .result-score {
-        color: #00adb5 !important;
-        font-size: 2.8rem;
-        font-weight: 800;
-    }
-    
-    .stSuccess {
-        background-color: rgba(0, 173, 181, 0.1);
-        border-left: 3px solid #00adb5;
-        border-radius: 12px;
-        padding: 0.8rem;
-        margin-top: 1rem;
-    }
-    
-    /* Mobile - bas font white rakhna hai */
-    @media (max-width: 768px) {
-        .main .block-container {
-            padding: 1rem;
-        }
-        h1 {
-            font-size: 1.5rem;
-        }
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# =====================================
+# =========================
 # TITLE
-# =====================================
-st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
+# =========================
+st.title("🎓 Student Score Predictor")
 
-# =====================================
-# TWO COLUMNS - BILKUL SIMPLE
-# =====================================
-col1, col2 = st.columns(2)
+# =========================
+# INPUT FIELDS
+# =========================
+hours = st.number_input("Hours Studied", 0.0, 24.0)
+attendance = st.number_input("Attendance", 0.0, 100.0)
+previous = st.number_input("Previous Score", 0.0, 100.0)
+sleep = st.number_input("Sleep Hours", 0.0, 12.0)
 
-with col1:
-    hours = st.number_input("Hours Studied", min_value=0.0, max_value=24.0, value=5.0, step=0.5)
-    attendance = st.number_input("Attendance (%)", min_value=0.0, max_value=100.0, value=75.0, step=5.0)
-    previous = st.number_input("Previous Score", min_value=0.0, max_value=100.0, value=60.0, step=5.0)
-    sleep = st.number_input("Sleep Hours", min_value=0.0, max_value=12.0, value=7.0, step=0.5)
-    motivation = st.selectbox("Motivation Level", ["Low", "Medium", "High"])
-    teacher = st.selectbox("Teacher Quality", ["Poor", "Average", "Good"])
-    school = st.selectbox("School Type", ["Public", "Private"])
+motivation = st.selectbox("Motivation Level", ["Low", "Medium", "High"])
+teacher = st.selectbox("Teacher Quality", ["Poor", "Average", "Good"])
+school = st.selectbox("School Type", ["Public", "Private"])
+internet = st.selectbox("Internet Access", ["Yes", "No"])
+income = st.selectbox("Family Income", ["Low", "Medium", "High"])
+parent = st.selectbox("Parental Involvement", ["Low", "Medium", "High"])
+education = st.selectbox("Parent Education", ["School", "College"])
+peer = st.selectbox("Peer Influence", ["Negative", "Neutral", "Positive"])
+resources = st.selectbox("Learning Resources", ["Low", "Medium", "High"])
+activities = st.selectbox("Extracurricular Activities", ["Yes", "No"])
 
-with col2:
-    internet = st.selectbox("Internet Access", ["Yes", "No"])
-    income = st.selectbox("Family Income", ["Low", "Medium", "High"])
-    parent = st.selectbox("Parental Involvement", ["Low", "Medium", "High"])
-    education = st.selectbox("Parent Education", ["School", "College"])
-    peer = st.selectbox("Peer Influence", ["Negative", "Neutral", "Positive"])
-    resources = st.selectbox("Learning Resources", ["Low", "Medium", "High"])
-    activities = st.selectbox("Extracurricular Activities", ["Yes", "No"])
+# =========================
+# PREDICTION BUTTON
+# =========================
+if st.button("Predict Score"):
 
-# =====================================
-# PREDICT BUTTON
-# =====================================
-if st.button("PREDICT SCORE", use_container_width=True):
-    
+    # Create input dictionary
     data = {
         "Hours_Studied": hours,
         "Attendance": attendance,
         "Previous_Scores": previous,
         "Sleep_Hours": sleep,
+
         "Motivation_Level": motivation,
         "Teacher_Quality": teacher,
         "School_Type": school,
@@ -211,24 +55,30 @@ if st.button("PREDICT SCORE", use_container_width=True):
         "Learning_Resources": resources,
         "Extracurricular_Activities": activities
     }
-    
+
+    # Convert to DataFrame
     input_df = pd.DataFrame([data])
+
+    # Apply encoding
     input_df = pd.get_dummies(input_df)
+
+    # Match training columns
     input_df = input_df.reindex(columns=columns, fill_value=0)
-    
+
+    # =========================
+    # PREDICT
+    # =========================
     prediction = model.predict(input_df)
+
+    # =========================
+    # FIX UNREALISTIC VALUES
+    # =========================
     final_score = max(40, min(100, prediction[0]))
+
+    # Convert to integer
     final_score = int(round(final_score))
-    
-    st.markdown(f"""
-    <div class="result-card">
-        <div class="result-label">PREDICTED EXAM SCORE</div>
-        <div class="result-score">{final_score}/100</div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    if final_score >= 80:
-        st.success(f"Predicted Exam Score: {final_score}")
-        st.balloons()
-    else:
-        st.success(f"Predicted Exam Score: {final_score}")
+
+    # =========================
+    # OUTPUT
+    # =========================
+    st.success(f"🎯 Predicted Exam Score: {final_score}")
