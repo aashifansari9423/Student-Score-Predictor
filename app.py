@@ -82,4 +82,4 @@ if st.button("Predict Score"):
     # OUTPUT
     # =========================
     st.success(f"🎯 Predicted Exam Score: {final_score}")
-    st.balloon
+    st.balloon()
