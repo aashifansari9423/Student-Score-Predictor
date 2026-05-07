@@ -41,7 +41,7 @@ h1 {
 .stButton > button {
     width: 100%;
     height: 55px;
-    background: linear-gradient(to right,#7F5AF0,#2CB67D);
+    background: linear-gradient(to right,#4F46E5,#06B6D4);
     color: white;
     border: none;
     border-radius: 12px;
@@ -53,40 +53,45 @@ h1 {
     opacity: 0.9;
 }
 
-.result-box {
-    background: linear-gradient(to right,#7F5AF0,#2CB67D);
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    color: white;
-    margin-top: 20px;
-}
-
-.big-text {
-    font-size: 55px;
-    font-weight: bold;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
 # =========================
 # TITLE
 # =========================
-st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
+st.markdown(
+    "<h1>🎓 Student Score Predictor</h1>",
+    unsafe_allow_html=True
+)
 
 st.markdown("###")
 
 # =========================
-# INPUTS
+# INPUT FIELDS
 # =========================
-hours = st.number_input("Hours Studied", 0.0, 24.0)
+hours = st.number_input(
+    "Hours Studied",
+    0.0,
+    24.0
+)
 
-attendance = st.number_input("Attendance (%)", 0.0, 100.0)
+attendance = st.number_input(
+    "Attendance (%)",
+    0.0,
+    100.0
+)
 
-previous = st.number_input("Previous Score", 0.0, 100.0)
+previous = st.number_input(
+    "Previous Score",
+    0.0,
+    100.0
+)
 
-sleep = st.number_input("Sleep Hours", 0.0, 12.0)
+sleep = st.number_input(
+    "Sleep Hours",
+    0.0,
+    12.0
+)
 
 motivation = st.selectbox(
     "Motivation Level",
@@ -143,6 +148,7 @@ activities = st.selectbox(
 # =========================
 if st.button("🚀 Predict Score"):
 
+    # Input Data
     data = {
         "Hours_Studied": hours,
         "Attendance": attendance,
@@ -161,17 +167,22 @@ if st.button("🚀 Predict Score"):
         "Extracurricular_Activities": activities
     }
 
+    # Convert to DataFrame
     input_df = pd.DataFrame([data])
 
+    # Encoding
     input_df = pd.get_dummies(input_df)
 
+    # Match columns
     input_df = input_df.reindex(
         columns=columns,
         fill_value=0
     )
 
+    # Prediction
     prediction = model.predict(input_df)
 
+    # Score Fix
     final_score = max(
         40,
         min(100, prediction[0])
@@ -179,20 +190,44 @@ if st.button("🚀 Predict Score"):
 
     final_score = int(round(final_score))
 
-    # RESULT BOX
-    st.markdown(f'''
-    <div class="result-box">
+    # =========================
+    # RESULT CARD
+    # =========================
+    st.markdown(
+        f"""
+        <div style="
+            background: linear-gradient(135deg, #4F46E5, #06B6D4);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 25px;
+            box-shadow: 0px 0px 25px rgba(0,0,0,0.3);
+        ">
 
-        <h2>Predicted Exam Score</h2>
+            <h2 style="
+                color:white;
+                margin-bottom:10px;
+                font-size:28px;
+            ">
+                Predicted Exam Score
+            </h2>
 
-        <div class="big-text">
-            {final_score}/100
+            <h1 style="
+                color:white;
+                font-size:70px;
+                margin:0;
+            ">
+                {final_score}/100
+            </h1>
+
         </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    </div>
-    ''', unsafe_allow_html=True)
-
+    # =========================
     # PERFORMANCE MESSAGE
+    # =========================
     if final_score >= 80:
         st.success("🌟 Excellent Performance!")
         st.balloons()
