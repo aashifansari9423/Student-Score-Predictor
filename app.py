@@ -45,7 +45,7 @@ if 'auth_mode' not in st.session_state:
     st.session_state.auth_mode = "login"
 
 # =====================================
-# AUTH CSS
+# AUTH CSS - FIXED FOR MOBILE
 # =====================================
 auth_css = """
 <style>
@@ -56,9 +56,9 @@ auth_css = """
     .auth-container {
         background: rgba(18, 18, 30, 0.95);
         border-radius: 20px;
-        padding: 2.5rem;
+        padding: 2rem;
         max-width: 420px;
-        margin: 80px auto;
+        margin: 60px auto;
         border: 1px solid #334155;
         text-align: center;
     }
@@ -69,22 +69,37 @@ auth_css = """
     }
     
     .auth-title {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
         color: #ffffff;
     }
     
+    /* Fix for mobile - Force white text */
     .stTextInput input {
         background-color: #1a1a2e !important;
         color: #ffffff !important;
         border: 1px solid #334155 !important;
         border-radius: 10px !important;
         padding: 0.6rem !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+    
+    .stTextInput input::placeholder {
+        color: #888888 !important;
+        -webkit-text-fill-color: #888888 !important;
     }
     
     .stTextInput input:focus {
         border-color: #00adb5 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+    
+    /* Fix for any input text */
+    input, textarea, select {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
     
     .stButton > button {
@@ -103,31 +118,38 @@ auth_css = """
         transform: translateY(-2px);
     }
     
-    .switch-btn {
-        background: transparent !important;
-        color: #00adb5 !important;
-        border: none !important;
-        text-decoration: underline;
-        margin-top: 1rem;
-    }
-    
-    .divider {
-        margin: 1.5rem 0;
+    hr {
+        margin: 1.2rem 0;
         border: none;
         height: 1px;
         background: #334155;
     }
     
     .footer-text {
-        margin-top: 1.5rem;
+        margin-top: 1.2rem;
         color: #666;
         font-size: 0.7rem;
+    }
+    
+    /* Mobile specific */
+    @media (max-width: 768px) {
+        .auth-container {
+            margin: 40px 15px;
+            padding: 1.5rem;
+        }
+        .auth-title {
+            font-size: 1.3rem;
+        }
+        .stTextInput input {
+            font-size: 1rem;
+            padding: 0.7rem !important;
+        }
     }
 </style>
 """
 
 # =====================================
-# MAIN APP CSS
+# MAIN APP CSS - FIXED FOR MOBILE
 # =====================================
 main_css = """
 <style>
@@ -138,7 +160,7 @@ main_css = """
     .main .block-container {
         background: rgba(18, 18, 30, 0.92);
         border-radius: 20px;
-        padding: 2rem;
+        padding: 1.5rem;
         max-width: 1000px;
         margin: 0 auto;
     }
@@ -150,9 +172,10 @@ main_css = """
     
     h1 {
         text-align: center;
-        font-size: 2rem !important;
+        font-size: 1.8rem !important;
         font-weight: 700 !important;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
+        color: #ffffff !important;
     }
     
     .user-info {
@@ -161,6 +184,7 @@ main_css = """
         border-radius: 50px;
         display: inline-block;
         font-size: 0.8rem;
+        color: #ffffff !important;
     }
     
     .logout-btn {
@@ -173,8 +197,10 @@ main_css = """
         padding: 0.3rem 1rem !important;
         font-size: 0.75rem !important;
         border-radius: 50px !important;
+        color: #ffffff !important;
     }
     
+    /* Force all text white */
     .stNumberInput label, .stSelectbox label {
         color: #cbd5e0 !important;
         font-weight: 500 !important;
@@ -188,6 +214,7 @@ main_css = """
         border: 1px solid #334155 !important;
         border-radius: 10px !important;
         padding: 0.4rem 0.8rem !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
     
     .stNumberInput input:hover {
@@ -213,10 +240,20 @@ main_css = """
         border-color: #00adb5 !important;
     }
     
+    div[data-baseweb="select"] input {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+    
     div[data-baseweb="popover"] > div {
         background-color: #1a1a2e !important;
         border: 1px solid #334155 !important;
         border-radius: 10px !important;
+    }
+    
+    li[role="option"] {
+        color: #ffffff !important;
+        background-color: #1a1a2e !important;
     }
     
     li[role="option"]:hover {
@@ -294,15 +331,19 @@ main_css = """
         padding: 0 0.5rem;
     }
     
+    /* Mobile specific */
     @media (max-width: 768px) {
         .main .block-container {
             padding: 1rem;
         }
         h1 {
-            font-size: 1.5rem !important;
+            font-size: 1.3rem !important;
         }
         .result-score {
             font-size: 2rem;
+        }
+        .stNumberInput input, div[data-baseweb="select"] > div {
+            min-height: 44px;
         }
     }
 </style>
@@ -338,8 +379,7 @@ def show_auth_page():
             else:
                 st.warning("Please enter username and password")
         
-        # Switch to Sign Up button
-        st.markdown('<hr class="divider">', unsafe_allow_html=True)
+        st.markdown("<hr>", unsafe_allow_html=True)
         if st.button("Create New Account", use_container_width=True, key="switch_to_signup"):
             st.session_state.auth_mode = "signup"
             st.rerun()
@@ -368,8 +408,7 @@ def show_auth_page():
                 st.session_state.auth_mode = "login"
                 st.rerun()
         
-        # Switch to Sign In button
-        st.markdown('<hr class="divider">', unsafe_allow_html=True)
+        st.markdown("<hr>", unsafe_allow_html=True)
         if st.button("Back to Sign In", use_container_width=True, key="switch_to_login"):
             st.session_state.auth_mode = "login"
             st.rerun()
