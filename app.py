@@ -4,8 +4,6 @@ import pandas as pd
 import numpy as np
 import json
 from datetime import datetime
-import plotly.express as px
-import plotly.graph_objects as go
 
 # =====================================
 # PAGE CONFIG
@@ -134,10 +132,6 @@ st.markdown("""
         border-radius: 10px !important;
     }
     
-    li[role="option"] {
-        transition: background 0.2s ease;
-    }
-    
     li[role="option"]:hover {
         background-color: #00adb5 !important;
     }
@@ -160,11 +154,6 @@ st.markdown("""
     [data-testid="stMetricValue"] {
         color: #00adb5 !important;
         font-size: 1.8rem !important;
-    }
-    
-    /* Success/Info boxes */
-    .stSuccess, .stInfo, .stWarning {
-        border-radius: 10px;
     }
     
     /* Responsive */
@@ -355,7 +344,7 @@ if predict_clicked:
     st.caption(f"Target: {target_score} | Current: {final_score} | {progress*100:.0f}% achieved")
     
     # =====================================
-    # FEATURE IMPACT CHART
+    # FEATURE IMPACT
     # =====================================
     st.markdown("### 📊 Key Factors Impact")
     
@@ -368,7 +357,7 @@ if predict_clicked:
     }
     
     for factor, status in factors.items():
-        if status in ["High", "Optimal", "High", "Good"]:
+        if status in ["High", "Optimal", "Good"]:
             st.success(f"✓ {factor}: {status}")
         elif status in ["Medium", "Average"]:
             st.info(f"• {factor}: {status}")
@@ -384,31 +373,19 @@ if st.session_state.prediction_history:
     
     history_df = pd.DataFrame(st.session_state.prediction_history)
     
-    # Line chart
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=list(range(len(history_df))),
-        y=history_df['score'],
-        mode='lines+markers',
-        name='Score',
-        line=dict(color='#00adb5', width=2),
-        marker=dict(size=8, color='#00adb5')
-    ))
+    # Simple bar chart without plotly
+    st.dataframe(history_df[['timestamp', 'score', 'hours', 'attendance', 'sleep']], use_container_width=True)
     
-    fig.add_hline(y=target_score, line_dash="dash", line_color="green", annotation_text="Target")
-    fig.update_layout(
-        plot_bgcolor='rgba(26, 26, 46, 0.8)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font_color='white',
-        xaxis_title="Prediction Number",
-        yaxis_title="Score",
-        height=300
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    
-    # Show history table
-    with st.expander("View Detailed History"):
-        st.dataframe(history_df, use_container_width=True)
+    # Show score trend as text
+    st.markdown("**Score Trend:**")
+    scores = [p['score'] for p in st.session_state.prediction_history]
+    if len(scores) > 1:
+        if scores[-1] > scores[-2]:
+            st.success("📈 Score increased! Keep it up!")
+        elif scores[-1] < scores[-2]:
+            st.warning("📉 Score decreased. Review the recommendations above.")
+        else:
+            st.info("➡️ Score stable. Try to improve further.")
 
 # =====================================
 # DOWNLOAD REPORT
