@@ -2,9 +2,9 @@ import streamlit as st
 import joblib
 import pandas as pd
 import numpy as np
-import hashlib
 import json
 import os
+from datetime import datetime
 
 # =====================================
 # PAGE CONFIG
@@ -22,43 +22,14 @@ st.set_page_config(
 USER_DB_FILE = "users.json"
 
 def load_users():
-    """Load users from JSON file"""
     if os.path.exists(USER_DB_FILE):
         with open(USER_DB_FILE, 'r') as f:
             return json.load(f)
     return {}
 
 def save_users(users):
-    """Save users to JSON file"""
     with open(USER_DB_FILE, 'w') as f:
         json.dump(users, f, indent=2)
-
-def hash_password(password):
-    """Hash password using SHA256"""
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def check_user_exists(username, users):
-    """Check if username already exists"""
-    return username in users
-
-def register_user(username, password, users):
-    """Register new user"""
-    if check_user_exists(username, users):
-        return False, "Username already exists!"
-    users[username] = {
-        "password": hash_password(password),
-        "created_at": str(pd.Timestamp.now())
-    }
-    save_users(users)
-    return True, "Registration successful!"
-
-def login_user(username, password, users):
-    """Authenticate user"""
-    if username not in users:
-        return False, "Username not found!"
-    if users[username]["password"] != hash_password(password):
-        return False, "Incorrect password!"
-    return True, "Login successful!"
 
 # =====================================
 # SESSION STATE
@@ -67,11 +38,11 @@ if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'username' not in st.session_state:
     st.session_state.username = ""
-if 'auth_mode' not in st.session_state:
-    st.session_state.auth_mode = "login"  # login or signup
+if 'user_email' not in st.session_state:
+    st.session_state.user_email = ""
 
 # =====================================
-# AUTH PAGES CSS
+# GOOGLE SIGN IN CSS
 # =====================================
 auth_css = """
 <style>
@@ -83,68 +54,79 @@ auth_css = """
         background: rgba(18, 18, 30, 0.95);
         border-radius: 20px;
         padding: 2.5rem;
-        max-width: 450px;
-        margin: 50px auto;
+        max-width: 420px;
+        margin: 80px auto;
         border: 1px solid #334155;
-        animation: fadeIn 0.5s ease-out;
-    }
-    
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        text-align: center;
     }
     
     .auth-title {
-        text-align: center;
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #ffffff;
     }
     
-    .auth-icon {
-        text-align: center;
-        font-size: 4rem;
-        margin-bottom: 1rem;
+    .auth-subtitle {
+        color: #888888;
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
     }
     
-    .auth-footer {
+    .google-btn {
+        background-color: #ffffff;
+        color: #333333;
+        border: none;
+        border-radius: 50px;
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        width: 100%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .google-btn:hover {
+        background-color: #f0f0f0;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .divider {
+        display: flex;
+        align-items: center;
         text-align: center;
-        margin-top: 1.5rem;
+        margin: 1.5rem 0;
         color: #666;
         font-size: 0.8rem;
     }
     
-    .switch-mode {
-        text-align: center;
-        margin-top: 1rem;
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #334155;
     }
     
-    .switch-mode button {
-        background: transparent !important;
-        color: #00adb5 !important;
-        border: none !important;
-        text-decoration: underline;
+    .divider::before {
+        margin-right: 0.5rem;
     }
     
-    .stTextInput input {
-        background-color: #1a1a2e !important;
-        color: #ffffff !important;
-        border: 1px solid #334155 !important;
-        border-radius: 10px !important;
-        padding: 0.6rem !important;
+    .divider::after {
+        margin-left: 0.5rem;
     }
     
-    .stTextInput input:focus {
-        border-color: #00adb5 !important;
+    .demo-credentials {
+        background: rgba(0, 173, 181, 0.1);
+        border-radius: 10px;
+        padding: 0.8rem;
+        margin-top: 1.5rem;
+        font-size: 0.75rem;
+        color: #888;
     }
     
     .stButton > button {
@@ -154,13 +136,15 @@ auth_css = """
         border: none;
         border-radius: 50px !important;
         padding: 0.6rem !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease;
+        font-weight: 500 !important;
     }
     
-    .stButton > button:hover {
-        background: #007a7f !important;
-        transform: translateY(-2px);
+    .stTextInput input {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
+        padding: 0.6rem !important;
     }
     
     hr {
@@ -333,94 +317,81 @@ main_css = """
 """
 
 # =====================================
-# LOGIN/SIGNUP PAGE
+# GOOGLE SIGN IN HANDLER
+# =====================================
+def google_sign_in(email, name):
+    users = load_users()
+    
+    if email not in users:
+        # New user - register
+        users[email] = {
+            "name": name,
+            "email": email,
+            "created_at": str(datetime.now())
+        }
+        save_users(users)
+    
+    st.session_state.logged_in = True
+    st.session_state.username = name
+    st.session_state.user_email = email
+    st.rerun()
+
+# =====================================
+# LOGOUT FUNCTION
+# =====================================
+def logout():
+    st.session_state.logged_in = False
+    st.session_state.username = ""
+    st.session_state.user_email = ""
+    st.rerun()
+
+# =====================================
+# AUTH PAGE
 # =====================================
 def show_auth_page():
     st.markdown(auth_css, unsafe_allow_html=True)
     
-    users = load_users()
+    st.markdown("""
+    <div class="auth-container">
+        <div class="auth-title">Student Score Predictor</div>
+        <div class="auth-subtitle">Sign in to continue</div>
+    """, unsafe_allow_html=True)
     
-    # Auth mode toggle
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("🔐 SIGN IN", use_container_width=True, type="primary" if st.session_state.auth_mode == "login" else "secondary"):
-            st.session_state.auth_mode = "login"
-            st.rerun()
+    # Google Sign In Button
+    col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        if st.button("📝 SIGN UP", use_container_width=True, type="primary" if st.session_state.auth_mode == "signup" else "secondary"):
-            st.session_state.auth_mode = "signup"
-            st.rerun()
-    
-    st.markdown("---")
-    
-    if st.session_state.auth_mode == "login":
-        # SIGN IN FORM
+        # Demo Google Sign In - In production, use actual OAuth
         st.markdown("""
-        <div class="auth-container">
-            <div class="auth-icon">🎓</div>
-            <div class="auth-title">Welcome Back!</div>
+        <button class="google-btn" onclick="alert('Demo Mode: Click OK to continue')">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign in with Google
+        </button>
         """, unsafe_allow_html=True)
-        
-        username = st.text_input("Username", placeholder="Enter your username", key="login_username")
-        password = st.text_input("Password", type="password", placeholder="Enter your password", key="login_password")
-        
-        if st.button("SIGN IN", use_container_width=True):
-            if username and password:
-                success, message = login_user(username, password, users)
-                if success:
-                    st.session_state.logged_in = True
-                    st.session_state.username = username
-                    st.success(message)
-                    st.rerun()
-                else:
-                    st.error(message)
-            else:
-                st.warning("Please enter username and password")
-        
-        st.markdown("""
-            <div class="auth-footer">
-                New to Student Score Predictor?<br>
-                Click <strong>SIGN UP</strong> to create an account
-            </div>
+    
+    # Demo Sign In (for testing)
+    st.markdown('<div class="divider">OR</div>', unsafe_allow_html=True)
+    
+    demo_email = st.text_input("Email", placeholder="your@email.com", key="demo_email")
+    demo_name = st.text_input("Name", placeholder="Your name", key="demo_name")
+    
+    if st.button("Continue with Email", use_container_width=True):
+        if demo_email and demo_name:
+            google_sign_in(demo_email, demo_name)
+        else:
+            st.warning("Please enter email and name")
+    
+    st.markdown("""
+        <div class="demo-credentials">
+            Demo Mode: Enter any email and name to continue<br>
+            No password required for demonstration
         </div>
-        """, unsafe_allow_html=True)
-    
-    else:
-        # SIGN UP FORM
-        st.markdown("""
-        <div class="auth-container">
-            <div class="auth-icon">📝</div>
-            <div class="auth-title">Create Account</div>
-        """, unsafe_allow_html=True)
-        
-        username = st.text_input("Username", placeholder="Choose a username", key="signup_username")
-        password = st.text_input("Password", type="password", placeholder="Choose a password", key="signup_password")
-        confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm your password", key="signup_confirm")
-        
-        if st.button("CREATE ACCOUNT", use_container_width=True):
-            if not username or not password:
-                st.warning("Please fill all fields")
-            elif password != confirm_password:
-                st.error("Passwords do not match!")
-            elif len(password) < 4:
-                st.warning("Password must be at least 4 characters")
-            else:
-                success, message = register_user(username, password, users)
-                if success:
-                    st.success(message)
-                    st.info("Please sign in with your new account")
-                    st.session_state.auth_mode = "login"
-                    st.rerun()
-                else:
-                    st.error(message)
-        
-        st.markdown("""
-            <div class="auth-footer">
-                Already have an account?<br>
-                Click <strong>SIGN IN</strong> to login
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
 # =====================================
 # LOAD MODEL
@@ -432,14 +403,6 @@ def load_models():
     return model, columns
 
 # =====================================
-# LOGOUT FUNCTION
-# =====================================
-def logout():
-    st.session_state.logged_in = False
-    st.session_state.username = ""
-    st.rerun()
-
-# =====================================
 # MAIN APP
 # =====================================
 def show_main_app():
@@ -448,12 +411,12 @@ def show_main_app():
     # Top bar
     col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
-        st.markdown(f'<div class="user-info">👤 Welcome, <strong>{st.session_state.username}</strong>!</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="user-info">Welcome, {st.session_state.username}</div>', unsafe_allow_html=True)
     with col3:
-        if st.button("🚪 LOGOUT", key="logout_btn"):
+        if st.button("Sign Out", key="logout_btn"):
             logout()
     
-    st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
+    st.markdown("<h1>Student Score Predictor</h1>", unsafe_allow_html=True)
     
     # Load model
     model, columns = load_models()
@@ -480,7 +443,7 @@ def show_main_app():
         activities = st.selectbox("Extracurricular Activities", ["Yes", "No"])
     
     # Predict button
-    if st.button("PREDICT SCORE", use_container_width=True):
+    if st.button("Predict Score", use_container_width=True):
         
         data = {
             "Hours_Studied": hours,
@@ -517,14 +480,14 @@ def show_main_app():
         
         # Performance message
         if final_score >= 85:
-            st.success("🏆 EXCEPTIONAL PERFORMANCE")
+            st.success("Exceptional Performance")
             st.balloons()
         elif final_score >= 70:
-            st.success("📈 GOOD PERFORMANCE")
+            st.success("Good Performance")
         elif final_score >= 55:
-            st.info("📚 SATISFACTORY PERFORMANCE")
+            st.info("Satisfactory Performance")
         else:
-            st.warning("⚠️ NEEDS IMPROVEMENT")
+            st.warning("Needs Improvement")
         
         # Recommendations
         recommendations = []
@@ -546,9 +509,9 @@ def show_main_app():
         if recommendations:
             st.markdown("### Recommendations")
             for rec in recommendations:
-                st.info(f"• {rec}")
+                st.info(f"{rec}")
         else:
-            st.success("✅ Excellent study habits! Maintain your routine")
+            st.success("Excellent study habits. Maintain your routine")
     
     # Footer
     st.markdown("---")
