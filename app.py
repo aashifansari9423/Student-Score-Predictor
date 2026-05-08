@@ -45,14 +45,103 @@ if 'auth_mode' not in st.session_state:
     st.session_state.auth_mode = "login"
 
 # =====================================
-# AUTH CSS - FIXED FOR MOBILE
+# GLOBAL CSS - FORCE WHITE TEXT ON ALL DEVICES
 # =====================================
-auth_css = """
+global_css = """
 <style>
+    /* Force EVERYTHING white */
+    .stApp, .stApp * {
+        color: #ffffff !important;
+    }
+    
+    /* Main background */
     .stApp {
         background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     }
     
+    /* Force all input text to be white */
+    input, textarea, select, .stTextInput input, .stNumberInput input {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        background-color: #1a1a2e !important;
+    }
+    
+    /* Placeholder color */
+    input::placeholder, .stTextInput input::placeholder {
+        color: #888888 !important;
+        -webkit-text-fill-color: #888888 !important;
+    }
+    
+    /* Number input specific */
+    .stNumberInput input {
+        background-color: #1a1a2e !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
+    }
+    
+    /* Select box input */
+    div[data-baseweb="select"] input {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+    
+    /* Labels */
+    .stNumberInput label, .stSelectbox label {
+        color: #cbd5e0 !important;
+    }
+    
+    /* Buttons */
+    .stButton > button {
+        background: #00adb5 !important;
+        color: white !important;
+        border: none !important;
+    }
+    
+    .stButton > button:hover {
+        background: #007a7f !important;
+    }
+    
+    /* Result card */
+    .result-card {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        border: 2px solid #00adb5;
+        border-radius: 20px;
+        padding: 1.5rem;
+        text-align: center;
+        margin: 1.5rem 0;
+    }
+    
+    .result-label {
+        color: #888888 !important;
+    }
+    
+    .result-score {
+        color: #00adb5 !important;
+        font-size: 3rem;
+        font-weight: 800;
+    }
+    
+    .result-score span {
+        color: #666666 !important;
+    }
+    
+    /* Success/Info/Warning */
+    .stSuccess {
+        background-color: rgba(0, 173, 181, 0.2) !important;
+        color: #ffffff !important;
+    }
+    
+    .stInfo {
+        background-color: rgba(59, 130, 246, 0.2) !important;
+        color: #ffffff !important;
+    }
+    
+    .stWarning {
+        background-color: rgba(245, 158, 11, 0.2) !important;
+        color: #ffffff !important;
+    }
+    
+    /* Auth container */
     .auth-container {
         background: rgba(18, 18, 30, 0.95);
         border-radius: 20px;
@@ -63,59 +152,10 @@ auth_css = """
         text-align: center;
     }
     
-    .auth-icon {
-        font-size: 3rem;
-        margin-bottom: 0.5rem;
-    }
-    
     .auth-title {
         font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
-        color: #ffffff;
-    }
-    
-    /* Fix for mobile - Force white text */
-    .stTextInput input {
-        background-color: #1a1a2e !important;
-        color: #ffffff !important;
-        border: 1px solid #334155 !important;
-        border-radius: 10px !important;
-        padding: 0.6rem !important;
-        -webkit-text-fill-color: #ffffff !important;
-    }
-    
-    .stTextInput input::placeholder {
-        color: #888888 !important;
-        -webkit-text-fill-color: #888888 !important;
-    }
-    
-    .stTextInput input:focus {
-        border-color: #00adb5 !important;
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-    }
-    
-    /* Fix for any input text */
-    input, textarea, select {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-    }
-    
-    .stButton > button {
-        width: 100%;
-        background: #00adb5 !important;
-        color: white !important;
-        border: none;
-        border-radius: 50px !important;
-        padding: 0.6rem !important;
-        font-weight: 600 !important;
-        margin-top: 0.5rem;
-    }
-    
-    .stButton > button:hover {
-        background: #007a7f !important;
-        transform: translateY(-2px);
     }
     
     hr {
@@ -127,206 +167,11 @@ auth_css = """
     
     .footer-text {
         margin-top: 1.2rem;
-        color: #666;
+        color: #666 !important;
         font-size: 0.7rem;
     }
     
-    /* Mobile specific */
-    @media (max-width: 768px) {
-        .auth-container {
-            margin: 40px 15px;
-            padding: 1.5rem;
-        }
-        .auth-title {
-            font-size: 1.3rem;
-        }
-        .stTextInput input {
-            font-size: 1rem;
-            padding: 0.7rem !important;
-        }
-    }
-</style>
-"""
-
-# =====================================
-# MAIN APP CSS - FIXED FOR MOBILE
-# =====================================
-main_css = """
-<style>
-    .stApp {
-        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    }
-    
-    .main .block-container {
-        background: rgba(18, 18, 30, 0.92);
-        border-radius: 20px;
-        padding: 1.5rem;
-        max-width: 1000px;
-        margin: 0 auto;
-    }
-    
-    *:focus {
-        outline: none !important;
-        box-shadow: none !important;
-    }
-    
-    h1 {
-        text-align: center;
-        font-size: 1.8rem !important;
-        font-weight: 700 !important;
-        margin-bottom: 1.5rem;
-        color: #ffffff !important;
-    }
-    
-    .user-info {
-        background: rgba(0, 173, 181, 0.1);
-        padding: 0.4rem 1rem;
-        border-radius: 50px;
-        display: inline-block;
-        font-size: 0.8rem;
-        color: #ffffff !important;
-    }
-    
-    .logout-btn {
-        float: right;
-    }
-    
-    .logout-btn button {
-        background: rgba(0, 173, 181, 0.2) !important;
-        border: 1px solid #00adb5 !important;
-        padding: 0.3rem 1rem !important;
-        font-size: 0.75rem !important;
-        border-radius: 50px !important;
-        color: #ffffff !important;
-    }
-    
-    /* Force all text white */
-    .stNumberInput label, .stSelectbox label {
-        color: #cbd5e0 !important;
-        font-weight: 500 !important;
-        font-size: 0.75rem !important;
-        text-transform: uppercase;
-    }
-    
-    .stNumberInput input {
-        background-color: #1a1a2e !important;
-        color: #ffffff !important;
-        border: 1px solid #334155 !important;
-        border-radius: 10px !important;
-        padding: 0.4rem 0.8rem !important;
-        -webkit-text-fill-color: #ffffff !important;
-    }
-    
-    .stNumberInput input:hover {
-        border-color: #00adb5 !important;
-    }
-    
-    .stNumberInput button {
-        background-color: #2d2d44 !important;
-    }
-    
-    .stNumberInput button:hover {
-        background-color: #00adb5 !important;
-    }
-    
-    div[data-baseweb="select"] > div {
-        background-color: #1a1a2e !important;
-        border: 1px solid #334155 !important;
-        border-radius: 10px !important;
-        min-height: 36px !important;
-    }
-    
-    div[data-baseweb="select"] > div:hover {
-        border-color: #00adb5 !important;
-    }
-    
-    div[data-baseweb="select"] input {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-    }
-    
-    div[data-baseweb="popover"] > div {
-        background-color: #1a1a2e !important;
-        border: 1px solid #334155 !important;
-        border-radius: 10px !important;
-    }
-    
-    li[role="option"] {
-        color: #ffffff !important;
-        background-color: #1a1a2e !important;
-    }
-    
-    li[role="option"]:hover {
-        background-color: #00adb5 !important;
-    }
-    
-    .stButton > button {
-        width: 100%;
-        background: #00adb5 !important;
-        color: white !important;
-        border: none;
-        border-radius: 50px !important;
-        padding: 0.6rem !important;
-        font-weight: 600 !important;
-    }
-    
-    .stButton > button:hover {
-        background: #007a7f !important;
-        transform: translateY(-2px);
-    }
-    
-    .result-card {
-        background: linear-gradient(135deg, #1a1a2e, #16213e);
-        border: 2px solid #00adb5;
-        border-radius: 20px;
-        padding: 1.5rem;
-        text-align: center;
-        margin: 1.5rem 0;
-        animation: slideDown 0.4s ease-out;
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .result-label {
-        color: #888888 !important;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-    }
-    
-    .result-score {
-        color: #00adb5 !important;
-        font-size: 3rem;
-        font-weight: 800;
-    }
-    
-    .result-score span {
-        font-size: 1rem;
-        color: #666666 !important;
-    }
-    
-    .stSuccess, .stInfo, .stWarning {
-        border-radius: 12px;
-        padding: 0.8rem;
-        margin: 0.8rem 0;
-    }
-    
-    hr {
-        margin: 1.5rem 0;
-        border: none;
-        height: 1px;
-        background: #334155;
-    }
-    
+    /* Divider */
     div[data-testid="column"] {
         padding: 0 0.5rem;
     }
@@ -337,13 +182,14 @@ main_css = """
             padding: 1rem;
         }
         h1 {
-            font-size: 1.3rem !important;
+            font-size: 1.4rem !important;
         }
         .result-score {
             font-size: 2rem;
         }
-        .stNumberInput input, div[data-baseweb="select"] > div {
-            min-height: 44px;
+        input, .stTextInput input, .stNumberInput input {
+            font-size: 16px !important;
+            padding: 0.6rem !important;
         }
     }
 </style>
@@ -353,18 +199,17 @@ main_css = """
 # AUTH PAGE
 # =====================================
 def show_auth_page():
-    st.markdown(auth_css, unsafe_allow_html=True)
+    st.markdown(global_css, unsafe_allow_html=True)
     
     users = load_users()
     
     st.markdown("""
     <div class="auth-container">
-        <div class="auth-icon">🎓</div>
+        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎓</div>
         <div class="auth-title">Student Score Predictor</div>
     """, unsafe_allow_html=True)
     
     if st.session_state.auth_mode == "login":
-        # SIGN IN FORM
         username = st.text_input("Username", placeholder="Enter your username", key="login_username")
         password = st.text_input("Password", type="password", placeholder="Enter your password", key="login_password")
         
@@ -385,7 +230,6 @@ def show_auth_page():
             st.rerun()
     
     else:
-        # SIGN UP FORM
         username = st.text_input("Username", placeholder="Choose a username", key="signup_username")
         password = st.text_input("Password", type="password", placeholder="Choose a password", key="signup_password")
         confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm your password", key="signup_confirm")
@@ -429,19 +273,19 @@ def load_models():
 # MAIN APP
 # =====================================
 def show_main_app():
-    st.markdown(main_css, unsafe_allow_html=True)
+    st.markdown(global_css, unsafe_allow_html=True)
     
     # Top bar
     col1, col2 = st.columns([3, 1])
     with col1:
-        st.markdown(f'<div class="user-info">Welcome, {st.session_state.username}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background: rgba(0,173,181,0.1); padding: 0.4rem 1rem; border-radius: 50px; display: inline-block;">Welcome, {st.session_state.username}</div>', unsafe_allow_html=True)
     with col2:
         if st.button("Sign Out", key="logout_btn"):
             st.session_state.logged_in = False
             st.session_state.username = ""
             st.rerun()
     
-    st.markdown("<h1>Student Score Predictor</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>Student Score Predictor</h1>", unsafe_allow_html=True)
     
     # Load model
     model, columns = load_models()
