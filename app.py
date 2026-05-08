@@ -20,7 +20,7 @@ model = joblib.load("student_model.pkl")
 columns = joblib.load("model_columns.pkl")
 
 # =====================================
-# CUSTOM CSS
+# CUSTOM CSS - WITH HOVER EFFECTS + RESPONSIVE
 # =====================================
 st.markdown("""
 <style>
@@ -34,13 +34,14 @@ st.markdown("""
         background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     }
     
-    /* Main container - fixed width */
+    /* Main container - responsive */
     .main .block-container {
         background: rgba(18, 18, 30, 0.92);
         border-radius: 20px;
         padding: 1.5rem;
-        max-width: 900px;
+        max-width: 1000px;
         margin: 0 auto;
+        transition: all 0.3s ease;
     }
     
     /* Title */
@@ -50,6 +51,7 @@ st.markdown("""
         font-weight: 700 !important;
         color: #ffffff !important;
         margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
     }
     
     /* Labels */
@@ -58,6 +60,11 @@ st.markdown("""
         font-weight: 500 !important;
         font-size: 0.8rem !important;
         margin-bottom: 0.2rem !important;
+        transition: color 0.3s ease;
+    }
+    
+    .stNumberInput label:hover, .stSelectbox label:hover {
+        color: #00adb5 !important;
     }
     
     /* Number input */
@@ -68,6 +75,17 @@ st.markdown("""
         border-radius: 10px !important;
         padding: 0.4rem 0.8rem !important;
         font-size: 0.9rem !important;
+        transition: all 0.3s ease;
+    }
+    
+    .stNumberInput input:hover {
+        border-color: #00adb5 !important;
+        transform: translateY(-1px);
+    }
+    
+    .stNumberInput input:focus {
+        border-color: #00adb5 !important;
+        box-shadow: 0 0 0 2px rgba(0, 173, 181, 0.3) !important;
     }
     
     /* Number buttons */
@@ -76,10 +94,12 @@ st.markdown("""
         border: 1px solid #334155 !important;
         color: #ffffff !important;
         border-radius: 6px !important;
+        transition: all 0.3s ease;
     }
     
     .stNumberInput button:hover {
         background-color: #00adb5 !important;
+        transform: scale(1.05);
     }
     
     /* Select boxes */
@@ -89,6 +109,12 @@ st.markdown("""
         border-radius: 10px !important;
         min-height: 36px !important;
         padding: 0 8px !important;
+        transition: all 0.3s ease;
+    }
+    
+    div[data-baseweb="select"] > div:hover {
+        border-color: #00adb5 !important;
+        transform: translateY(-1px);
     }
     
     div[data-baseweb="select"] input {
@@ -101,6 +127,18 @@ st.markdown("""
         background-color: #1a1a2e !important;
         border: 1px solid #334155 !important;
         border-radius: 10px !important;
+        animation: fadeIn 0.2s ease;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     li[role="option"] {
@@ -108,13 +146,15 @@ st.markdown("""
         background-color: #1a1a2e !important;
         padding: 8px 12px !important;
         font-size: 0.85rem !important;
+        transition: all 0.2s ease;
     }
     
     li[role="option"]:hover {
         background-color: #00adb5 !important;
+        transform: translateX(5px);
     }
     
-    /* Button */
+    /* Main Button */
     .stButton > button {
         width: 100%;
         height: 48px;
@@ -127,22 +167,34 @@ st.markdown("""
         letter-spacing: 1.5px;
         margin-top: 1rem;
         transition: all 0.3s ease;
+        cursor: pointer;
     }
     
     .stButton > button:hover {
         background: #007a7f !important;
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 173, 181, 0.4);
+    }
+    
+    .stButton > button:active {
+        transform: translateY(0);
     }
     
     /* Result Card */
     .result-card {
-        background: #1a1a2e;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
         border-radius: 16px;
         padding: 1rem;
         text-align: center;
         margin-top: 1.5rem;
         animation: slideDown 0.4s ease-out;
+        transition: all 0.3s ease;
+    }
+    
+    .result-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(0, 173, 181, 0.3);
     }
     
     @keyframes slideDown {
@@ -167,6 +219,11 @@ st.markdown("""
         color: #00adb5 !important;
         font-size: 2.5rem;
         font-weight: 800;
+        transition: all 0.3s ease;
+    }
+    
+    .result-card:hover .result-score {
+        transform: scale(1.05);
     }
     
     .result-score span {
@@ -182,29 +239,39 @@ st.markdown("""
         padding: 0.6rem;
         margin-top: 0.8rem;
         font-size: 0.9rem;
+        animation: fadeIn 0.4s ease-out;
+        transition: all 0.3s ease;
     }
     
-    /* Columns - normal size */
+    .stSuccess:hover {
+        background-color: rgba(0, 173, 181, 0.2);
+        transform: translateX(5px);
+    }
+    
+    /* Columns - RESPONSIVE (structure lose nahi hoga) */
     div[data-testid="column"] {
         padding: 0 0.5rem;
     }
     
-    /* Mobile */
+    /* RESPONSIVE DESIGN - Structure maintain */
     @media (max-width: 768px) {
         .main .block-container {
             padding: 1rem;
+            margin: 0.5rem;
         }
         
         h1 {
             font-size: 1.4rem !important;
         }
         
+        /* Columns side by side rahenge, upar-neeche nahi honge */
         div[data-testid="column"] {
             padding: 0 0.3rem;
+            flex: 1 1 50% !important;
         }
         
         .stNumberInput input, div[data-baseweb="select"] > div {
-            min-height: 40px;
+            min-height: 42px;
             font-size: 0.85rem;
         }
         
@@ -215,6 +282,33 @@ st.markdown("""
         
         .result-score {
             font-size: 2rem;
+        }
+        
+        .result-card:hover {
+            transform: scale(1.01);
+        }
+    }
+    
+    /* Small mobile */
+    @media (max-width: 480px) {
+        div[data-testid="column"] {
+            padding: 0 0.2rem;
+        }
+        
+        .stNumberInput input, div[data-baseweb="select"] > div {
+            min-height: 38px;
+            font-size: 0.8rem;
+        }
+        
+        .result-score {
+            font-size: 1.8rem;
+        }
+    }
+    
+    /* Tablet */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .main .block-container {
+            max-width: 90%;
         }
     }
     
@@ -230,6 +324,11 @@ st.markdown("""
     ::-webkit-scrollbar-thumb {
         background: #00adb5;
         border-radius: 3px;
+        transition: all 0.3s ease;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #007a7f;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -240,7 +339,7 @@ st.markdown("""
 st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
 
 # =====================================
-# TWO COLUMNS - NORMAL SIZE
+# TWO COLUMNS - RESPONSIVE
 # =====================================
 col1, col2 = st.columns(2)
 
