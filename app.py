@@ -2,6 +2,9 @@ import streamlit as st
 import joblib
 import pandas as pd
 import numpy as np
+import hashlib
+import json
+import os
 
 # =====================================
 # PAGE CONFIG
@@ -14,69 +17,74 @@ st.set_page_config(
 )
 
 # =====================================
+# USER DATABASE FILE
+# =====================================
+USER_DB_FILE = "users.json"
+
+def load_users():
+    if os.path.exists(USER_DB_FILE):
+        with open(USER_DB_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_users(users):
+    with open(USER_DB_FILE, 'w') as f:
+        json.dump(users, f, indent=2)
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+# =====================================
 # SESSION STATE
 # =====================================
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
+if 'username' not in st.session_state:
+    st.session_state.username = ""
+if 'auth_mode' not in st.session_state:
+    st.session_state.auth_mode = "login"
 
 # =====================================
-# LOAD MODEL
+# AUTH CSS
 # =====================================
-@st.cache_resource
-def load_models():
-    model = joblib.load("student_model.pkl")
-    columns = joblib.load("model_columns.pkl")
-    return model, columns
-
-model, columns = load_models()
-
-# =====================================
-# LOGIN PAGE CSS
-# =====================================
-login_css = """
+auth_css = """
 <style>
     .stApp {
         background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     }
     
-    .login-container {
+    .auth-container {
         background: rgba(18, 18, 30, 0.95);
         border-radius: 20px;
-        padding: 3rem;
-        max-width: 450px;
-        margin: 100px auto;
-        text-align: center;
+        padding: 2.5rem;
+        max-width: 420px;
+        margin: 80px auto;
         border: 1px solid #334155;
-        animation: fadeIn 0.5s ease-out;
+        text-align: center;
     }
     
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .login-icon {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-    }
-    
-    .login-title {
-        font-size: 1.8rem;
-        font-weight: 700;
+    .auth-icon {
+        font-size: 3rem;
         margin-bottom: 0.5rem;
+    }
+    
+    .auth-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
         color: #ffffff;
     }
     
-    .login-subtitle {
-        color: #888888;
-        font-size: 0.85rem;
-        margin-bottom: 2rem;
+    .stTextInput input {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
+        padding: 0.6rem !important;
+    }
+    
+    .stTextInput input:focus {
+        border-color: #00adb5 !important;
     }
     
     .stButton > button {
@@ -85,10 +93,9 @@ login_css = """
         color: white !important;
         border: none;
         border-radius: 50px !important;
-        padding: 0.7rem !important;
-        font-size: 1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
+        padding: 0.6rem !important;
+        font-weight: 600 !important;
+        margin-top: 0.5rem;
     }
     
     .stButton > button:hover {
@@ -96,9 +103,24 @@ login_css = """
         transform: translateY(-2px);
     }
     
-    .footer {
-        margin-top: 2rem;
-        color: #555;
+    .switch-btn {
+        background: transparent !important;
+        color: #00adb5 !important;
+        border: none !important;
+        text-decoration: underline;
+        margin-top: 1rem;
+    }
+    
+    .divider {
+        margin: 1.5rem 0;
+        border: none;
+        height: 1px;
+        background: #334155;
+    }
+    
+    .footer-text {
+        margin-top: 1.5rem;
+        color: #666;
         font-size: 0.7rem;
     }
 </style>
@@ -133,31 +155,31 @@ main_css = """
         margin-bottom: 2rem;
     }
     
+    .user-info {
+        background: rgba(0, 173, 181, 0.1);
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        display: inline-block;
+        font-size: 0.8rem;
+    }
+    
     .logout-btn {
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        z-index: 999;
+        float: right;
     }
     
     .logout-btn button {
         background: rgba(0, 173, 181, 0.2) !important;
         border: 1px solid #00adb5 !important;
         padding: 0.3rem 1rem !important;
-        font-size: 0.8rem !important;
+        font-size: 0.75rem !important;
         border-radius: 50px !important;
-    }
-    
-    .logout-btn button:hover {
-        background: rgba(0, 173, 181, 0.4) !important;
     }
     
     .stNumberInput label, .stSelectbox label {
         color: #cbd5e0 !important;
         font-weight: 500 !important;
-        font-size: 0.8rem !important;
+        font-size: 0.75rem !important;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
     
     .stNumberInput input {
@@ -165,7 +187,7 @@ main_css = """
         color: #ffffff !important;
         border: 1px solid #334155 !important;
         border-radius: 10px !important;
-        padding: 0.5rem 0.8rem !important;
+        padding: 0.4rem 0.8rem !important;
     }
     
     .stNumberInput input:hover {
@@ -174,8 +196,6 @@ main_css = """
     
     .stNumberInput button {
         background-color: #2d2d44 !important;
-        border: 1px solid #334155 !important;
-        border-radius: 6px !important;
     }
     
     .stNumberInput button:hover {
@@ -186,7 +206,7 @@ main_css = """
         background-color: #1a1a2e !important;
         border: 1px solid #334155 !important;
         border-radius: 10px !important;
-        min-height: 38px !important;
+        min-height: 36px !important;
     }
     
     div[data-baseweb="select"] > div:hover {
@@ -222,7 +242,7 @@ main_css = """
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
         border-radius: 20px;
-        padding: 2rem;
+        padding: 1.5rem;
         text-align: center;
         margin: 1.5rem 0;
         animation: slideDown 0.4s ease-out;
@@ -241,25 +261,25 @@ main_css = """
     
     .result-label {
         color: #888888 !important;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         text-transform: uppercase;
         letter-spacing: 3px;
     }
     
     .result-score {
         color: #00adb5 !important;
-        font-size: 3.5rem;
+        font-size: 3rem;
         font-weight: 800;
     }
     
     .result-score span {
-        font-size: 1.2rem;
+        font-size: 1rem;
         color: #666666 !important;
     }
     
     .stSuccess, .stInfo, .stWarning {
         border-radius: 12px;
-        padding: 1rem;
+        padding: 0.8rem;
         margin: 0.8rem 0;
     }
     
@@ -271,7 +291,7 @@ main_css = """
     }
     
     div[data-testid="column"] {
-        padding: 0 0.6rem;
+        padding: 0 0.5rem;
     }
     
     @media (max-width: 768px) {
@@ -289,28 +309,82 @@ main_css = """
 """
 
 # =====================================
-# LOGIN PAGE
+# AUTH PAGE
 # =====================================
-def show_login():
-    st.markdown(login_css, unsafe_allow_html=True)
+def show_auth_page():
+    st.markdown(auth_css, unsafe_allow_html=True)
+    
+    users = load_users()
     
     st.markdown("""
-    <div class="login-container">
-        <div class="login-icon">🎓</div>
-        <div class="login-title">Student Score Predictor</div>
-        <div class="login-subtitle">Predict your exam scores with AI</div>
+    <div class="auth-container">
+        <div class="auth-icon">🎓</div>
+        <div class="auth-title">Student Score Predictor</div>
     """, unsafe_allow_html=True)
     
-    if st.button("Continue as Guest", use_container_width=True):
-        st.session_state.logged_in = True
-        st.rerun()
+    if st.session_state.auth_mode == "login":
+        # SIGN IN FORM
+        username = st.text_input("Username", placeholder="Enter your username", key="login_username")
+        password = st.text_input("Password", type="password", placeholder="Enter your password", key="login_password")
+        
+        if st.button("Sign In", use_container_width=True):
+            if username and password:
+                if username in users and users[username]["password"] == hash_password(password):
+                    st.session_state.logged_in = True
+                    st.session_state.username = username
+                    st.rerun()
+                else:
+                    st.error("Invalid username or password")
+            else:
+                st.warning("Please enter username and password")
+        
+        # Switch to Sign Up button
+        st.markdown('<hr class="divider">', unsafe_allow_html=True)
+        if st.button("Create New Account", use_container_width=True, key="switch_to_signup"):
+            st.session_state.auth_mode = "signup"
+            st.rerun()
     
-    st.markdown("""
-        <div class="footer">
-            No registration required • Free to use
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    else:
+        # SIGN UP FORM
+        username = st.text_input("Username", placeholder="Choose a username", key="signup_username")
+        password = st.text_input("Password", type="password", placeholder="Choose a password", key="signup_password")
+        confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm your password", key="signup_confirm")
+        
+        if st.button("Sign Up", use_container_width=True):
+            if not username or not password:
+                st.warning("Please fill all fields")
+            elif password != confirm_password:
+                st.error("Passwords do not match")
+            elif len(password) < 4:
+                st.warning("Password must be at least 4 characters")
+            elif username in users:
+                st.error("Username already exists")
+            else:
+                users[username] = {
+                    "password": hash_password(password)
+                }
+                save_users(users)
+                st.success("Account created successfully!")
+                st.session_state.auth_mode = "login"
+                st.rerun()
+        
+        # Switch to Sign In button
+        st.markdown('<hr class="divider">', unsafe_allow_html=True)
+        if st.button("Back to Sign In", use_container_width=True, key="switch_to_login"):
+            st.session_state.auth_mode = "login"
+            st.rerun()
+    
+    st.markdown('<div class="footer-text">Secure • Free • No email required</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# =====================================
+# LOAD MODEL
+# =====================================
+@st.cache_resource
+def load_models():
+    model = joblib.load("student_model.pkl")
+    columns = joblib.load("model_columns.pkl")
+    return model, columns
 
 # =====================================
 # MAIN APP
@@ -318,14 +392,20 @@ def show_login():
 def show_main_app():
     st.markdown(main_css, unsafe_allow_html=True)
     
-    # Logout button top right
-    st.markdown("""
-        <div class="logout-btn">
-            <button onclick="location.reload()">Exit</button>
-        </div>
-    """, unsafe_allow_html=True)
+    # Top bar
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.markdown(f'<div class="user-info">Welcome, {st.session_state.username}</div>', unsafe_allow_html=True)
+    with col2:
+        if st.button("Sign Out", key="logout_btn"):
+            st.session_state.logged_in = False
+            st.session_state.username = ""
+            st.rerun()
     
     st.markdown("<h1>Student Score Predictor</h1>", unsafe_allow_html=True)
+    
+    # Load model
+    model, columns = load_models()
     
     # Input fields
     col1, col2 = st.columns(2)
@@ -429,4 +509,4 @@ def show_main_app():
 if st.session_state.logged_in:
     show_main_app()
 else:
-    show_login()
+    show_auth_page()
