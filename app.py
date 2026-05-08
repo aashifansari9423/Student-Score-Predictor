@@ -2,7 +2,6 @@ import streamlit as st
 import joblib
 import pandas as pd
 import numpy as np
-from datetime import datetime
 
 # =====================================
 # PAGE CONFIG
@@ -26,12 +25,6 @@ def load_models():
 model, columns = load_models()
 
 # =====================================
-# SESSION STATE
-# =====================================
-if 'prediction_history' not in st.session_state:
-    st.session_state.prediction_history = []
-
-# =====================================
 # CUSTOM CSS - PROFESSIONAL DARK THEME
 # =====================================
 st.markdown("""
@@ -49,13 +42,13 @@ st.markdown("""
     /* Main container */
     .main .block-container {
         background: rgba(18, 18, 30, 0.92);
-        border-radius: 16px;
+        border-radius: 20px;
         padding: 2rem;
         max-width: 1000px;
         margin: 0 auto;
     }
     
-    /* Remove focus rings */
+    /* Remove all focus rings */
     *:focus {
         outline: none !important;
         box-shadow: none !important;
@@ -67,11 +60,7 @@ st.markdown("""
         font-size: 2rem !important;
         font-weight: 700 !important;
         margin-bottom: 2rem;
-    }
-    
-    h2, h3 {
-        margin-top: 1rem;
-        margin-bottom: 0.8rem;
+        letter-spacing: -0.5px;
     }
     
     /* Labels */
@@ -79,7 +68,9 @@ st.markdown("""
         color: #cbd5e0 !important;
         font-weight: 500 !important;
         font-size: 0.8rem !important;
-        margin-bottom: 0.2rem !important;
+        margin-bottom: 0.3rem !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     /* Input fields */
@@ -87,8 +78,10 @@ st.markdown("""
         background-color: #1a1a2e !important;
         color: #ffffff !important;
         border: 1px solid #334155 !important;
-        border-radius: 8px !important;
-        padding: 0.4rem 0.8rem !important;
+        border-radius: 10px !important;
+        padding: 0.5rem 0.8rem !important;
+        font-size: 0.9rem !important;
+        transition: all 0.2s ease;
     }
     
     .stNumberInput input:hover {
@@ -99,7 +92,9 @@ st.markdown("""
     .stNumberInput button {
         background-color: #2d2d44 !important;
         border: 1px solid #334155 !important;
+        color: #ffffff !important;
         border-radius: 6px !important;
+        transition: all 0.2s ease;
     }
     
     .stNumberInput button:hover {
@@ -110,76 +105,133 @@ st.markdown("""
     div[data-baseweb="select"] > div {
         background-color: #1a1a2e !important;
         border: 1px solid #334155 !important;
-        border-radius: 8px !important;
-        min-height: 36px !important;
+        border-radius: 10px !important;
+        min-height: 38px !important;
+        padding: 0 10px !important;
+        transition: all 0.2s ease;
     }
     
     div[data-baseweb="select"] > div:hover {
         border-color: #00adb5 !important;
     }
     
-    /* Dropdown */
+    div[data-baseweb="select"] input {
+        color: #ffffff !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Dropdown menu */
     div[data-baseweb="popover"] > div {
         background-color: #1a1a2e !important;
         border: 1px solid #334155 !important;
-        border-radius: 8px !important;
+        border-radius: 10px !important;
+    }
+    
+    li[role="option"] {
+        color: #ffffff !important;
+        background-color: #1a1a2e !important;
+        padding: 10px 15px !important;
+        font-size: 0.85rem !important;
+        transition: all 0.2s ease;
     }
     
     li[role="option"]:hover {
         background-color: #00adb5 !important;
     }
     
-    /* Button */
+    li[role="option"][aria-selected="true"] {
+        background-color: #00adb5 !important;
+    }
+    
+    /* Predict Button */
     .stButton > button {
         width: 100%;
+        height: 52px;
         background: #00adb5 !important;
         color: white !important;
         border: none;
         border-radius: 50px !important;
-        padding: 0.6rem !important;
-        font-weight: 600 !important;
-        transition: all 0.2s ease;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin-top: 1.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
     
     .stButton > button:hover {
         background: #007a7f !important;
         transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(0, 173, 181, 0.4);
+    }
+    
+    .stButton > button:active {
+        transform: translateY(0);
     }
     
     /* Result Card */
     .result-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
-        border-radius: 16px;
-        padding: 1.5rem;
+        border-radius: 20px;
+        padding: 2rem;
         text-align: center;
         margin: 1.5rem 0;
-        animation: fadeIn 0.3s ease;
+        animation: slideDown 0.4s ease-out;
     }
     
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     .result-label {
-        color: #aaaaaa !important;
-        font-size: 0.7rem;
+        color: #888888 !important;
+        font-size: 0.75rem;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 3px;
+        margin-bottom: 0.5rem;
     }
     
     .result-score {
         color: #00adb5 !important;
-        font-size: 3rem;
+        font-size: 3.5rem;
         font-weight: 800;
+        letter-spacing: -1px;
     }
     
-    /* Success/Info/Warning */
+    .result-score span {
+        font-size: 1.2rem;
+        color: #666666 !important;
+    }
+    
+    /* Message boxes */
     .stSuccess, .stInfo, .stWarning {
-        border-radius: 10px;
-        padding: 0.8rem;
-        margin: 0.5rem 0;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 0.8rem 0;
+        font-weight: 500;
+    }
+    
+    .stSuccess {
+        background-color: rgba(0, 173, 181, 0.1);
+        border-left: 4px solid #00adb5;
+    }
+    
+    .stInfo {
+        background-color: rgba(59, 130, 246, 0.1);
+        border-left: 4px solid #3b82f6;
+    }
+    
+    .stWarning {
+        background-color: rgba(245, 158, 11, 0.1);
+        border-left: 4px solid #f59e0b;
     }
     
     /* Divider */
@@ -187,28 +239,65 @@ st.markdown("""
         margin: 1.5rem 0;
         border: none;
         height: 1px;
-        background: #334155;
+        background: linear-gradient(to right, transparent, #334155, transparent);
     }
     
-    /* Columns */
+    /* Columns spacing */
     div[data-testid="column"] {
-        padding: 0 0.5rem;
+        padding: 0 0.6rem;
     }
     
-    /* Mobile */
+    /* Mobile responsive */
     @media (max-width: 768px) {
         .main .block-container {
-            padding: 1rem;
+            padding: 1.2rem;
         }
+        
         h1 {
             font-size: 1.5rem !important;
         }
+        
+        .result-score {
+            font-size: 2.5rem;
+        }
+        
         div[data-testid="column"] {
             padding: 0 0.3rem;
         }
+        
+        .stNumberInput input, div[data-baseweb="select"] > div {
+            min-height: 42px;
+        }
+        
+        .stButton > button {
+            height: 48px;
+            font-size: 0.9rem;
+        }
+    }
+    
+    /* Small devices */
+    @media (max-width: 480px) {
         .result-score {
             font-size: 2rem;
         }
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #1a1a2e;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #00adb5;
+        border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #007a7f;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -219,7 +308,7 @@ st.markdown("""
 st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
 
 # =====================================
-# TWO COLUMN INPUTS
+# INPUT FIELDS - TWO COLUMNS
 # =====================================
 col1, col2 = st.columns(2)
 
@@ -246,7 +335,7 @@ with col2:
 # =====================================
 if st.button("PREDICT SCORE", use_container_width=True):
     
-    # Prepare data
+    # Prepare input data
     data = {
         "Hours_Studied": hours,
         "Attendance": attendance,
@@ -264,7 +353,7 @@ if st.button("PREDICT SCORE", use_container_width=True):
         "Extracurricular_Activities": activities
     }
     
-    # Prediction
+    # Make prediction
     input_df = pd.DataFrame([data])
     input_df = pd.get_dummies(input_df)
     input_df = input_df.reindex(columns=columns, fill_value=0)
@@ -273,25 +362,13 @@ if st.button("PREDICT SCORE", use_container_width=True):
     final_score = max(40, min(100, prediction[0]))
     final_score = int(round(final_score))
     
-    # Save to history
-    st.session_state.prediction_history.append({
-        'timestamp': datetime.now().strftime("%H:%M:%S"),
-        'score': final_score,
-        'hours': hours,
-        'attendance': attendance
-    })
-    
-    # Keep only last 5 records
-    if len(st.session_state.prediction_history) > 5:
-        st.session_state.prediction_history = st.session_state.prediction_history[-5:]
-    
     # =====================================
-    # RESULT CARD
+    # RESULT DISPLAY
     # =====================================
     st.markdown(f"""
     <div class="result-card">
         <div class="result-label">PREDICTED EXAM SCORE</div>
-        <div class="result-score">{final_score}<span style="font-size: 1rem;"> / 100</span></div>
+        <div class="result-score">{final_score}<span> / 100</span></div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -299,62 +376,46 @@ if st.button("PREDICT SCORE", use_container_width=True):
     # PERFORMANCE ASSESSMENT
     # =====================================
     if final_score >= 85:
-        st.success("🏆 EXCEPTIONAL PERFORMANCE - Outstanding results!")
+        st.success("🏆 EXCEPTIONAL PERFORMANCE")
         st.balloons()
     elif final_score >= 70:
-        st.success("📈 GOOD PERFORMANCE - Keep improving!")
+        st.success("📈 GOOD PERFORMANCE")
     elif final_score >= 55:
-        st.info("📚 SATISFACTORY PERFORMANCE - Room for improvement")
+        st.info("📚 SATISFACTORY PERFORMANCE")
     else:
-        st.warning("⚠️ NEEDS IMPROVEMENT - Review recommendations below")
+        st.warning("⚠️ NEEDS IMPROVEMENT")
     
     # =====================================
-    # SMART RECOMMENDATIONS
+    # RECOMMENDATIONS
     # =====================================
-    st.markdown("### Recommendations")
+    recommendations = []
     
-    rec_count = 0
     if hours < 6:
-        st.info("📖 Increase study hours to 6-8 hours daily")
-        rec_count += 1
+        recommendations.append("Increase study hours to 6-8 hours daily")
     if attendance < 75:
-        st.info("📊 Improve attendance to 80% or higher")
-        rec_count += 1
+        recommendations.append("Improve attendance to 80% or higher")
     if sleep < 7:
-        st.info("😴 Get 7-9 hours of sleep for better focus")
-        rec_count += 1
+        recommendations.append("Get 7-9 hours of sleep for better focus")
     if motivation == "Low":
-        st.info("💪 Set daily goals to boost motivation")
-        rec_count += 1
+        recommendations.append("Set daily goals to boost motivation")
     if teacher == "Poor":
-        st.info("👨‍🏫 Seek additional tutoring or online resources")
-        rec_count += 1
+        recommendations.append("Seek additional tutoring or online resources")
     if resources == "Low":
-        st.info("📚 Utilize free online learning materials")
-        rec_count += 1
+        recommendations.append("Utilize free online learning materials")
     if peer == "Negative":
-        st.info("🤝 Join positive study groups for better environment")
-        rec_count += 1
+        recommendations.append("Join positive study groups")
+    if previous < 50:
+        recommendations.append("Focus on strengthening fundamental concepts")
     
-    if rec_count == 0:
-        st.success("✅ Excellent habits! Maintain your current routine")
-
-# =====================================
-# RECENT PREDICTIONS (Simple)
-# =====================================
-if st.session_state.prediction_history:
-    st.markdown("---")
-    st.markdown("### Recent Predictions")
-    
-    # Simple table
-    history_df = pd.DataFrame(st.session_state.prediction_history)
-    history_df = history_df[['timestamp', 'score', 'hours', 'attendance']]
-    history_df.columns = ['Time', 'Score', 'Study Hrs', 'Attend %']
-    
-    st.dataframe(history_df, use_container_width=True, hide_index=True)
+    if recommendations:
+        st.markdown("### Recommendations")
+        for rec in recommendations:
+            st.info(f"• {rec}")
+    else:
+        st.success("✅ Excellent study habits! Maintain your routine")
 
 # =====================================
 # FOOTER
 # =====================================
 st.markdown("---")
-st.caption("© 2024 Student Score Predictor | AI-Powered Academic Tool")
+st.caption("Student Score Predictor | Powered by Machine Learning")
