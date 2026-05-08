@@ -1,49 +1,277 @@
 import streamlit as st
 import joblib
 import pandas as pd
+import numpy as np
 
-# =========================
+# =====================================
+# PAGE CONFIG
+#=====================================
+st.set_page_config(
+    page_title="Student Score Predictor",
+    page_icon="🎓",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# =====================================
 # LOAD MODEL
-# =========================
+# =====================================
 model = joblib.load("student_model.pkl")
 columns = joblib.load("model_columns.pkl")
 
-# =========================
+# =====================================
+# CUSTOM CSS
+# =====================================
+st.markdown("""
+<style>
+    /* Force all text white */
+    .stApp, .stApp * {
+        color: #ffffff !important;
+    }
+    
+    /* Main background */
+    .stApp {
+        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    }
+    
+    /* Main container - fixed width */
+    .main .block-container {
+        background: rgba(18, 18, 30, 0.92);
+        border-radius: 20px;
+        padding: 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    /* Title */
+    h1 {
+        text-align: center;
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Labels */
+    .stNumberInput label, .stSelectbox label {
+        color: #cbd5e0 !important;
+        font-weight: 500 !important;
+        font-size: 0.8rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+    
+    /* Number input */
+    .stNumberInput input {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Number buttons */
+    .stNumberInput button {
+        background-color: #2d2d44 !important;
+        border: 1px solid #334155 !important;
+        color: #ffffff !important;
+        border-radius: 6px !important;
+    }
+    
+    .stNumberInput button:hover {
+        background-color: #00adb5 !important;
+    }
+    
+    /* Select boxes */
+    div[data-baseweb="select"] > div {
+        background-color: #1a1a2e !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
+        min-height: 36px !important;
+        padding: 0 8px !important;
+    }
+    
+    div[data-baseweb="select"] input {
+        color: #ffffff !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Dropdown */
+    div[data-baseweb="popover"] > div {
+        background-color: #1a1a2e !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
+    }
+    
+    li[role="option"] {
+        color: #ffffff !important;
+        background-color: #1a1a2e !important;
+        padding: 8px 12px !important;
+        font-size: 0.85rem !important;
+    }
+    
+    li[role="option"]:hover {
+        background-color: #00adb5 !important;
+    }
+    
+    /* Button */
+    .stButton > button {
+        width: 100%;
+        height: 48px;
+        background: #00adb5 !important;
+        color: #ffffff !important;
+        border: none;
+        border-radius: 50px !important;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        background: #007a7f !important;
+        transform: translateY(-2px);
+    }
+    
+    /* Result Card */
+    .result-card {
+        background: #1a1a2e;
+        border: 2px solid #00adb5;
+        border-radius: 16px;
+        padding: 1rem;
+        text-align: center;
+        margin-top: 1.5rem;
+        animation: slideDown 0.4s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .result-label {
+        color: #aaaaaa !important;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    
+    .result-score {
+        color: #00adb5 !important;
+        font-size: 2.5rem;
+        font-weight: 800;
+    }
+    
+    .result-score span {
+        font-size: 1rem;
+        color: #888888 !important;
+    }
+    
+    /* Success message */
+    .stSuccess {
+        background-color: rgba(0, 173, 181, 0.1);
+        border-left: 3px solid #00adb5;
+        border-radius: 10px;
+        padding: 0.6rem;
+        margin-top: 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Columns - normal size */
+    div[data-testid="column"] {
+        padding: 0 0.5rem;
+    }
+    
+    /* Mobile */
+    @media (max-width: 768px) {
+        .main .block-container {
+            padding: 1rem;
+        }
+        
+        h1 {
+            font-size: 1.4rem !important;
+        }
+        
+        div[data-testid="column"] {
+            padding: 0 0.3rem;
+        }
+        
+        .stNumberInput input, div[data-baseweb="select"] > div {
+            min-height: 40px;
+            font-size: 0.85rem;
+        }
+        
+        .stButton > button {
+            height: 44px;
+            font-size: 0.85rem;
+        }
+        
+        .result-score {
+            font-size: 2rem;
+        }
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #1a1a2e;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #00adb5;
+        border-radius: 3px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# =====================================
 # TITLE
-# =========================
-st.title("🎓 Student Score Predictor")
+# =====================================
+st.markdown("<h1>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
 
-# =========================
-# INPUT FIELDS
-# =========================
-hours = st.number_input("Hours Studied", 0.0, 24.0)
-attendance = st.number_input("Attendance", 0.0, 100.0)
-previous = st.number_input("Previous Score", 0.0, 100.0)
-sleep = st.number_input("Sleep Hours", 0.0, 12.0)
+# =====================================
+# TWO COLUMNS - NORMAL SIZE
+# =====================================
+col1, col2 = st.columns(2)
 
-motivation = st.selectbox("Motivation Level", ["Low", "Medium", "High"])
-teacher = st.selectbox("Teacher Quality", ["Poor", "Average", "Good"])
-school = st.selectbox("School Type", ["Public", "Private"])
-internet = st.selectbox("Internet Access", ["Yes", "No"])
-income = st.selectbox("Family Income", ["Low", "Medium", "High"])
-parent = st.selectbox("Parental Involvement", ["Low", "Medium", "High"])
-education = st.selectbox("Parent Education", ["School", "College"])
-peer = st.selectbox("Peer Influence", ["Negative", "Neutral", "Positive"])
-resources = st.selectbox("Learning Resources", ["Low", "Medium", "High"])
-activities = st.selectbox("Extracurricular Activities", ["Yes", "No"])
+with col1:
+    hours = st.number_input("Hours Studied", min_value=0.0, max_value=24.0, value=5.0, step=0.5)
+    attendance = st.number_input("Attendance (%)", min_value=0.0, max_value=100.0, value=75.0, step=5.0)
+    previous = st.number_input("Previous Score", min_value=0.0, max_value=100.0, value=60.0, step=5.0)
+    sleep = st.number_input("Sleep Hours", min_value=0.0, max_value=12.0, value=7.0, step=0.5)
+    motivation = st.selectbox("Motivation Level", ["Low", "Medium", "High"])
+    teacher = st.selectbox("Teacher Quality", ["Poor", "Average", "Good"])
+    school = st.selectbox("School Type", ["Public", "Private"])
 
-# =========================
-# PREDICTION BUTTON
-# =========================
-if st.button("Predict Score"):
+with col2:
+    internet = st.selectbox("Internet Access", ["Yes", "No"])
+    income = st.selectbox("Family Income", ["Low", "Medium", "High"])
+    parent = st.selectbox("Parental Involvement", ["Low", "Medium", "High"])
+    education = st.selectbox("Parent Education", ["School", "College"])
+    peer = st.selectbox("Peer Influence", ["Negative", "Neutral", "Positive"])
+    resources = st.selectbox("Learning Resources", ["Low", "Medium", "High"])
+    activities = st.selectbox("Extracurricular Activities", ["Yes", "No"])
 
-    # Create input dictionary
+# =====================================
+# PREDICT BUTTON
+# =====================================
+if st.button("PREDICT SCORE", use_container_width=True):
+    
     data = {
         "Hours_Studied": hours,
         "Attendance": attendance,
         "Previous_Scores": previous,
         "Sleep_Hours": sleep,
-
         "Motivation_Level": motivation,
         "Teacher_Quality": teacher,
         "School_Type": school,
@@ -55,30 +283,26 @@ if st.button("Predict Score"):
         "Learning_Resources": resources,
         "Extracurricular_Activities": activities
     }
-
-    # Convert to DataFrame
+    
     input_df = pd.DataFrame([data])
-
-    # Apply encoding
     input_df = pd.get_dummies(input_df)
-
-    # Match training columns
     input_df = input_df.reindex(columns=columns, fill_value=0)
-
-    # =========================
-    # PREDICT
-    # =========================
+    
     prediction = model.predict(input_df)
-
-    # =========================
-    # FIX UNREALISTIC VALUES
-    # =========================
     final_score = max(40, min(100, prediction[0]))
-
-    # Convert to integer
     final_score = int(round(final_score))
-
-    # =========================
-    # OUTPUT
-    # =========================
-    st.success(f"🎯 Predicted Exam Score: {final_score}")
+    
+    # Result Card
+    st.markdown(f"""
+    <div class="result-card">
+        <div class="result-label">PREDICTED EXAM SCORE</div>
+        <div class="result-score">{final_score}<span> /100</span></div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Success message
+    if final_score >= 80:
+        st.success(f"🎉 Predicted Exam Score: {final_score}")
+        st.balloons()
+    else:
+        st.success(f"📌 Predicted Exam Score: {final_score}")
