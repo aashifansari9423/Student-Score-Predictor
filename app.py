@@ -74,7 +74,7 @@ light_theme_css = """
     .stNumberInput label, .stSelectbox label { color: #4a5568 !important; font-weight: 500 !important; }
     .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
     
-    /* DASHBOARD INPUTS - NORMAL SIZE (BADE) */
+    /* DASHBOARD INPUTS */
     .stNumberInput input, div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
         color: #1a1a2e !important;
@@ -84,25 +84,6 @@ light_theme_css = """
         font-size: 0.9rem !important;
         padding: 0.5rem 0.8rem !important;
         min-height: 38px !important;
-    }
-    
-    /* LOGIN PAGE INPUTS - CHOTE */
-    .auth-container .stTextInput input {
-        background-color: #ffffff !important;
-        color: #1a1a2e !important;
-        -webkit-text-fill-color: #1a1a2e !important;
-        border: 1px solid #d0d0d0 !important;
-        border-radius: 8px !important;
-        font-size: 0.85rem !important;
-        padding: 0.3rem 0.6rem !important;
-        height: 36px !important;
-        min-height: 36px !important;
-    }
-    
-    /* Select box text visible */
-    div[data-baseweb="select"] input {
-        color: #1a1a2e !important;
-        -webkit-text-fill-color: #1a1a2e !important;
     }
     
     /* Increase/Decrease buttons hover */
@@ -141,9 +122,31 @@ light_theme_css = """
     .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.1) !important; color: #1a1a2e !important; }
     hr { background: #d0d0d0 !important; }
     
-    .auth-container { background: rgba(255, 255, 255, 0.98); border: 1px solid #e0e0e0; max-width: 380px; margin: 40px auto; padding: 1.5rem; border-radius: 20px; }
-    .auth-title { font-size: 1.3rem; }
-    input::placeholder { color: #999999 !important; font-size: 0.8rem; }
+    /* LOGIN PAGE - PROFESSIONAL CHOTA BOX */
+    .auth-container {
+        max-width: 360px !important;
+        margin: 50px auto !important;
+        padding: 1.8rem !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 24px !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05) !important;
+    }
+    .auth-container .stTextInput input {
+        background-color: #ffffff !important;
+        color: #1a1a2e !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 12px !important;
+        font-size: 0.9rem !important;
+        padding: 0.7rem 1rem !important;
+        height: 44px !important;
+    }
+    .auth-container .stTextInput input:focus {
+        border-color: #00adb5 !important;
+        box-shadow: 0 0 0 2px rgba(0,173,181,0.1) !important;
+    }
+    .auth-title { font-size: 1.4rem !important; font-weight: 700 !important; }
+    input::placeholder { color: #aaa !important; font-size: 0.85rem !important; }
 </style>
 """
 
@@ -160,7 +163,7 @@ dark_theme_css = """
     .stNumberInput label, .stSelectbox label { color: #cbd5e0 !important; }
     .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
     
-    /* DASHBOARD INPUTS - NORMAL SIZE (BADE) */
+    /* DASHBOARD INPUTS */
     .stNumberInput input, div[data-baseweb="select"] > div {
         background-color: #1a1a2e !important;
         color: #ffffff !important;
@@ -170,25 +173,6 @@ dark_theme_css = """
         font-size: 0.9rem !important;
         padding: 0.5rem 0.8rem !important;
         min-height: 38px !important;
-    }
-    
-    /* LOGIN PAGE INPUTS - CHOTE */
-    .auth-container .stTextInput input {
-        background-color: #1a1a2e !important;
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        border: 1px solid #334155 !important;
-        border-radius: 8px !important;
-        font-size: 0.85rem !important;
-        padding: 0.3rem 0.6rem !important;
-        height: 36px !important;
-        min-height: 36px !important;
-    }
-    
-    /* Select box text visible */
-    div[data-baseweb="select"] input {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
     }
     
     /* Increase/Decrease buttons hover */
@@ -226,9 +210,31 @@ dark_theme_css = """
     .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.2) !important; color: #ffffff !important; }
     hr { background: #334155 !important; }
     
-    .auth-container { background: rgba(18, 18, 30, 0.95); border: 1px solid #334155; max-width: 380px; margin: 40px auto; padding: 1.5rem; border-radius: 20px; }
-    .auth-title { font-size: 1.3rem; }
-    input::placeholder { color: #888888 !important; font-size: 0.8rem; }
+    /* LOGIN PAGE - PROFESSIONAL CHOTA BOX */
+    .auth-container {
+        max-width: 360px !important;
+        margin: 50px auto !important;
+        padding: 1.8rem !important;
+        background: rgba(18, 18, 30, 0.95) !important;
+        border: 1px solid #334155 !important;
+        border-radius: 24px !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3) !important;
+    }
+    .auth-container .stTextInput input {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        border-radius: 12px !important;
+        font-size: 0.9rem !important;
+        padding: 0.7rem 1rem !important;
+        height: 44px !important;
+    }
+    .auth-container .stTextInput input:focus {
+        border-color: #00adb5 !important;
+        box-shadow: 0 0 0 2px rgba(0,173,181,0.2) !important;
+    }
+    .auth-title { font-size: 1.4rem !important; font-weight: 700 !important; }
+    input::placeholder { color: #888 !important; font-size: 0.85rem !important; }
 </style>
 """
 
@@ -237,7 +243,7 @@ base_css = """
     *:focus { outline: none !important; box-shadow: none !important; }
     div[data-testid="column"] { padding: 0 0.5rem; }
     .auth-container { text-align: center; }
-    .role-login-hint { font-size: 0.7rem; margin-top: 0.3rem; margin-bottom: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 8px; display: inline-block; }
+    .role-login-hint { font-size: 0.7rem; margin-top: 0.3rem; margin-bottom: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 8px; display: inline-block; background: rgba(0,173,181,0.15); }
     hr { margin: 0.8rem 0; }
     .footer-text { margin-top: 1rem; font-size: 0.65rem; }
     
@@ -249,7 +255,7 @@ base_css = """
     /* Top right theme toggle */
     .top-theme-toggle {
         position: fixed;
-        top: 0.5rem;
+        top: 0.7rem;
         right: 1rem;
         z-index: 999;
     }
@@ -257,22 +263,25 @@ base_css = """
         background: rgba(0, 173, 181, 0.2) !important;
         border: 1px solid #00adb5 !important;
         border-radius: 50px !important;
-        padding: 0.15rem 0.6rem !important;
+        padding: 0.2rem 0.7rem !important;
         font-size: 0.7rem !important;
+        font-weight: 500 !important;
+    }
+    .top-theme-toggle button:hover {
+        background: rgba(0, 173, 181, 0.4) !important;
     }
     
-    /* Remove extra spacing in auth form */
-    .auth-container .stTextInput {
-        margin-bottom: 0 !important;
-    }
-    .auth-container div[data-testid="stTextInput"] {
-        margin-bottom: 0.5rem;
+    /* Auth container spacing */
+    .auth-container .stButton button {
+        margin-top: 0.5rem;
     }
     
     @media (max-width: 768px) {
         .main .block-container { padding: 0.8rem; }
         h1 { font-size: 1.2rem !important; }
         .result-score { font-size: 1.8rem; }
+        .auth-container { max-width: 320px !important; margin: 30px auto !important; padding: 1.5rem !important; }
+        .auth-container .stTextInput input { padding: 0.6rem 0.8rem !important; height: 40px !important; }
     }
 </style>
 """
@@ -305,12 +314,12 @@ def show_auth_page():
     
     st.markdown("""
     <div class="auth-container">
-        <div style="font-size: 2.5rem;">🎓</div>
+        <div style="font-size: 2.8rem; margin-bottom: 0.5rem;">🎓</div>
         <div class="auth-title">Student Score Predictor</div>
     """, unsafe_allow_html=True)
     
     if st.session_state.auth_mode == "login":
-        st.markdown('<p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Sign in to your account</p>', unsafe_allow_html=True)
+        st.markdown('<p style="margin-bottom: 1rem; font-size: 0.85rem; opacity: 0.7;">Sign in to your account</p>', unsafe_allow_html=True)
         
         username = st.text_input("Username", placeholder="Username", key="login_username", label_visibility="collapsed")
         password = st.text_input("Password", type="password", placeholder="Password", key="login_password", label_visibility="collapsed")
@@ -335,7 +344,7 @@ def show_auth_page():
         
         st.markdown("<hr>", unsafe_allow_html=True)
         
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2, gap="small")
         with col1:
             if st.button("Student Sign Up", use_container_width=True):
                 st.session_state.auth_mode = "signup"
@@ -349,9 +358,9 @@ def show_auth_page():
     
     else:
         role = st.session_state.signup_role
-        st.markdown(f'<p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Create {role} account</p>', unsafe_allow_html=True)
+        st.markdown(f'<p style="margin-bottom: 0.8rem; font-size: 0.85rem; opacity: 0.7;">Create {role} account</p>', unsafe_allow_html=True)
         
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2, gap="small")
         with col1:
             if st.button("Student", use_container_width=True):
                 st.session_state.signup_role = "student"
@@ -408,7 +417,7 @@ def show_auth_page():
                 
                 users[username] = user_data
                 save_users(users)
-                st.success(f"Account created successfully!")
+                st.success("Account created successfully!")
                 st.session_state.auth_mode = "login"
                 st.rerun()
         
@@ -417,7 +426,7 @@ def show_auth_page():
             st.session_state.auth_mode = "login"
             st.rerun()
     
-    st.markdown('<div class="footer-text">Secure • Student & Parent Portals</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer-text">🔒 Secure • Student & Parent Portals</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================
@@ -495,7 +504,7 @@ def show_main_app():
     
     if st.session_state.user_role == "parent":
         child_name = user_data.get("child_name", "Child")
-        st.info(f"Predicting for: {child_name}")
+        st.info(f"👨‍👩‍👧 Predicting for: {child_name}")
     
     model, columns = load_models()
     
@@ -554,14 +563,14 @@ def show_main_app():
         """, unsafe_allow_html=True)
         
         if final_score >= 85:
-            st.success("Exceptional Performance")
+            st.success("🏆 Exceptional Performance")
             st.balloons()
         elif final_score >= 70:
-            st.success("Good Performance")
+            st.success("📈 Good Performance")
         elif final_score >= 55:
-            st.info("Satisfactory Performance")
+            st.info("📚 Satisfactory Performance")
         else:
-            st.warning("Needs Improvement")
+            st.warning("⚠️ Needs Improvement")
         
         recommendations = []
         if hours < 6:
@@ -580,14 +589,14 @@ def show_main_app():
             recommendations.append("Join positive study groups")
         
         if recommendations:
-            st.markdown("### Recommendations")
+            st.markdown("### 💡 Recommendations")
             for rec in recommendations:
                 st.info(rec)
         else:
-            st.success("Excellent study habits!")
+            st.success("✅ Excellent study habits!")
     
     st.markdown("---")
-    st.caption("Student Score Predictor")
+    st.caption("Student Score Predictor | Powered by Machine Learning")
 
 # =====================================
 # MAIN ROUTER
