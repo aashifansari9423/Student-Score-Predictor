@@ -59,76 +59,74 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# CSS - LIGHT MODE TEXT FIX
+# CSS - LIGHT MODE FIX (SIRF TEXT COLOR)
 # =====================================
 light_theme_css = """
 <style>
-    /* Main Background */
-    .stApp { background: linear-gradient(135deg, #e0eafc, #cfdef3); }
-    .main .block-container { background: #ffffff; border-radius: 20px; padding: 1.5rem; }
-    [data-testid="stSidebar"] { background: #f8f9fa; border-right: 1px solid #e0e0e0; }
-    
-    /* ALL TEXT DARK - FIX FOR LIGHT MODE */
-    h1, h2, h3, p, label, .stMarkdown, .stCaption, .stTextInput label, .stNumberInput label, .stSelectbox label {
+    /* Force ALL text dark in light mode */
+    .stApp, .stApp * {
         color: #1a1a2e !important;
     }
     
-    /* Result Card Text */
-    .result-card .result-label {
-        color: #888888 !important;
-    }
+    /* Exception for result card score - keep teal */
     .result-card .result-score {
         color: #00adb5 !important;
     }
     
-    /* Input Fields */
+    /* Exception for placeholder text */
+    input::placeholder {
+        color: #999 !important;
+    }
+    
+    /* Keep button text white */
+    .stButton > button, .stButton > button * {
+        color: white !important;
+    }
+    
+    /* Keep theme toggle button text visible */
+    .top-theme-toggle button {
+        color: #1a1a2e !important;
+    }
+    
+    /* Keep sidebar profile role text */
+    .profile-role {
+        color: #1a1a2e !important;
+    }
+    
+    .stApp { background: linear-gradient(135deg, #e0eafc, #cfdef3); }
+    .main .block-container { background: #ffffff; border-radius: 20px; padding: 1.5rem; }
+    [data-testid="stSidebar"] { background: #f8f9fa; border-right: 1px solid #e0e0e0; }
+    
     .stNumberInput input, .stTextInput input {
         background: white !important;
         border: 1px solid #ddd !important;
         border-radius: 10px !important;
         padding: 0.4rem 0.8rem !important;
-        color: #1a1a2e !important;
-        -webkit-text-fill-color: #1a1a2e !important;
     }
     
-    /* Select Box */
     div[data-baseweb="select"] > div {
         background: white !important;
         border: 1px solid #ddd !important;
         border-radius: 10px !important;
         min-height: 38px !important;
     }
-    div[data-baseweb="select"] input {
-        color: #1a1a2e !important;
-        -webkit-text-fill-color: #1a1a2e !important;
-        font-size: 0.85rem !important;
-    }
     
-    /* Number Buttons */
     .stNumberInput button {
         background: #f0f0f0 !important;
         border: 1px solid #ddd !important;
-        color: #1a1a2e !important;
     }
     .stNumberInput button:hover {
         background: #00adb5 !important;
-        color: white !important;
     }
     
-    /* Dropdown Menu */
     div[data-baseweb="popover"] div {
         background: white !important;
         border: 1px solid #ddd !important;
     }
-    li[role="option"] {
-        color: #1a1a2e !important;
-    }
     li[role="option"]:hover {
         background: #00adb5 !important;
-        color: white !important;
     }
     
-    /* Result Card */
     .result-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
@@ -137,11 +135,12 @@ light_theme_css = """
         text-align: center;
         margin: 1rem 0;
     }
+    .result-card .result-label {
+        color: #888 !important;
+    }
     
-    /* Buttons */
     .stButton > button {
         background: #00adb5 !important;
-        color: white !important;
         border: none !important;
         border-radius: 50px !important;
         padding: 0.4rem 1rem !important;
@@ -152,7 +151,6 @@ light_theme_css = """
         box-shadow: 0 5px 15px rgba(0,173,181,0.4);
     }
     
-    /* Theme Toggle */
     .top-theme-toggle {
         position: fixed;
         top: 0.8rem;
@@ -165,30 +163,17 @@ light_theme_css = """
         border-radius: 50px !important;
         padding: 0.2rem 0.7rem !important;
         font-size: 0.7rem !important;
-        color: #1a1a2e !important;
     }
     
-    /* Sidebar */
     .profile-card { text-align: center; padding: 0.5rem; }
-    .profile-name { font-size: 1rem; font-weight: 700; color: #1a1a2e !important; }
-    .profile-role { font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 50px; display: inline-block; background: #00adb520; border: 1px solid #00adb5; color: #1a1a2e !important; }
+    .profile-name { font-size: 1rem; font-weight: 700; }
+    .profile-role { font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 50px; display: inline-block; background: #00adb520; border: 1px solid #00adb5; }
     
-    /* Info Box */
-    .stInfo {
+    .stInfo, .stSuccess, .stWarning {
         background-color: rgba(0,173,181,0.1) !important;
-        color: #1a1a2e !important;
-    }
-    .stSuccess {
-        background-color: rgba(0,173,181,0.1) !important;
-        color: #1a1a2e !important;
-    }
-    .stWarning {
-        background-color: rgba(255,193,7,0.1) !important;
-        color: #1a1a2e !important;
     }
     
     hr { margin: 0.8rem 0; border-color: #eee; }
-    input::placeholder { color: #999 !important; }
 </style>
 """
 
@@ -209,7 +194,6 @@ dark_theme_css = """
         border-radius: 10px !important;
         padding: 0.4rem 0.8rem !important;
         color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
     }
     
     div[data-baseweb="select"] > div {
@@ -220,8 +204,6 @@ dark_theme_css = """
     }
     div[data-baseweb="select"] input {
         color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        font-size: 0.85rem !important;
     }
     
     .stNumberInput button {
@@ -285,16 +267,8 @@ dark_theme_css = """
     .profile-name { font-size: 1rem; font-weight: 700; color: white !important; }
     .profile-role { font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 50px; display: inline-block; background: #00adb520; border: 1px solid #00adb5; color: white !important; }
     
-    .stInfo {
+    .stInfo, .stSuccess, .stWarning {
         background-color: rgba(0,173,181,0.2) !important;
-        color: #ffffff !important;
-    }
-    .stSuccess {
-        background-color: rgba(0,173,181,0.2) !important;
-        color: #ffffff !important;
-    }
-    .stWarning {
-        background-color: rgba(255,193,7,0.2) !important;
         color: #ffffff !important;
     }
     
@@ -446,7 +420,7 @@ def show_auth_page():
                 st.session_state.auth_mode = "login"
                 st.rerun()
         
-        st.markdown('<p style="text-align: center; font-size: 0.55rem; color: #888; margin-top: 0.8rem;">Secure Portal</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; font-size: 0.55rem; margin-top: 0.8rem;">Secure Portal</p>', unsafe_allow_html=True)
 
 # =====================================
 # LOAD MODEL
