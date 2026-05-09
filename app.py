@@ -59,87 +59,78 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# CSS - FULL FIX
+# CSS
 # =====================================
 light_theme_css = """
 <style>
-    /* Background */
     .stApp { background: linear-gradient(135deg, #e0eafc, #cfdef3); }
-    .main .block-container { background: #ffffff; border-radius: 20px; padding: 1.5rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+    .main .block-container { background: #ffffff; border-radius: 20px; padding: 1.5rem; }
     [data-testid="stSidebar"] { background: #f8f9fa; border-right: 1px solid #e0e0e0; }
     
-    /* Text */
-    h1, h2, h3, p, label, .stMarkdown { color: #1a1a2e !important; }
+    h1, h2, h3, p, label { color: #1a1a2e !important; }
     
-    /* Inputs - WITH HOVER */
     .stNumberInput input, .stTextInput input {
         background: white !important;
         border: 1px solid #ddd !important;
         border-radius: 10px !important;
-        padding: 0.45rem 0.8rem !important;
+        padding: 0.4rem 0.8rem !important;
         transition: all 0.3s ease !important;
-        color: #1a1a2e !important;
     }
     .stNumberInput input:hover, .stTextInput input:hover {
-        border-color: #667eea !important;
+        border-color: #00adb5 !important;
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(102,126,234,0.1);
     }
     
-    /* Select Box - FULL TEXT FIX */
+    /* DROPDOWN - NO EXTRA BOX */
+    div[data-baseweb="select"] {
+        background: transparent !important;
+    }
     div[data-baseweb="select"] > div {
         background: white !important;
         border: 1px solid #ddd !important;
         border-radius: 10px !important;
         min-height: 38px !important;
         transition: all 0.3s ease !important;
+        box-shadow: none !important;
     }
     div[data-baseweb="select"] > div:hover {
-        border-color: #667eea !important;
+        border-color: #00adb5 !important;
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(102,126,234,0.1);
     }
     div[data-baseweb="select"] input {
         color: #1a1a2e !important;
-        -webkit-text-fill-color: #1a1a2e !important;
         font-size: 0.85rem !important;
         background: transparent !important;
     }
     
-    /* Number Buttons Hover */
     .stNumberInput button {
         background: #f0f0f0 !important;
         border: 1px solid #ddd !important;
         transition: all 0.3s ease !important;
-        border-radius: 6px !important;
     }
     .stNumberInput button:hover {
-        background: #667eea !important;
-        transform: scale(1.08);
-        border-color: #667eea;
-        color: white !important;
+        background: #00adb5 !important;
+        transform: scale(1.05);
     }
     
-    /* Dropdown Menu */
     div[data-baseweb="popover"] div {
         background: white !important;
         border: 1px solid #ddd !important;
-        border-radius: 10px !important;
     }
     li[role="option"] {
         color: #1a1a2e !important;
-        padding: 8px 12px !important;
+        padding: 6px 12px !important;
         transition: all 0.2s ease !important;
     }
     li[role="option"]:hover {
-        background: #667eea !important;
+        background: #00adb5 !important;
         color: white !important;
-        transform: translateX(5px);
     }
     
-    /* Result Card */
+    /* RESULT CARD - OLD COLOR */
     .result-card {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        border: 2px solid #00adb5;
         border-radius: 16px;
         padding: 1rem;
         text-align: center;
@@ -148,148 +139,23 @@ light_theme_css = """
     }
     .result-card:hover {
         transform: scale(1.02);
-        box-shadow: 0 10px 25px rgba(102,126,234,0.3);
+        box-shadow: 0 10px 25px rgba(0,173,181,0.2);
     }
-    .result-score { color: white !important; font-size: 2rem; font-weight: 800; }
-    .result-label { color: rgba(255,255,255,0.8) !important; font-size: 0.7rem; }
-    
-    /* Buttons */
-    .stButton > button {
-        background: linear-gradient(135deg, #667eea, #764ba2) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 50px !important;
-        padding: 0.45rem 1rem !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease !important;
-    }
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(102,126,234,0.4);
-    }
-    
-    /* Theme Toggle */
-    .top-theme-toggle {
-        position: fixed;
-        top: 0.8rem;
-        right: 1rem;
-        z-index: 999;
-    }
-    .top-theme-toggle button {
-        background: rgba(102,126,234,0.15) !important;
-        border: 1px solid #667eea !important;
-        border-radius: 50px !important;
-        padding: 0.2rem 0.7rem !important;
-        font-size: 0.7rem !important;
-    }
-    .top-theme-toggle button:hover {
-        background: rgba(102,126,234,0.3) !important;
-        transform: translateY(-2px);
-    }
-    
-    hr { margin: 0.8rem 0; border-color: #eee; }
-    .profile-card { text-align: center; padding: 0.5rem; }
-    .profile-name { font-size: 1rem; font-weight: 700; }
-    .profile-role { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block; background: #667eea20; border: 1px solid #667eea; }
-</style>
-"""
-
-dark_theme_css = """
-<style>
-    .stApp { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
-    .main .block-container { background: rgba(18, 18, 30, 0.95); border-radius: 20px; padding: 1.5rem; border: 1px solid #2a2a4a; }
-    [data-testid="stSidebar"] { background: rgba(18, 18, 30, 0.95); border-right: 1px solid #2a2a4a; }
-    
-    h1, h2, h3, p, label, .stMarkdown { color: #ffffff !important; }
-    
-    .stNumberInput input, .stTextInput input {
-        background: #1e1e2e !important;
-        border: 1px solid #3a3a5a !important;
-        border-radius: 10px !important;
-        padding: 0.45rem 0.8rem !important;
-        transition: all 0.3s ease !important;
-        color: #ffffff !important;
-    }
-    .stNumberInput input:hover, .stTextInput input:hover {
-        border-color: #00adb5 !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,173,181,0.2);
-    }
-    
-    div[data-baseweb="select"] > div {
-        background: #1e1e2e !important;
-        border: 1px solid #3a3a5a !important;
-        border-radius: 10px !important;
-        min-height: 38px !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-baseweb="select"] > div:hover {
-        border-color: #00adb5 !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,173,181,0.2);
-    }
-    div[data-baseweb="select"] input {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        font-size: 0.85rem !important;
-        background: transparent !important;
-    }
-    
-    .stNumberInput button {
-        background: #2d2d44 !important;
-        border: 1px solid #3a3a5a !important;
-        transition: all 0.3s ease !important;
-        border-radius: 6px !important;
-        color: #ffffff !important;
-    }
-    .stNumberInput button:hover {
-        background: #00adb5 !important;
-        transform: scale(1.08);
-        border-color: #00adb5;
-    }
-    
-    div[data-baseweb="popover"] div {
-        background: #1e1e2e !important;
-        border: 1px solid #3a3a5a !important;
-        border-radius: 10px !important;
-    }
-    li[role="option"] {
-        color: #ffffff !important;
-        padding: 8px 12px !important;
-        transition: all 0.2s ease !important;
-    }
-    li[role="option"]:hover {
-        background: #00adb5 !important;
-        transform: translateX(5px);
-    }
-    
-    .result-card {
-        background: linear-gradient(135deg, #00adb5, #007a7f);
-        border-radius: 16px;
-        padding: 1rem;
-        text-align: center;
-        margin: 1rem 0;
-        transition: all 0.3s ease;
-    }
-    .result-card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 10px 25px rgba(0,173,181,0.3);
-    }
-    .result-score { color: white !important; font-size: 2rem; font-weight: 800; }
-    .result-label { color: rgba(255,255,255,0.8) !important; font-size: 0.7rem; }
+    .result-score { color: #00adb5 !important; font-size: 2rem; font-weight: 800; }
+    .result-label { color: #888 !important; font-size: 0.7rem; letter-spacing: 2px; }
     
     .stButton > button {
         background: #00adb5 !important;
         color: white !important;
         border: none !important;
         border-radius: 50px !important;
-        padding: 0.45rem 1rem !important;
+        padding: 0.4rem 1rem !important;
         font-weight: 600 !important;
         transition: all 0.3s ease !important;
     }
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0,173,181,0.4);
+        box-shadow: 0 5px 15px rgba(0,173,181,0.4);
     }
     
     .top-theme-toggle {
@@ -305,15 +171,131 @@ dark_theme_css = """
         padding: 0.2rem 0.7rem !important;
         font-size: 0.7rem !important;
     }
-    .top-theme-toggle button:hover {
-        background: rgba(0,173,181,0.3) !important;
+    
+    .profile-card { text-align: center; padding: 0.5rem; }
+    .profile-name { font-size: 1rem; font-weight: 700; }
+    .profile-role { font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 50px; display: inline-block; background: #00adb520; border: 1px solid #00adb5; }
+    
+    hr { margin: 0.8rem 0; border-color: #eee; }
+</style>
+"""
+
+dark_theme_css = """
+<style>
+    .stApp { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+    .main .block-container { background: rgba(18, 18, 30, 0.95); border-radius: 20px; padding: 1.5rem; border: 1px solid #2a2a4a; }
+    [data-testid="stSidebar"] { background: rgba(18, 18, 30, 0.95); border-right: 1px solid #2a2a4a; }
+    
+    h1, h2, h3, p, label { color: #ffffff !important; }
+    
+    .stNumberInput input, .stTextInput input {
+        background: #1e1e2e !important;
+        border: 1px solid #3a3a5a !important;
+        border-radius: 10px !important;
+        padding: 0.4rem 0.8rem !important;
+        transition: all 0.3s ease !important;
+        color: #ffffff !important;
+    }
+    .stNumberInput input:hover, .stTextInput input:hover {
+        border-color: #00adb5 !important;
         transform: translateY(-2px);
     }
     
-    hr { margin: 0.8rem 0; border-color: #3a3a5a; }
+    /* DROPDOWN - NO EXTRA BOX */
+    div[data-baseweb="select"] {
+        background: transparent !important;
+    }
+    div[data-baseweb="select"] > div {
+        background: #1e1e2e !important;
+        border: 1px solid #3a3a5a !important;
+        border-radius: 10px !important;
+        min-height: 38px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: none !important;
+    }
+    div[data-baseweb="select"] > div:hover {
+        border-color: #00adb5 !important;
+        transform: translateY(-2px);
+    }
+    div[data-baseweb="select"] input {
+        color: #ffffff !important;
+        font-size: 0.85rem !important;
+        background: transparent !important;
+    }
+    
+    .stNumberInput button {
+        background: #2d2d44 !important;
+        border: 1px solid #3a3a5a !important;
+        transition: all 0.3s ease !important;
+    }
+    .stNumberInput button:hover {
+        background: #00adb5 !important;
+        transform: scale(1.05);
+    }
+    
+    div[data-baseweb="popover"] div {
+        background: #1e1e2e !important;
+        border: 1px solid #3a3a5a !important;
+    }
+    li[role="option"] {
+        color: #ffffff !important;
+        padding: 6px 12px !important;
+        transition: all 0.2s ease !important;
+    }
+    li[role="option"]:hover {
+        background: #00adb5 !important;
+    }
+    
+    /* RESULT CARD - OLD COLOR */
+    .result-card {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        border: 2px solid #00adb5;
+        border-radius: 16px;
+        padding: 1rem;
+        text-align: center;
+        margin: 1rem 0;
+        transition: all 0.3s ease;
+    }
+    .result-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 25px rgba(0,173,181,0.2);
+    }
+    .result-score { color: #00adb5 !important; font-size: 2rem; font-weight: 800; }
+    .result-label { color: #888 !important; font-size: 0.7rem; letter-spacing: 2px; }
+    
+    .stButton > button {
+        background: #00adb5 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50px !important;
+        padding: 0.4rem 1rem !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+    }
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,173,181,0.4);
+    }
+    
+    .top-theme-toggle {
+        position: fixed;
+        top: 0.8rem;
+        right: 1rem;
+        z-index: 999;
+    }
+    .top-theme-toggle button {
+        background: rgba(0,173,181,0.15) !important;
+        border: 1px solid #00adb5 !important;
+        border-radius: 50px !important;
+        padding: 0.2rem 0.7rem !important;
+        font-size: 0.7rem !important;
+    }
+    
     .profile-card { text-align: center; padding: 0.5rem; }
     .profile-name { font-size: 1rem; font-weight: 700; color: white; }
-    .profile-role { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block; background: #00adb520; border: 1px solid #00adb5; color: white; }
+    .profile-role { font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 50px; display: inline-block; background: #00adb520; border: 1px solid #00adb5; color: white; }
+    
+    hr { margin: 0.8rem 0; border-color: #3a3a5a; }
 </style>
 """
 
@@ -331,7 +313,7 @@ def theme_toggle():
         st.rerun()
 
 # =====================================
-# AUTH PAGE
+# AUTH PAGE - PROFESSIONAL CHOTA SIZE
 # =====================================
 def show_auth_page():
     apply_theme()
@@ -342,27 +324,28 @@ def show_auth_page():
     
     users = load_users()
     
-    # Center the login box
-    col1, col2, col3 = st.columns([1, 2.2, 1])
+    # PROFESSIONAL SMALL CENTERED BOX
+    col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
         st.markdown("""
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-            <div style="font-size: 3rem;">🎓</div>
-            <h1 style="font-size: 1.6rem; margin: 0;">Student Score Predictor</h1>
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="font-size: 2.5rem;">🎓</div>
+            <h1 style="font-size: 1.5rem; margin: 0.2rem 0;">Student Score Predictor</h1>
         </div>
         """, unsafe_allow_html=True)
         
         if st.session_state.auth_mode == "login":
-            st.markdown('<p style="text-align: center; margin-bottom: 1.5rem;">Sign in to continue</p>', unsafe_allow_html=True)
+            st.markdown('<p style="text-align: center; margin-bottom: 1rem; font-size: 0.8rem;">Sign in to continue</p>', unsafe_allow_html=True)
             
-            username = st.text_input("Username", placeholder="Username", key="login_user")
-            password = st.text_input("Password", type="password", placeholder="Password", key="login_pass")
+            username = st.text_input("Username", placeholder="Username", key="login_user", label_visibility="collapsed")
+            password = st.text_input("Password", type="password", placeholder="Password", key="login_pass", label_visibility="collapsed")
             
             if username and username in users:
                 role = users[username]["role"]
                 role_icon = "🎓" if role == "student" else "👨‍👩‍👧"
-                st.markdown(f'<p style="text-align: center; font-size: 0.7rem;">{role_icon} Signing in as {role}</p>', unsafe_allow_html=True)
+                role_text = "Student" if role == "student" else "Parent"
+                st.markdown(f'<p style="text-align: center; font-size: 0.7rem; margin-top: -0.3rem;">{role_icon} {role_text}</p>', unsafe_allow_html=True)
             
             if st.button("Sign In", use_container_width=True):
                 if username and password:
@@ -392,7 +375,7 @@ def show_auth_page():
         
         else:
             role = st.session_state.signup_role
-            st.markdown(f'<p style="text-align: center; margin-bottom: 1rem;">Create {role} account</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="text-align: center; margin-bottom: 0.8rem; font-size: 0.8rem;">Create {role} account</p>', unsafe_allow_html=True)
             
             col_a, col_b = st.columns(2)
             with col_a:
@@ -406,10 +389,10 @@ def show_auth_page():
             
             st.markdown("---")
             
-            username = st.text_input("Username", placeholder="Username", key="signup_user")
-            password = st.text_input("Password", type="password", placeholder="Password", key="signup_pass")
-            confirm = st.text_input("Confirm Password", type="password", placeholder="Confirm", key="signup_confirm")
-            full_name = st.text_input("Full Name", placeholder="Full Name", key="signup_name")
+            username = st.text_input("Username", placeholder="Username", key="signup_user", label_visibility="collapsed")
+            password = st.text_input("Password", type="password", placeholder="Password", key="signup_pass", label_visibility="collapsed")
+            confirm = st.text_input("Confirm Password", type="password", placeholder="Confirm", key="signup_confirm", label_visibility="collapsed")
+            full_name = st.text_input("Full Name", placeholder="Full Name", key="signup_name", label_visibility="collapsed")
             
             if role == "student":
                 dob = st.date_input("Date of Birth", min_value=datetime(1990,1,1), max_value=datetime.now())
@@ -460,7 +443,7 @@ def show_auth_page():
                 st.session_state.auth_mode = "login"
                 st.rerun()
         
-        st.markdown('<p style="text-align: center; font-size: 0.6rem; color: #888;">Secure Portal | Student & Parent</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; font-size: 0.55rem; color: #888; margin-top: 0.8rem;">Secure Portal</p>', unsafe_allow_html=True)
 
 # =====================================
 # LOAD MODEL
@@ -482,7 +465,7 @@ def show_sidebar(user_data):
         
         st.markdown(f"""
         <div class="profile-card">
-            <div style="font-size: 2rem;">{role_icon}</div>
+            <div style="font-size: 1.8rem;">{role_icon}</div>
             <div class="profile-name">{user_data.get('full_name', st.session_state.username)}</div>
             <div class="profile-role">{role_text}</div>
         </div>
@@ -490,13 +473,12 @@ def show_sidebar(user_data):
         
         st.markdown("### Account")
         st.markdown(f"**User:** {st.session_state.username}")
+        st.markdown(f"**Name:** {user_data.get('full_name', 'N/A')}")
         
         if st.session_state.user_role == "student":
-            st.markdown(f"**Name:** {user_data.get('full_name', 'N/A')}")
             st.markdown(f"**Age:** {user_data.get('age', 'N/A')}")
             st.markdown(f"**Grade:** {user_data.get('grade', 'N/A')}")
         else:
-            st.markdown(f"**Parent:** {user_data.get('full_name', 'N/A')}")
             st.markdown(f"**Child:** {user_data.get('child_name', 'N/A')}")
             st.markdown(f"**Child Grade:** {user_data.get('child_grade', 'N/A')}")
         
@@ -578,7 +560,7 @@ def show_main_app():
         
         st.markdown(f"""
         <div class="result-card">
-            <div class="result-label">PREDICTED SCORE</div>
+            <div class="result-label">PREDICTED EXAM SCORE</div>
             <div class="result-score">{final_score}<span style="font-size: 1rem;"> / 100</span></div>
         </div>
         """, unsafe_allow_html=True)
@@ -609,7 +591,7 @@ def show_main_app():
             st.success("✅ Excellent habits! Keep going!")
     
     st.markdown("---")
-    st.caption("Student Score Predictor | AI-Powered")
+    st.caption("Student Score Predictor | Powered by AI")
 
 # =====================================
 # MAIN
