@@ -544,49 +544,64 @@ def show_main_app():
             st.warning("⚠️ Needs Improvement")
         
         # =====================================
-        # PIE CHART - Score Distribution
+        # PERFORMANCE OVERVIEW WITH LAST SCORE & AVERAGE
         # =====================================
         if len(st.session_state.prediction_history) >= 1:
             st.markdown("### 📊 Performance Overview")
             
-            # Calculate passing vs needs improvement
+            # Calculate stats
             passing = len([s for s in st.session_state.prediction_history if s >= 60])
             needs_improvement = len([s for s in st.session_state.prediction_history if s < 60])
+            last_score = st.session_state.prediction_history[-1]
+            avg_score = int(np.mean(st.session_state.prediction_history))
             
-            pie_data = pd.DataFrame({
-                'Category': ['Passing (60+)', 'Needs Improvement (<60)'],
-                'Count': [passing, needs_improvement]
-            })
+            # 5 cards
+            col_a, col_b, col_c, col_d, col_e = st.columns(5)
             
-            # Color based on theme
-            if st.session_state.theme == "dark":
-                colors = ['#00adb5', '#f44336']
-            else:
-                colors = ['#00adb5', '#f44336']
-            
-            st.markdown(f"""
-            <div style="background: rgba(0,173,181,0.05); border-radius: 15px; padding: 1rem; margin: 0.5rem 0;">
-                <div style="display: flex; justify-content: space-around; text-align: center;">
-                    <div>
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #00adb5;">{passing}</div>
-                        <div style="font-size: 0.7rem; color: #888;">Passing Scores</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #f44336;">{needs_improvement}</div>
-                        <div style="font-size: 0.7rem; color: #888;">Needs Improvement</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #00adb5;">{len(st.session_state.prediction_history)}</div>
-                        <div style="font-size: 0.7rem; color: #888;">Total Predictions</div>
-                    </div>
+            with col_a:
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{last_score}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Last Score</div>
                 </div>
-            </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
             
-            # Simple bar for percentage
+            with col_b:
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{avg_score}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Average</div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col_c:
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{passing}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Passed</div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col_d:
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #f44336;">{needs_improvement}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Need Improve</div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col_e:
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{len(st.session_state.prediction_history)}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Total</div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Progress bar
             pass_percent = (passing / len(st.session_state.prediction_history)) * 100
             st.progress(pass_percent / 100)
-            st.caption(f"Success Rate: {pass_percent:.0f}%")
+            st.caption(f"Success Rate: {pass_percent:.0f}% ({passing}/{len(st.session_state.prediction_history)})")
         
         # =====================================
         # RECOMMENDATIONS
