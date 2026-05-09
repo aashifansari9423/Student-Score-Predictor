@@ -59,16 +59,14 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# CSS - PURA FIX
+# LIGHT THEME CSS
 # =====================================
 light_theme_css = """
 <style>
-    /* Main background */
     .stApp { background: linear-gradient(135deg, #f5f7fa, #c3cfe2); }
-    .main .block-container { background: rgba(255, 255, 255, 0.98); border-radius: 16px; padding: 1.5rem; }
+    .main .block-container { background: rgba(255, 255, 255, 0.98); border-radius: 16px; padding: 1rem; }
     [data-testid="stSidebar"] { background: rgba(255, 255, 255, 0.95); border-right: 1px solid #e0e0e0; }
     
-    /* Text colors */
     h1, h2, h3, p, label, .stMarkdown, .stCaption { color: #1a1a2e !important; }
     
     /* Dashboard inputs */
@@ -77,68 +75,66 @@ light_theme_css = """
         color: #1a1a2e !important;
         border: 1px solid #ccc !important;
         border-radius: 8px !important;
-        padding: 0.4rem 0.7rem !important;
-        min-height: 36px !important;
+        padding: 0.3rem 0.6rem !important;
+        min-height: 34px !important;
     }
     
-    /* Fix for select box text - IMPORTANT */
+    /* FIX: Select box text full visible */
     div[data-baseweb="select"] input {
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        font-size: 0.85rem !important;
     }
     
-    /* Number buttons */
-    .stNumberInput button {
-        background-color: #e0e0e0 !important;
-        border: 1px solid #ccc !important;
-        color: #1a1a2e !important;
-    }
+    .stNumberInput button { background-color: #e0e0e0 !important; border: 1px solid #ccc !important; }
     .stNumberInput button:hover { background-color: #00adb5 !important; color: white !important; }
     
-    /* Result card */
-    .result-card { background: #ffffff; border: 2px solid #00adb5; border-radius: 16px; padding: 1.2rem; text-align: center; margin: 1rem 0; }
-    .result-score { color: #00adb5 !important; font-size: 2.2rem; font-weight: 700; }
+    .result-card { background: #ffffff; border: 2px solid #00adb5; border-radius: 16px; padding: 1rem; text-align: center; margin: 1rem 0; }
+    .result-score { color: #00adb5 !important; font-size: 2rem; font-weight: 700; }
     .result-label { color: #666 !important; font-size: 0.7rem; }
     
-    /* Buttons */
     .stButton > button { background: #00adb5 !important; color: white !important; border-radius: 50px !important; padding: 0.3rem 1rem !important; }
     .stButton > button:hover { background: #007a7f !important; }
     
-    /* Login container - PROFESSIONAL SMALL */
+    /* LOGIN CONTAINER - BILKUL CHOTA */
     .auth-container {
-        max-width: 320px !important;
-        margin: 80px auto !important;
-        padding: 1.8rem !important;
+        max-width: 300px !important;
+        margin: 60px auto !important;
+        padding: 1.2rem !important;
         background: white !important;
         border-radius: 20px !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08) !important;
         text-align: center !important;
     }
-    .auth-title { font-size: 1.3rem !important; font-weight: 700 !important; color: #1a1a2e !important; }
+    .auth-title { font-size: 1.2rem !important; font-weight: 700 !important; color: #1a1a2e !important; margin-bottom: 0.5rem !important; }
+    
     .auth-container .stTextInput input {
         background: white !important;
         border: 1px solid #ddd !important;
         border-radius: 10px !important;
-        padding: 0.5rem 0.8rem !important;
-        height: 40px !important;
-        color: #1a1a2e !important;
+        padding: 0.4rem 0.7rem !important;
+        height: 36px !important;
+        font-size: 0.8rem !important;
     }
+    
     .auth-container .stTextInput input:focus { border-color: #00adb5 !important; }
-    .auth-container input::placeholder { color: #999 !important; font-size: 0.8rem; }
-    .role-login-hint { font-size: 0.7rem; background: rgba(0,173,181,0.1); display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; margin: 0.5rem 0; }
-    hr { margin: 1rem 0; }
-    .footer-text { font-size: 0.65rem; color: #888; margin-top: 1rem; }
+    .auth-container input::placeholder { color: #999 !important; font-size: 0.75rem; }
+    
+    .role-login-hint { font-size: 0.65rem; background: rgba(0,173,181,0.1); display: inline-block; padding: 0.15rem 0.5rem; border-radius: 20px; margin: 0.3rem 0; }
+    hr { margin: 0.6rem 0; }
+    .footer-text { font-size: 0.6rem; color: #888; margin-top: 0.8rem; }
 </style>
 """
 
+# =====================================
+# DARK THEME CSS
+# =====================================
 dark_theme_css = """
 <style>
-    /* Main background */
     .stApp { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
-    .main .block-container { background: rgba(18, 18, 30, 0.95); border-radius: 16px; padding: 1.5rem; border: 1px solid #2a2a4a; }
+    .main .block-container { background: rgba(18, 18, 30, 0.95); border-radius: 16px; padding: 1rem; border: 1px solid #2a2a4a; }
     [data-testid="stSidebar"] { background: rgba(18, 18, 30, 0.95); border-right: 1px solid #2a2a4a; }
     
-    /* Text colors */
     h1, h2, h3, p, label, .stMarkdown, .stCaption { color: #ffffff !important; }
     
     /* Dashboard inputs */
@@ -147,90 +143,87 @@ dark_theme_css = """
         color: #ffffff !important;
         border: 1px solid #3a3a5a !important;
         border-radius: 8px !important;
-        padding: 0.4rem 0.7rem !important;
-        min-height: 36px !important;
+        padding: 0.3rem 0.6rem !important;
+        min-height: 34px !important;
     }
     
-    /* Fix for select box text - IMPORTANT */
+    /* FIX: Select box text full visible */
     div[data-baseweb="select"] input {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
+        font-size: 0.85rem !important;
     }
     
-    /* Number buttons */
-    .stNumberInput button {
-        background-color: #2d2d44 !important;
-        border: 1px solid #3a3a5a !important;
-        color: #ffffff !important;
-    }
+    .stNumberInput button { background-color: #2d2d44 !important; border: 1px solid #3a3a5a !important; }
     .stNumberInput button:hover { background-color: #00adb5 !important; }
     
-    /* Result card */
-    .result-card { background: #1e1e2e; border: 2px solid #00adb5; border-radius: 16px; padding: 1.2rem; text-align: center; margin: 1rem 0; }
-    .result-score { color: #00adb5 !important; font-size: 2.2rem; font-weight: 700; }
+    .result-card { background: #1e1e2e; border: 2px solid #00adb5; border-radius: 16px; padding: 1rem; text-align: center; margin: 1rem 0; }
+    .result-score { color: #00adb5 !important; font-size: 2rem; font-weight: 700; }
     .result-label { color: #888 !important; font-size: 0.7rem; }
     
-    /* Buttons */
     .stButton > button { background: #00adb5 !important; color: white !important; border-radius: 50px !important; padding: 0.3rem 1rem !important; }
     .stButton > button:hover { background: #007a7f !important; }
     
-    /* Login container - PROFESSIONAL SMALL */
+    /* LOGIN CONTAINER - BILKUL CHOTA */
     .auth-container {
-        max-width: 320px !important;
-        margin: 80px auto !important;
-        padding: 1.8rem !important;
+        max-width: 300px !important;
+        margin: 60px auto !important;
+        padding: 1.2rem !important;
         background: rgba(18, 18, 30, 0.95) !important;
         border: 1px solid #2a2a4a !important;
         border-radius: 20px !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3) !important;
         text-align: center !important;
     }
-    .auth-title { font-size: 1.3rem !important; font-weight: 700 !important; color: #ffffff !important; }
+    .auth-title { font-size: 1.2rem !important; font-weight: 700 !important; color: #ffffff !important; margin-bottom: 0.5rem !important; }
+    
     .auth-container .stTextInput input {
         background: #1e1e2e !important;
         border: 1px solid #3a3a5a !important;
         border-radius: 10px !important;
-        padding: 0.5rem 0.8rem !important;
-        height: 40px !important;
-        color: #ffffff !important;
+        padding: 0.4rem 0.7rem !important;
+        height: 36px !important;
+        font-size: 0.8rem !important;
     }
+    
     .auth-container .stTextInput input:focus { border-color: #00adb5 !important; }
-    .auth-container input::placeholder { color: #888 !important; font-size: 0.8rem; }
-    .role-login-hint { font-size: 0.7rem; background: rgba(0,173,181,0.2); display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; margin: 0.5rem 0; color: #fff; }
-    hr { margin: 1rem 0; border-color: #3a3a5a; }
-    .footer-text { font-size: 0.65rem; color: #888; margin-top: 1rem; }
+    .auth-container input::placeholder { color: #888 !important; font-size: 0.75rem; }
+    
+    .role-login-hint { font-size: 0.65rem; background: rgba(0,173,181,0.2); display: inline-block; padding: 0.15rem 0.5rem; border-radius: 20px; margin: 0.3rem 0; color: #fff; }
+    hr { margin: 0.6rem 0; border-color: #3a3a5a; }
+    .footer-text { font-size: 0.6rem; color: #888; margin-top: 0.8rem; }
 </style>
 """
 
 base_css = """
 <style>
     *:focus { outline: none !important; box-shadow: none !important; }
-    div[data-testid="column"] { padding: 0 0.4rem; }
+    div[data-testid="column"] { padding: 0 0.3rem; }
     
     /* Sidebar */
-    .profile-card { text-align: center; padding: 0.5rem; margin-bottom: 0.5rem; }
-    .profile-name { font-size: 1rem; font-weight: 700; }
-    .profile-role { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block; }
+    .profile-card { text-align: center; padding: 0.3rem; margin-bottom: 0.3rem; }
+    .profile-name { font-size: 0.95rem; font-weight: 700; }
+    .profile-role { font-size: 0.6rem; padding: 0.1rem 0.4rem; border-radius: 50px; display: inline-block; }
     
     /* Top theme toggle */
     .top-theme-toggle {
         position: fixed;
-        top: 0.7rem;
-        right: 1rem;
+        top: 0.5rem;
+        right: 0.8rem;
         z-index: 999;
     }
     .top-theme-toggle button {
         background: rgba(0,173,181,0.2) !important;
         border: 1px solid #00adb5 !important;
         border-radius: 50px !important;
-        padding: 0.2rem 0.6rem !important;
-        font-size: 0.7rem !important;
+        padding: 0.15rem 0.5rem !important;
+        font-size: 0.65rem !important;
     }
     
     @media (max-width: 768px) {
-        .auth-container { max-width: 280px !important; margin: 50px auto !important; padding: 1.2rem !important; }
-        .auth-container .stTextInput input { height: 36px !important; font-size: 0.8rem !important; }
-        .auth-title { font-size: 1.1rem !important; }
+        .auth-container { max-width: 260px !important; margin: 40px auto !important; padding: 1rem !important; }
+        .auth-container .stTextInput input { height: 34px !important; font-size: 0.75rem !important; }
+        .auth-title { font-size: 1rem !important; }
     }
 </style>
 """
@@ -261,12 +254,12 @@ def show_auth_page():
     
     st.markdown("""
     <div class="auth-container">
-        <div style="font-size: 2.2rem;">🎓</div>
+        <div style="font-size: 2rem;">🎓</div>
         <div class="auth-title">Student Score Predictor</div>
     """, unsafe_allow_html=True)
     
     if st.session_state.auth_mode == "login":
-        st.markdown('<p style="margin-bottom: 1rem; font-size: 0.75rem;">Sign in to your account</p>', unsafe_allow_html=True)
+        st.markdown('<p style="margin-bottom: 0.8rem; font-size: 0.7rem;">Sign in to your account</p>', unsafe_allow_html=True)
         
         username = st.text_input("Username", placeholder="Username", key="login_username", label_visibility="collapsed")
         password = st.text_input("Password", type="password", placeholder="Password", key="login_password", label_visibility="collapsed")
@@ -305,7 +298,7 @@ def show_auth_page():
     
     else:
         role = st.session_state.signup_role
-        st.markdown(f'<p style="margin-bottom: 0.5rem; font-size: 0.75rem;">Create {role} account</p>', unsafe_allow_html=True)
+        st.markdown(f'<p style="margin-bottom: 0.5rem; font-size: 0.7rem;">Create {role} account</p>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         with col1:
@@ -398,7 +391,7 @@ def show_sidebar(user_data):
         
         st.markdown(f"""
         <div class="profile-card">
-            <div style="font-size: 2rem;">{role_icon}</div>
+            <div style="font-size: 1.8rem;">{role_icon}</div>
             <div class="profile-name">{user_data.get('full_name', st.session_state.username)}</div>
             <div class="profile-role" style="background: {badge_color}20; border: 1px solid {badge_color};">{role_text}</div>
         </div>
