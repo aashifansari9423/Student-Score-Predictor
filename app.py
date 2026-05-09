@@ -107,23 +107,23 @@ def generate_pdf_report(username, final_score, subject_scores, user_data, hours,
     story.append(Paragraph("Prediction Results", heading_style))
     
     score_data = [
-        ["Subject", "Score"],
-        ["Overall", f"{final_score}/100"],
-        ["Mathematics", f"{subject_scores['maths']}/100"],
-        ["Science", f"{subject_scores['science']}/100"],
-        ["English", f"{subject_scores['english']}/100"]
+        ["Subject", "Score", "Status"],
+        ["Overall", f"{final_score}/100", "✅" if final_score >= 60 else "⚠️"],
+        ["Mathematics", f"{subject_scores['maths']}/100", "✅" if subject_scores['maths'] >= 60 else "⚠️"],
+        ["Science", f"{subject_scores['science']}/100", "✅" if subject_scores['science'] >= 60 else "⚠️"],
+        ["English", f"{subject_scores['english']}/100", "✅" if subject_scores['english'] >= 60 else "⚠️"]
     ]
     
-    score_table = Table(score_data, colWidths=[2.5*inch, 2.5*inch])
+    score_table = Table(score_data, colWidths=[2*inch, 1.5*inch, 1.5*inch])
     score_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (1, 0), colors.HexColor('#00adb5')),
-        ('TEXTCOLOR', (0, 0), (1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (1, 0), 12),
-        ('BACKGROUND', (0, 1), (1, -1), colors.beige),
-        ('GRID', (0, 0), (1, -1), 1, colors.grey)
+        ('BACKGROUND', (0, 0), (2, 0), colors.HexColor('#00adb5')),
+        ('TEXTCOLOR', (0, 0), (2, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (2, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (2, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (2, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (2, 0), 12),
+        ('BACKGROUND', (0, 1), (2, -1), colors.beige),
+        ('GRID', (0, 0), (2, -1), 1, colors.grey)
     ]))
     story.append(score_table)
     story.append(Spacer(1, 0.2*inch))
@@ -257,12 +257,17 @@ light_theme_css = """
     .subject-card {
         background: rgba(0,173,181,0.05);
         border-radius: 12px;
-        padding: 0.5rem;
+        padding: 0.8rem;
         text-align: center;
         border: 1px solid rgba(0,173,181,0.2);
+        transition: all 0.3s ease;
+    }
+    .subject-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,173,181,0.1);
     }
     .subject-score {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         font-weight: 700;
         color: #00adb5 !important;
     }
@@ -270,6 +275,11 @@ light_theme_css = """
         font-size: 0.7rem;
         color: #888 !important;
         text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .subject-status {
+        font-size: 0.6rem;
+        margin-top: 0.2rem;
     }
     
     .stButton > button {
@@ -342,12 +352,17 @@ dark_theme_css = """
     .subject-card {
         background: rgba(0,173,181,0.1);
         border-radius: 12px;
-        padding: 0.5rem;
+        padding: 0.8rem;
         text-align: center;
         border: 1px solid rgba(0,173,181,0.3);
+        transition: all 0.3s ease;
+    }
+    .subject-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,173,181,0.2);
     }
     .subject-score {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         font-weight: 700;
         color: #00adb5 !important;
     }
@@ -355,6 +370,11 @@ dark_theme_css = """
         font-size: 0.7rem;
         color: #888 !important;
         text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .subject-status {
+        font-size: 0.6rem;
+        margin-top: 0.2rem;
     }
     
     .stNumberInput input, .stTextInput input {
@@ -619,54 +639,60 @@ def load_models():
     return model, columns
 
 # =====================================
-# PREDICT SUBJECT SCORES
+# PREDICT SUBJECT SCORES - DIFFERENT MARKS
 # =====================================
 def predict_subject_scores(hours, attendance, previous, sleep, motivation, teacher, school, internet, income, parent, education, peer, resources, activities):
-    # Base prediction formula (adjust as needed)
-    base_score = (hours * 2.5) + (attendance * 0.3) + (previous * 0.4) + (sleep * 1.5)
+    # Base score calculation
+    base_score = (hours * 2.0) + (attendance * 0.25) + (previous * 0.35) + (sleep * 1.0)
     
-    # Subject-specific adjustments
+    # Different adjustments for different subjects
     if motivation == "High":
-        maths_boost = 5
-        science_boost = 5
-        english_boost = 5
+        maths_boost = 8
+        science_boost = 7
+        english_boost = 6
     elif motivation == "Medium":
-        maths_boost = 2
-        science_boost = 2
+        maths_boost = 4
+        science_boost = 3
         english_boost = 2
     else:
-        maths_boost = -3
-        science_boost = -3
+        maths_boost = -5
+        science_boost = -4
         english_boost = -3
     
     if teacher == "Good":
-        maths_boost += 3
-        science_boost += 3
+        maths_boost += 5
+        science_boost += 4
         english_boost += 3
     elif teacher == "Average":
-        maths_boost += 1
-        science_boost += 1
+        maths_boost += 2
+        science_boost += 2
         english_boost += 1
     
     if resources == "High":
-        maths_boost += 4
-        science_boost += 4
+        maths_boost += 6
+        science_boost += 5
         english_boost += 4
     elif resources == "Medium":
-        maths_boost += 2
+        maths_boost += 3
         science_boost += 2
         english_boost += 2
     
     if peer == "Positive":
-        maths_boost += 2
-        science_boost += 2
+        maths_boost += 3
+        science_boost += 3
         english_boost += 2
     elif peer == "Negative":
-        maths_boost -= 5
+        maths_boost -= 6
         science_boost -= 5
-        english_boost -= 5
+        english_boost -= 4
     
-    # Calculate subject scores
+    # Additional subject-specific factors
+    if internet == "Yes":
+        english_boost += 4  # Internet helps English more
+    if school == "Private":
+        science_boost += 3  # Private schools may have better science labs
+    
+    # Calculate final subject scores
     maths = max(40, min(100, int(base_score + maths_boost)))
     science = max(40, min(100, int(base_score + science_boost)))
     english = max(40, min(100, int(base_score + english_boost)))
@@ -801,31 +827,37 @@ def show_main_app():
         </div>
         """, unsafe_allow_html=True)
         
-        # Subject-wise scores - 3 columns
+        # Subject-wise scores - 3 columns with different marks
         st.markdown("### 📚 Subject-wise Breakdown")
         col_s1, col_s2, col_s3 = st.columns(3)
         
         with col_s1:
+            status_maths = "✅" if subject_scores['maths'] >= 60 else "⚠️"
             st.markdown(f"""
             <div class="subject-card">
                 <div class="subject-name">MATHEMATICS</div>
                 <div class="subject-score">{subject_scores['maths']}<span style="font-size: 0.8rem;">/100</span></div>
+                <div class="subject-status">{status_maths} {'Pass' if subject_scores['maths'] >= 60 else 'Need Improvement'}</div>
             </div>
             """, unsafe_allow_html=True)
         
         with col_s2:
+            status_science = "✅" if subject_scores['science'] >= 60 else "⚠️"
             st.markdown(f"""
             <div class="subject-card">
                 <div class="subject-name">SCIENCE</div>
                 <div class="subject-score">{subject_scores['science']}<span style="font-size: 0.8rem;">/100</span></div>
+                <div class="subject-status">{status_science} {'Pass' if subject_scores['science'] >= 60 else 'Need Improvement'}</div>
             </div>
             """, unsafe_allow_html=True)
         
         with col_s3:
+            status_english = "✅" if subject_scores['english'] >= 60 else "⚠️"
             st.markdown(f"""
             <div class="subject-card">
                 <div class="subject-name">ENGLISH</div>
                 <div class="subject-score">{subject_scores['english']}<span style="font-size: 0.8rem;">/100</span></div>
+                <div class="subject-status">{status_english} {'Pass' if subject_scores['english'] >= 60 else 'Need Improvement'}</div>
             </div>
             """, unsafe_allow_html=True)
         
