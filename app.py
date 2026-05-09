@@ -160,6 +160,26 @@ light_theme_css = """
         background-color: rgba(0,173,181,0.1) !important;
     }
     
+    /* Metric Card Style */
+    .metric-card {
+        background: rgba(0,173,181,0.08);
+        border-radius: 12px;
+        padding: 0.8rem;
+        text-align: center;
+        border: 1px solid rgba(0,173,181,0.2);
+    }
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #00adb5 !important;
+    }
+    .metric-label {
+        font-size: 0.7rem;
+        color: #888 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
     hr { margin: 0.8rem 0; border-color: #eee; }
 </style>
 """
@@ -257,6 +277,26 @@ dark_theme_css = """
     .stInfo, .stSuccess, .stWarning {
         background-color: rgba(0,173,181,0.2) !important;
         color: #ffffff !important;
+    }
+    
+    /* Metric Card Style */
+    .metric-card {
+        background: rgba(0,173,181,0.1);
+        border-radius: 12px;
+        padding: 0.8rem;
+        text-align: center;
+        border: 1px solid rgba(0,173,181,0.3);
+    }
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #00adb5 !important;
+    }
+    .metric-label {
+        font-size: 0.7rem;
+        color: #888 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     
     hr { margin: 0.8rem 0; border-color: #3a3a5a; }
@@ -524,8 +564,8 @@ def show_main_app():
         
         # Save to history
         st.session_state.prediction_history.append(final_score)
-        if len(st.session_state.prediction_history) > 10:
-            st.session_state.prediction_history = st.session_state.prediction_history[-10:]
+        if len(st.session_state.prediction_history) > 5:
+            st.session_state.prediction_history = st.session_state.prediction_history[-5:]
         
         # Result Card
         st.markdown(f"""
@@ -546,17 +586,27 @@ def show_main_app():
             st.warning("⚠️ Needs Improvement")
         
         # =====================================
-        # BAR CHART - RECOMMENDATIONS SE PEHLE
+        # PROFESSIONAL METRIC CARDS (NO CHART)
         # =====================================
-        if len(st.session_state.prediction_history) > 1:
-            st.markdown("### 📊 Score History")
+        if len(st.session_state.prediction_history) >= 1:
+            col_m1, col_m2 = st.columns(2)
             
-            chart_data = pd.DataFrame({
-                'Prediction': range(1, len(st.session_state.prediction_history) + 1),
-                'Score': st.session_state.prediction_history
-            })
+            with col_m1:
+                st.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-value">{final_score}</div>
+                    <div class="metric-label">Current Score</div>
+                </div>
+                """, unsafe_allow_html=True)
             
-            st.bar_chart(chart_data.set_index('Prediction'), use_container_width=True)
+            with col_m2:
+                avg_score = int(np.mean(st.session_state.prediction_history))
+                st.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-value">{avg_score}</div>
+                    <div class="metric-label">Average Score (Last {len(st.session_state.prediction_history)})</div>
+                </div>
+                """, unsafe_allow_html=True)
         
         # =====================================
         # RECOMMENDATIONS
