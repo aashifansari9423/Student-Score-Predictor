@@ -59,39 +59,27 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# CSS - LIGHT MODE FIX (SIRF TEXT COLOR)
+# CSS
 # =====================================
 light_theme_css = """
 <style>
-    /* Force ALL text dark in light mode */
     .stApp, .stApp * {
         color: #1a1a2e !important;
     }
-    
-    /* Exception for result card score - keep teal */
     .result-card .result-score {
         color: #00adb5 !important;
+        font-weight: 800 !important;
+        font-size: 2.2rem !important;
     }
-    
-    /* Exception for placeholder text */
-    input::placeholder {
-        color: #999 !important;
+    .result-card .result-label {
+        color: #888 !important;
+        font-size: 0.7rem !important;
+        letter-spacing: 2px !important;
     }
-    
-    /* Keep button text white */
-    .stButton > button, .stButton > button * {
-        color: white !important;
-    }
-    
-    /* Keep theme toggle button text visible */
-    .top-theme-toggle button {
-        color: #1a1a2e !important;
-    }
-    
-    /* Keep sidebar profile role text */
-    .profile-role {
-        color: #1a1a2e !important;
-    }
+    input::placeholder { color: #999 !important; }
+    .stButton > button, .stButton > button * { color: white !important; }
+    .top-theme-toggle button { color: #1a1a2e !important; }
+    .profile-role { color: #1a1a2e !important; }
     
     .stApp { background: linear-gradient(135deg, #e0eafc, #cfdef3); }
     .main .block-container { background: #ffffff; border-radius: 20px; padding: 1.5rem; }
@@ -134,9 +122,6 @@ light_theme_css = """
         padding: 1rem;
         text-align: center;
         margin: 1rem 0;
-    }
-    .result-card .result-label {
-        color: #888 !important;
     }
     
     .stButton > button {
@@ -185,8 +170,8 @@ dark_theme_css = """
     
     h1, h2, h3, p, label, .stMarkdown, .stCaption { color: #ffffff !important; }
     
-    .result-card .result-label { color: #888 !important; }
-    .result-card .result-score { color: #00adb5 !important; }
+    .result-card .result-label { color: #888 !important; font-size: 0.7rem !important; letter-spacing: 2px !important; }
+    .result-card .result-score { color: #00adb5 !important; font-weight: 800 !important; font-size: 2.2rem !important; }
     
     .stNumberInput input, .stTextInput input {
         background: #1e1e2e !important;
