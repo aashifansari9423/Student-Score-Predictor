@@ -41,142 +41,315 @@ if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'username' not in st.session_state:
     st.session_state.username = ""
+if 'user_role' not in st.session_state:
+    st.session_state.user_role = ""
 if 'auth_mode' not in st.session_state:
     st.session_state.auth_mode = "login"
+if 'signup_role' not in st.session_state:
+    st.session_state.signup_role = "student"
+if 'theme' not in st.session_state:
+    st.session_state.theme = "dark"
 
 # =====================================
-# GLOBAL CSS - FORCE WHITE TEXT ON ALL DEVICES
+# THEME CSS - LIGHT MODE
 # =====================================
-global_css = """
+light_theme_css = """
 <style>
-    /* Force EVERYTHING white */
-    .stApp, .stApp * {
-        color: #ffffff !important;
-    }
-    
-    /* Main background */
     .stApp {
-        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
     }
     
-    /* Force all input text to be white */
-    input, textarea, select, .stTextInput input, .stNumberInput input {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        background-color: #1a1a2e !important;
+    .main .block-container, .auth-container {
+        background: rgba(255, 255, 255, 0.98);
+        border: 1px solid #e0e0e0;
     }
     
-    /* Placeholder color */
-    input::placeholder, .stTextInput input::placeholder {
-        color: #888888 !important;
-        -webkit-text-fill-color: #888888 !important;
+    h1, h2, h3, .auth-title, .user-info, .result-label {
+        color: #1a1a2e !important;
     }
     
-    /* Number input specific */
-    .stNumberInput input {
-        background-color: #1a1a2e !important;
-        border: 1px solid #334155 !important;
-        border-radius: 10px !important;
-    }
-    
-    /* Select box input */
-    div[data-baseweb="select"] input {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-    }
-    
-    /* Labels */
     .stNumberInput label, .stSelectbox label {
-        color: #cbd5e0 !important;
+        color: #4a5568 !important;
     }
     
-    /* Buttons */
+    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+        background-color: #ffffff !important;
+        color: #1a1a2e !important;
+        border: 1px solid #d0d0d0 !important;
+    }
+    
+    .stNumberInput input::placeholder, .stTextInput input::placeholder {
+        color: #999999 !important;
+    }
+    
+    input, textarea, select, .stTextInput input, .stNumberInput input {
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    
+    .result-card {
+        background: #ffffff;
+        border: 2px solid #00adb5;
+    }
+    
+    .result-score {
+        color: #00adb5 !important;
+    }
+    
+    .result-label {
+        color: #666666 !important;
+    }
+    
+    .stSuccess, .stInfo, .stWarning {
+        background-color: rgba(0, 173, 181, 0.1) !important;
+    }
+    
     .stButton > button {
         background: #00adb5 !important;
         color: white !important;
-        border: none !important;
     }
     
     .stButton > button:hover {
         background: #007a7f !important;
     }
     
-    /* Result card */
+    .student-badge, .parent-badge {
+        color: #1a1a2e !important;
+    }
+    
+    hr {
+        background: #d0d0d0 !important;
+    }
+    
+    .footer-text, .stCaption, .stMarkdown {
+        color: #666666 !important;
+    }
+    
+    /* Dropdown menu light */
+    div[data-baseweb="popover"] > div {
+        background-color: #ffffff !important;
+        border: 1px solid #d0d0d0 !important;
+    }
+    
+    li[role="option"] {
+        color: #1a1a2e !important;
+        background-color: #ffffff !important;
+    }
+    
+    li[role="option"]:hover {
+        background-color: #00adb5 !important;
+        color: white !important;
+    }
+</style>
+"""
+
+# =====================================
+# THEME CSS - DARK MODE
+# =====================================
+dark_theme_css = """
+<style>
+    .stApp {
+        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    }
+    
+    .main .block-container, .auth-container {
+        background: rgba(18, 18, 30, 0.95);
+        border: 1px solid #334155;
+    }
+    
+    h1, h2, h3, .auth-title, .user-info, .result-label {
+        color: #ffffff !important;
+    }
+    
+    .stNumberInput label, .stSelectbox label {
+        color: #cbd5e0 !important;
+    }
+    
+    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    input, textarea, select, .stTextInput input, .stNumberInput input {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+    
     .result-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
-        border-radius: 20px;
-        padding: 1.5rem;
-        text-align: center;
-        margin: 1.5rem 0;
+    }
+    
+    .result-score {
+        color: #00adb5 !important;
     }
     
     .result-label {
         color: #888888 !important;
     }
     
+    .stSuccess, .stInfo, .stWarning {
+        background-color: rgba(0, 173, 181, 0.2) !important;
+        color: #ffffff !important;
+    }
+    
+    .stButton > button {
+        background: #00adb5 !important;
+        color: white !important;
+    }
+    
+    .stButton > button:hover {
+        background: #007a7f !important;
+    }
+    
+    hr {
+        background: #334155 !important;
+    }
+    
+    .footer-text, .stCaption, .stMarkdown {
+        color: #888888 !important;
+    }
+</style>
+"""
+
+# =====================================
+# BASE CSS (Common)
+# =====================================
+base_css = """
+<style>
+    *:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    .stNumberInput input, .stTextInput input {
+        border-radius: 10px !important;
+        padding: 0.5rem 0.8rem !important;
+    }
+    
+    .stNumberInput button {
+        background-color: #2d2d44 !important;
+        border-radius: 6px !important;
+    }
+    
+    .stNumberInput button:hover {
+        background-color: #00adb5 !important;
+    }
+    
+    div[data-baseweb="select"] > div {
+        border-radius: 10px !important;
+        min-height: 38px !important;
+        padding: 0 10px !important;
+    }
+    
+    div[data-baseweb="popover"] > div {
+        border-radius: 10px !important;
+    }
+    
+    .stButton > button {
+        border: none !important;
+        border-radius: 50px !important;
+        padding: 0.6rem !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+    }
+    
+    .result-card {
+        border-radius: 20px;
+        padding: 1.5rem;
+        text-align: center;
+        margin: 1.5rem 0;
+        animation: slideDown 0.4s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
     .result-score {
-        color: #00adb5 !important;
         font-size: 3rem;
         font-weight: 800;
     }
     
     .result-score span {
-        color: #666666 !important;
+        font-size: 1rem;
     }
     
-    /* Success/Info/Warning */
-    .stSuccess {
-        background-color: rgba(0, 173, 181, 0.2) !important;
-        color: #ffffff !important;
-    }
-    
-    .stInfo {
-        background-color: rgba(59, 130, 246, 0.2) !important;
-        color: #ffffff !important;
-    }
-    
-    .stWarning {
-        background-color: rgba(245, 158, 11, 0.2) !important;
-        color: #ffffff !important;
-    }
-    
-    /* Auth container */
     .auth-container {
-        background: rgba(18, 18, 30, 0.95);
         border-radius: 20px;
         padding: 2rem;
-        max-width: 420px;
+        max-width: 450px;
         margin: 60px auto;
-        border: 1px solid #334155;
         text-align: center;
     }
     
     .auth-title {
         font-size: 1.5rem;
         font-weight: 700;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .student-badge {
+        background: rgba(0, 173, 181, 0.2);
+        padding: 0.2rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+    
+    .parent-badge {
+        background: rgba(156, 39, 176, 0.2);
+        padding: 0.2rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+    
+    .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 999;
+    }
+    
+    .theme-toggle button {
+        background: rgba(0, 173, 181, 0.2);
+        border: 1px solid #00adb5;
+        border-radius: 50px;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.75rem;
     }
     
     hr {
         margin: 1.2rem 0;
         border: none;
         height: 1px;
-        background: #334155;
     }
     
     .footer-text {
         margin-top: 1.2rem;
-        color: #666 !important;
         font-size: 0.7rem;
     }
     
-    /* Divider */
     div[data-testid="column"] {
         padding: 0 0.5rem;
     }
     
-    /* Mobile specific */
     @media (max-width: 768px) {
         .main .block-container {
             padding: 1rem;
@@ -191,15 +364,48 @@ global_css = """
             font-size: 16px !important;
             padding: 0.6rem !important;
         }
+        .theme-toggle {
+            top: 0.5rem;
+            right: 0.5rem;
+        }
     }
 </style>
 """
 
 # =====================================
+# APPLY THEME
+# =====================================
+def apply_theme():
+    if st.session_state.theme == "dark":
+        st.markdown(dark_theme_css, unsafe_allow_html=True)
+    else:
+        st.markdown(light_theme_css, unsafe_allow_html=True)
+    st.markdown(base_css, unsafe_allow_html=True)
+
+# =====================================
+# THEME TOGGLE BUTTON
+# =====================================
+def theme_toggle():
+    icon = "🌙" if st.session_state.theme == "light" else "☀️"
+    mode = "Dark" if st.session_state.theme == "light" else "Light"
+    
+    if st.button(f"{icon} {mode} Mode", key="theme_toggle"):
+        if st.session_state.theme == "dark":
+            st.session_state.theme = "light"
+        else:
+            st.session_state.theme = "dark"
+        st.rerun()
+
+# =====================================
 # AUTH PAGE
 # =====================================
 def show_auth_page():
-    st.markdown(global_css, unsafe_allow_html=True)
+    apply_theme()
+    
+    # Theme toggle in top right
+    col1, col2, col3 = st.columns([5, 1, 1])
+    with col3:
+        theme_toggle()
     
     users = load_users()
     
@@ -210,6 +416,8 @@ def show_auth_page():
     """, unsafe_allow_html=True)
     
     if st.session_state.auth_mode == "login":
+        st.markdown('<p style="margin-bottom: 1rem;">Sign in to your account</p>', unsafe_allow_html=True)
+        
         username = st.text_input("Username", placeholder="Enter your username", key="login_username")
         password = st.text_input("Password", type="password", placeholder="Enter your password", key="login_password")
         
@@ -218,6 +426,7 @@ def show_auth_page():
                 if username in users and users[username]["password"] == hash_password(password):
                     st.session_state.logged_in = True
                     st.session_state.username = username
+                    st.session_state.user_role = users[username]["role"]
                     st.rerun()
                 else:
                     st.error("Invalid username or password")
@@ -225,18 +434,51 @@ def show_auth_page():
                 st.warning("Please enter username and password")
         
         st.markdown("<hr>", unsafe_allow_html=True)
-        if st.button("Create New Account", use_container_width=True, key="switch_to_signup"):
-            st.session_state.auth_mode = "signup"
-            st.rerun()
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Sign Up as Student", use_container_width=True, key="switch_to_student"):
+                st.session_state.auth_mode = "signup"
+                st.session_state.signup_role = "student"
+                st.rerun()
+        with col2:
+            if st.button("Sign Up as Parent", use_container_width=True, key="switch_to_parent"):
+                st.session_state.auth_mode = "signup"
+                st.session_state.signup_role = "parent"
+                st.rerun()
     
     else:
+        role = st.session_state.signup_role
+        st.markdown(f'<p style="margin-bottom: 1rem;">Create account as <strong>{role.upper()}</strong></p>', unsafe_allow_html=True)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Student", use_container_width=True, key="role_student"):
+                st.session_state.signup_role = "student"
+                st.rerun()
+        with col2:
+            if st.button("Parent", use_container_width=True, key="role_parent"):
+                st.session_state.signup_role = "parent"
+                st.rerun()
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
         username = st.text_input("Username", placeholder="Choose a username", key="signup_username")
         password = st.text_input("Password", type="password", placeholder="Choose a password", key="signup_password")
         confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm your password", key="signup_confirm")
+        full_name = st.text_input("Full Name", placeholder="Enter your full name", key="signup_name")
         
-        if st.button("Sign Up", use_container_width=True):
-            if not username or not password:
-                st.warning("Please fill all fields")
+        if role == "student":
+            grade = st.selectbox("Current Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"], key="student_grade")
+            school = st.text_input("School Name", placeholder="Enter your school name", key="student_school")
+        else:
+            child_name = st.text_input("Child's Name", placeholder="Enter your child's name", key="parent_child")
+            child_grade = st.selectbox("Child's Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"], key="parent_grade")
+            relation = st.selectbox("Relationship", ["Father", "Mother", "Guardian"], key="parent_relation")
+        
+        if st.button("Create Account", use_container_width=True):
+            if not username or not password or not full_name:
+                st.warning("Please fill all required fields")
             elif password != confirm_password:
                 st.error("Passwords do not match")
             elif len(password) < 4:
@@ -244,11 +486,24 @@ def show_auth_page():
             elif username in users:
                 st.error("Username already exists")
             else:
-                users[username] = {
-                    "password": hash_password(password)
+                user_data = {
+                    "password": hash_password(password),
+                    "role": role,
+                    "full_name": full_name,
+                    "created_at": str(pd.Timestamp.now())
                 }
+                
+                if role == "student":
+                    user_data["grade"] = grade
+                    user_data["school"] = school
+                else:
+                    user_data["child_name"] = child_name
+                    user_data["child_grade"] = child_grade
+                    user_data["relation"] = relation
+                
+                users[username] = user_data
                 save_users(users)
-                st.success("Account created successfully!")
+                st.success(f"Account created successfully as {role}!")
                 st.session_state.auth_mode = "login"
                 st.rerun()
         
@@ -257,7 +512,7 @@ def show_auth_page():
             st.session_state.auth_mode = "login"
             st.rerun()
     
-    st.markdown('<div class="footer-text">Secure • Free • No email required</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer-text">Secure • Free • Student & Parent Portals</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================
@@ -273,24 +528,24 @@ def load_models():
 # MAIN APP
 # =====================================
 def show_main_app():
-    st.markdown(global_css, unsafe_allow_html=True)
+    apply_theme()
     
-    # Top bar
-    col1, col2 = st.columns([3, 1])
+    # Top bar with theme toggle
+    col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
     with col1:
-        st.markdown(f'<div style="background: rgba(0,173,181,0.1); padding: 0.4rem 1rem; border-radius: 50px; display: inline-block;">Welcome, {st.session_state.username}</div>', unsafe_allow_html=True)
-    with col2:
-        if st.button("Sign Out", key="logout_btn"):
-            st.session_state.logged_in = False
-            st.session_state.username = ""
-            st.rerun()
+        role_badge = 'student-badge' if st.session_state.user_role == 'student' else 'parent-badge'
+        role_text = "Student" if st.session_state.user_role == 'student' else "Parent"
+        st.markdown(f'<div style="padding: 0.4rem 1rem; border-radius: 50px; display: inline-block;">Welcome, {st.session_state.username} <span class="{role_badge}">{role_text}</span></div>', unsafe_allow_html=True)
+    with col4:
+        theme_toggle()
     
     st.markdown("<h1 style='text-align: center;'>Student Score Predictor</h1>", unsafe_allow_html=True)
     
-    # Load model
+    if st.session_state.user_role == "parent":
+        st.info("👨‍👩‍👧 You are accessing as a Parent. You can predict your child's exam score below.")
+    
     model, columns = load_models()
     
-    # Input fields
     col1, col2 = st.columns(2)
     
     with col1:
@@ -311,7 +566,6 @@ def show_main_app():
         resources = st.selectbox("Learning Resources", ["Low", "Medium", "High"])
         activities = st.selectbox("Extracurricular Activities", ["Yes", "No"])
     
-    # Predict button
     if st.button("Predict Score", use_container_width=True):
         
         data = {
@@ -339,7 +593,6 @@ def show_main_app():
         final_score = max(40, min(100, prediction[0]))
         final_score = int(round(final_score))
         
-        # Result
         st.markdown(f"""
         <div class="result-card">
             <div class="result-label">PREDICTED EXAM SCORE</div>
@@ -347,7 +600,6 @@ def show_main_app():
         </div>
         """, unsafe_allow_html=True)
         
-        # Performance message
         if final_score >= 85:
             st.success("Exceptional Performance")
             st.balloons()
@@ -358,7 +610,6 @@ def show_main_app():
         else:
             st.warning("Needs Improvement")
         
-        # Recommendations
         recommendations = []
         if hours < 6:
             recommendations.append("Increase study hours to 6-8 hours daily")
@@ -382,7 +633,6 @@ def show_main_app():
         else:
             st.success("Excellent study habits. Maintain your routine")
     
-    # Footer
     st.markdown("---")
     st.caption("Student Score Predictor | Powered by Machine Learning")
 
