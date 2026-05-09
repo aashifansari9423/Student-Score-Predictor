@@ -59,7 +59,7 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# PURANA WALA PROFESSIONAL CSS
+# PROFESSIONAL CSS (with dropdown text full fix)
 # =====================================
 light_theme_css = """
 <style>
@@ -88,9 +88,22 @@ light_theme_css = """
         background: transparent !important;
         border: none !important;
     }
+    
+    /* CRITICAL: Make dropdown selected text FULLY visible */
     div[data-baseweb="select"] input {
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        opacity: 1 !important;
+        font-size: 0.85rem !important;
+        line-height: normal !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+    
+    /* Ensure dropdown container doesn't clip text */
+    div[data-baseweb="select"] {
+        width: 100% !important;
     }
     
     /* Number buttons hover */
@@ -208,9 +221,21 @@ dark_theme_css = """
         background: transparent !important;
         border: none !important;
     }
+    
+    /* CRITICAL: Make dropdown selected text FULLY visible */
     div[data-baseweb="select"] input {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
+        opacity: 1 !important;
+        font-size: 0.85rem !important;
+        line-height: normal !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+    
+    div[data-baseweb="select"] {
+        width: 100% !important;
     }
     
     .stNumberInput button {
@@ -308,7 +333,7 @@ def theme_toggle():
         st.rerun()
 
 # =====================================
-# AUTH PAGE - PROFESSIONAL CHOTA BOX
+# AUTH PAGE
 # =====================================
 def show_auth_page():
     apply_theme()
@@ -319,7 +344,6 @@ def show_auth_page():
     
     users = load_users()
     
-    # Professional small box using columns
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
@@ -556,7 +580,6 @@ def show_main_app():
         final_score = max(40, min(100, prediction[0]))
         final_score = int(round(final_score))
         
-        # PREDICTED EXAM SCORE - PEHLE JAISA
         st.markdown(f"""
         <div class="result-card">
             <div class="result-label">PREDICTED EXAM SCORE</div>
