@@ -546,17 +546,17 @@ def show_main_app():
             st.warning("⚠️ Needs Improvement")
         
         # =====================================
-        # GRAPH - RECOMMENDATIONS SE PEHLE
+        # BAR CHART - RECOMMENDATIONS SE PEHLE
         # =====================================
         if len(st.session_state.prediction_history) > 1:
-            st.markdown("### 📊 Score Trend")
+            st.markdown("### 📊 Score History")
             
             chart_data = pd.DataFrame({
                 'Prediction': range(1, len(st.session_state.prediction_history) + 1),
                 'Score': st.session_state.prediction_history
             })
             
-            st.line_chart(chart_data.set_index('Prediction'), use_container_width=True)
+            st.bar_chart(chart_data.set_index('Prediction'), use_container_width=True)
         
         # =====================================
         # RECOMMENDATIONS
