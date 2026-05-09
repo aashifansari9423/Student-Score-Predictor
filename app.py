@@ -160,26 +160,6 @@ light_theme_css = """
         background-color: rgba(0,173,181,0.1) !important;
     }
     
-    /* Metric Card Style */
-    .metric-card {
-        background: rgba(0,173,181,0.08);
-        border-radius: 12px;
-        padding: 0.8rem;
-        text-align: center;
-        border: 1px solid rgba(0,173,181,0.2);
-    }
-    .metric-value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #00adb5 !important;
-    }
-    .metric-label {
-        font-size: 0.7rem;
-        color: #888 !important;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    
     hr { margin: 0.8rem 0; border-color: #eee; }
 </style>
 """
@@ -277,26 +257,6 @@ dark_theme_css = """
     .stInfo, .stSuccess, .stWarning {
         background-color: rgba(0,173,181,0.2) !important;
         color: #ffffff !important;
-    }
-    
-    /* Metric Card Style */
-    .metric-card {
-        background: rgba(0,173,181,0.1);
-        border-radius: 12px;
-        padding: 0.8rem;
-        text-align: center;
-        border: 1px solid rgba(0,173,181,0.3);
-    }
-    .metric-value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #00adb5 !important;
-    }
-    .metric-label {
-        font-size: 0.7rem;
-        color: #888 !important;
-        text-transform: uppercase;
-        letter-spacing: 1px;
     }
     
     hr { margin: 0.8rem 0; border-color: #3a3a5a; }
@@ -564,8 +524,6 @@ def show_main_app():
         
         # Save to history
         st.session_state.prediction_history.append(final_score)
-        if len(st.session_state.prediction_history) > 5:
-            st.session_state.prediction_history = st.session_state.prediction_history[-5:]
         
         # Result Card
         st.markdown(f"""
@@ -586,27 +544,49 @@ def show_main_app():
             st.warning("⚠️ Needs Improvement")
         
         # =====================================
-        # PROFESSIONAL METRIC CARDS (NO CHART)
+        # PIE CHART - Score Distribution
         # =====================================
         if len(st.session_state.prediction_history) >= 1:
-            col_m1, col_m2 = st.columns(2)
+            st.markdown("### 📊 Performance Overview")
             
-            with col_m1:
-                st.markdown(f"""
-                <div class="metric-card">
-                    <div class="metric-value">{final_score}</div>
-                    <div class="metric-label">Current Score</div>
-                </div>
-                """, unsafe_allow_html=True)
+            # Calculate passing vs needs improvement
+            passing = len([s for s in st.session_state.prediction_history if s >= 60])
+            needs_improvement = len([s for s in st.session_state.prediction_history if s < 60])
             
-            with col_m2:
-                avg_score = int(np.mean(st.session_state.prediction_history))
-                st.markdown(f"""
-                <div class="metric-card">
-                    <div class="metric-value">{avg_score}</div>
-                    <div class="metric-label">Average Score (Last {len(st.session_state.prediction_history)})</div>
+            pie_data = pd.DataFrame({
+                'Category': ['Passing (60+)', 'Needs Improvement (<60)'],
+                'Count': [passing, needs_improvement]
+            })
+            
+            # Color based on theme
+            if st.session_state.theme == "dark":
+                colors = ['#00adb5', '#f44336']
+            else:
+                colors = ['#00adb5', '#f44336']
+            
+            st.markdown(f"""
+            <div style="background: rgba(0,173,181,0.05); border-radius: 15px; padding: 1rem; margin: 0.5rem 0;">
+                <div style="display: flex; justify-content: space-around; text-align: center;">
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #00adb5;">{passing}</div>
+                        <div style="font-size: 0.7rem; color: #888;">Passing Scores</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #f44336;">{needs_improvement}</div>
+                        <div style="font-size: 0.7rem; color: #888;">Needs Improvement</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #00adb5;">{len(st.session_state.prediction_history)}</div>
+                        <div style="font-size: 0.7rem; color: #888;">Total Predictions</div>
+                    </div>
                 </div>
-                """, unsafe_allow_html=True)
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Simple bar for percentage
+            pass_percent = (passing / len(st.session_state.prediction_history)) * 100
+            st.progress(pass_percent / 100)
+            st.caption(f"Success Rate: {pass_percent:.0f}%")
         
         # =====================================
         # RECOMMENDATIONS
