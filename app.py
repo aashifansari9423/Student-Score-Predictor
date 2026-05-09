@@ -80,8 +80,9 @@ light_theme_css = """
     div[data-baseweb="popover"] > div { background-color: #ffffff !important; border: 1px solid #d0d0d0 !important; }
     li[role="option"] { color: #1a1a2e !important; background-color: #ffffff !important; }
     li[role="option"]:hover { background-color: #00adb5 !important; color: white !important; }
-    .student-badge { background: #00adb5 !important; color: white !important; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.7rem; }
-    .parent-badge { background: #9c27b0 !important; color: white !important; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.7rem; }
+    .student-badge { background: #00adb5 !important; color: white !important; }
+    .parent-badge { background: #9c27b0 !important; color: white !important; }
+    .child-card { background: rgba(0, 173, 181, 0.08); border: 1px solid #00adb5; }
 </style>
 """
 
@@ -101,8 +102,9 @@ dark_theme_css = """
     .stButton > button:hover { background: #007a7f !important; }
     hr { background: #334155 !important; }
     .footer-text, .stCaption, .stMarkdown { color: #888888 !important; }
-    .student-badge { background: #00adb5 !important; color: white !important; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.7rem; }
-    .parent-badge { background: #9c27b0 !important; color: white !important; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.7rem; }
+    .student-badge { background: #00adb5 !important; color: white !important; }
+    .parent-badge { background: #9c27b0 !important; color: white !important; }
+    .child-card { background: rgba(0, 173, 181, 0.1); border: 1px solid #00adb5; }
 </style>
 """
 
@@ -126,17 +128,65 @@ base_css = """
     hr { margin: 1.2rem 0; border: none; height: 1px; }
     .footer-text { margin-top: 1.2rem; font-size: 0.7rem; }
     div[data-testid="column"] { padding: 0 0.5rem; }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-    .theme-toggle { margin-left: auto; }
-    .theme-toggle button { background: rgba(0, 173, 181, 0.2) !important; border: 1px solid #00adb5 !important; border-radius: 50px !important; padding: 0.3rem 0.7rem !important; font-size: 1.1rem !important; cursor: pointer; transition: all 0.3s ease; }
-    .theme-toggle button:hover { transform: scale(1.05); }
-    .signout-btn button { background: rgba(0, 173, 181, 0.2) !important; border: 1px solid #00adb5 !important; border-radius: 50px !important; padding: 0.3rem 1rem !important; font-size: 0.8rem !important; font-weight: 500 !important; }
+    
+    /* Top bar - Right aligned buttons */
+    .top-bar-right {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-bottom: 1rem;
+    }
+    .top-bar-right button {
+        background: rgba(0, 173, 181, 0.2) !important;
+        border: 1px solid #00adb5 !important;
+        border-radius: 50px !important;
+        padding: 0.3rem 0.8rem !important;
+        font-size: 0.8rem !important;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .top-bar-right button:hover {
+        transform: scale(1.05);
+        background: rgba(0, 173, 181, 0.4) !important;
+    }
+    .theme-btn {
+        font-size: 1rem !important;
+        padding: 0.3rem 0.7rem !important;
+    }
+    
+    /* Role Badge */
+    .student-badge, .parent-badge {
+        padding: 0.3rem 1rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    /* Child Info Card */
+    .child-card {
+        padding: 1rem;
+        border-radius: 15px;
+        margin: 1rem 0;
+        text-align: center;
+    }
+    .child-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+    }
+    .child-detail {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+    
     @media (max-width: 768px) {
         .main .block-container { padding: 1rem; }
         h1 { font-size: 1.4rem !important; }
         .result-score { font-size: 2rem; }
         input, .stTextInput input, .stNumberInput input { font-size: 16px !important; padding: 0.6rem !important; }
-        .top-bar { flex-wrap: wrap; gap: 0.5rem; }
+        .top-bar-right { gap: 8px; }
+        .top-bar-right button { padding: 0.2rem 0.6rem !important; font-size: 0.7rem !important; }
     }
 </style>
 """
@@ -150,12 +200,7 @@ def apply_theme():
 
 def theme_toggle():
     icon = "☀️" if st.session_state.theme == "dark" else "🌙"
-    if st.button(icon, key="theme_toggle"):
-        if st.session_state.theme == "dark":
-            st.session_state.theme = "light"
-        else:
-            st.session_state.theme = "dark"
-        st.rerun()
+    return icon
 
 # =====================================
 # AUTH PAGE
@@ -164,9 +209,15 @@ def show_auth_page():
     apply_theme()
     
     # Theme toggle top right
-    st.markdown('<div style="display: flex; justify-content: flex-end; padding: 0.5rem;">', unsafe_allow_html=True)
-    theme_toggle()
-    st.markdown('</div>', unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([4, 1, 1])
+    with col3:
+        icon = theme_toggle()
+        if st.button(icon, key="theme_toggle_auth"):
+            if st.session_state.theme == "dark":
+                st.session_state.theme = "light"
+            else:
+                st.session_state.theme = "dark"
+            st.rerun()
     
     users = load_users()
     
@@ -302,32 +353,57 @@ def load_models():
 def show_main_app():
     apply_theme()
     
-    # Top bar with welcome, role badge, theme toggle, and sign out
-    st.markdown('<div class="top-bar">', unsafe_allow_html=True)
+    # Load user data
+    users = load_users()
+    user_data = users.get(st.session_state.username, {})
     
-    # Left: Welcome and role badge
-    role_badge_class = 'student-badge' if st.session_state.user_role == 'student' else 'parent-badge'
-    role_text = "Student" if st.session_state.user_role == 'student' else "Parent"
-    role_icon = "👨‍🎓" if st.session_state.user_role == 'student' else "👨‍👩‍👧"
-    st.markdown(f'<div><span style="font-size: 0.9rem;">Welcome, {st.session_state.username}</span> <span class="{role_badge_class}">{role_icon} {role_text}</span></div>', unsafe_allow_html=True)
+    # Top bar - RIGHT side buttons (Theme + Sign Out)
+    st.markdown('<div class="top-bar-right">', unsafe_allow_html=True)
     
-    # Right: Theme toggle and Sign Out button
-    col_toggle, col_signout = st.columns([1, 1])
-    with col_toggle:
-        theme_toggle()
-    with col_signout:
-        if st.button("Sign Out", key="logout_btn"):
-            st.session_state.logged_in = False
-            st.session_state.username = ""
-            st.session_state.user_role = ""
-            st.rerun()
+    # Theme Toggle Button
+    icon = theme_toggle()
+    if st.button(icon, key="theme_toggle_main"):
+        if st.session_state.theme == "dark":
+            st.session_state.theme = "light"
+        else:
+            st.session_state.theme = "dark"
+        st.rerun()
+    
+    # Sign Out Button
+    if st.button("Sign Out", key="logout_btn_main"):
+        st.session_state.logged_in = False
+        st.session_state.username = ""
+        st.session_state.user_role = ""
+        st.rerun()
     
     st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown("<h1 style='text-align: center;'>Student Score Predictor</h1>", unsafe_allow_html=True)
+    # Welcome Section with Role Badge
+    role_text = "Student" if st.session_state.user_role == "student" else "Parent"
+    role_icon = "👨‍🎓" if st.session_state.user_role == "student" else "👨‍👩‍👧"
+    role_badge_class = "student-badge" if st.session_state.user_role == "student" else "parent-badge"
     
+    st.markdown(f'<div style="text-align: center; margin-bottom: 1rem;"><span class="{role_badge_class}">{role_icon} {role_text}</span></div>', unsafe_allow_html=True)
+    
+    # Parent Section - Show Child Info
     if st.session_state.user_role == "parent":
-        st.info("👨‍👩‍👧 You are accessing as a Parent. You can predict your child's exam score below.")
+        child_name = user_data.get("child_name", "Child")
+        child_grade = user_data.get("child_grade", "Not specified")
+        child_age = user_data.get("child_age", "")
+        relation = user_data.get("relation", "Parent")
+        
+        age_text = f", {child_age} years" if child_age else ""
+        
+        st.markdown(f"""
+        <div class="child-card">
+            <div class="child-name">{child_name}</div>
+            <div class="child-detail">{relation} • {child_grade}{age_text}</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.info(f"👨‍👩‍👧 You are accessing as {relation}. Below prediction is for {child_name}.")
+    
+    st.markdown("<h1 style='text-align: center;'>Student Score Predictor</h1>", unsafe_allow_html=True)
     
     model, columns = load_models()
     
