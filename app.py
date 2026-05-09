@@ -57,6 +57,8 @@ if 'signup_role' not in st.session_state:
     st.session_state.signup_role = "student"
 if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
+if 'prediction_history' not in st.session_state:
+    st.session_state.prediction_history = []
 
 # =====================================
 # CSS
@@ -520,6 +522,12 @@ def show_main_app():
         final_score = max(40, min(100, prediction[0]))
         final_score = int(round(final_score))
         
+        # Save to history
+        st.session_state.prediction_history.append(final_score)
+        if len(st.session_state.prediction_history) > 10:
+            st.session_state.prediction_history = st.session_state.prediction_history[-10:]
+        
+        # Result Card
         st.markdown(f"""
         <div class="result-card">
             <div class="result-label">PREDICTED EXAM SCORE</div>
@@ -537,18 +545,42 @@ def show_main_app():
         else:
             st.warning("⚠️ Needs Improvement")
         
+        # =====================================
+        # GRAPH - RECOMMENDATIONS SE PEHLE
+        # =====================================
+        if len(st.session_state.prediction_history) > 1:
+            st.markdown("### 📊 Score Trend")
+            
+            chart_data = pd.DataFrame({
+                'Prediction': range(1, len(st.session_state.prediction_history) + 1),
+                'Score': st.session_state.prediction_history
+            })
+            
+            st.line_chart(chart_data.set_index('Prediction'), use_container_width=True)
+        
+        # =====================================
+        # RECOMMENDATIONS
+        # =====================================
         recs = []
-        if hours < 6: recs.append("📖 Increase study hours to 6-8 daily")
-        if attendance < 75: recs.append("📊 Improve attendance to 80%+")
-        if sleep < 7: recs.append("😴 Get 7-9 hours of sleep")
-        if motivation == "Low": recs.append("💪 Set daily goals")
-        if teacher == "Poor": recs.append("👨‍🏫 Seek tutoring")
-        if resources == "Low": recs.append("📚 Use online resources")
-        if peer == "Negative": recs.append("🤝 Join positive study groups")
+        if hours < 6:
+            recs.append("📖 Increase study hours to 6-8 daily")
+        if attendance < 75:
+            recs.append("📊 Improve attendance to 80%+")
+        if sleep < 7:
+            recs.append("😴 Get 7-9 hours of sleep")
+        if motivation == "Low":
+            recs.append("💪 Set daily goals")
+        if teacher == "Poor":
+            recs.append("👨‍🏫 Seek tutoring")
+        if resources == "Low":
+            recs.append("📚 Use online resources")
+        if peer == "Negative":
+            recs.append("🤝 Join positive study groups")
         
         if recs:
-            st.markdown("### Recommendations")
-            for r in recs: st.info(r)
+            st.markdown("### 💡 Recommendations")
+            for r in recs:
+                st.info(r)
         else:
             st.success("✅ Excellent habits! Keep going!")
     
