@@ -59,30 +59,30 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# THEME CSS
+# THEME CSS WITH HOVER EFFECTS
 # =====================================
 light_theme_css = """
 <style>
     .stApp { background: linear-gradient(135deg, #f5f7fa, #c3cfe2); }
     .main .block-container, .auth-container { background: rgba(255, 255, 255, 0.98); border: 1px solid #e0e0e0; }
     h1, h2, h3, .auth-title, .user-info { color: #1a1a2e !important; }
-    .stNumberInput label, .stSelectbox label { color: #4a5568 !important; }
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div { background-color: #ffffff !important; color: #1a1a2e !important; border: 1px solid #d0d0d0 !important; }
-    input, textarea, select, .stTextInput input, .stNumberInput input { color: #1a1a2e !important; -webkit-text-fill-color: #1a1a2e !important; }
-    .result-card { background: #ffffff; border: 2px solid #00adb5; }
+    .stNumberInput label, .stSelectbox label { color: #4a5568 !important; transition: color 0.3s ease; }
+    .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
+    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div { background-color: #ffffff !important; color: #1a1a2e !important; border: 1px solid #d0d0d0 !important; transition: all 0.3s ease; }
+    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover { border-color: #00adb5 !important; transform: translateY(-1px); }
+    .stNumberInput button { transition: all 0.3s ease; }
+    .stNumberInput button:hover { background-color: #00adb5 !important; transform: scale(1.05); }
+    .result-card { background: #ffffff; border: 2px solid #00adb5; transition: all 0.3s ease; }
+    .result-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,173,181,0.2); }
     .result-score { color: #00adb5 !important; }
-    .result-label { color: #666666 !important; }
-    .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.1) !important; }
-    .stButton > button { background: #00adb5 !important; color: white !important; }
-    .stButton > button:hover { background: #007a7f !important; }
-    hr { background: #d0d0d0 !important; }
-    .footer-text, .stCaption, .stMarkdown { color: #666666 !important; }
-    div[data-baseweb="popover"] > div { background-color: #ffffff !important; border: 1px solid #d0d0d0 !important; }
-    li[role="option"] { color: #1a1a2e !important; background-color: #ffffff !important; }
-    li[role="option"]:hover { background-color: #00adb5 !important; color: white !important; }
+    .stButton > button { background: #00adb5 !important; color: white !important; transition: all 0.3s ease; }
+    .stButton > button:hover { background: #007a7f !important; transform: translateY(-2px); }
     .student-badge { background: #00adb5 !important; color: white !important; }
     .parent-badge { background: #9c27b0 !important; color: white !important; }
-    .child-card { background: rgba(0, 173, 181, 0.08); border: 1px solid #00adb5; }
+    .child-card { background: rgba(0, 173, 181, 0.08); border: 1px solid #00adb5; transition: all 0.3s ease; }
+    .child-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,173,181,0.15); }
+    li[role="option"] { transition: all 0.2s ease; }
+    li[role="option"]:hover { background-color: #00adb5 !important; transform: translateX(5px); }
 </style>
 """
 
@@ -91,20 +91,23 @@ dark_theme_css = """
     .stApp { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
     .main .block-container, .auth-container { background: rgba(18, 18, 30, 0.95); border: 1px solid #334155; }
     h1, h2, h3, .auth-title, .user-info { color: #ffffff !important; }
-    .stNumberInput label, .stSelectbox label { color: #cbd5e0 !important; }
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div { background-color: #1a1a2e !important; color: #ffffff !important; border: 1px solid #334155 !important; }
-    input, textarea, select, .stTextInput input, .stNumberInput input { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; }
-    .result-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #00adb5; }
+    .stNumberInput label, .stSelectbox label { color: #cbd5e0 !important; transition: color 0.3s ease; }
+    .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
+    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div { background-color: #1a1a2e !important; color: #ffffff !important; border: 1px solid #334155 !important; transition: all 0.3s ease; }
+    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover { border-color: #00adb5 !important; transform: translateY(-1px); }
+    .stNumberInput button { transition: all 0.3s ease; }
+    .stNumberInput button:hover { background-color: #00adb5 !important; transform: scale(1.05); }
+    .result-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #00adb5; transition: all 0.3s ease; }
+    .result-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,173,181,0.3); }
     .result-score { color: #00adb5 !important; }
-    .result-label { color: #888888 !important; }
-    .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.2) !important; color: #ffffff !important; }
-    .stButton > button { background: #00adb5 !important; color: white !important; }
-    .stButton > button:hover { background: #007a7f !important; }
-    hr { background: #334155 !important; }
-    .footer-text, .stCaption, .stMarkdown { color: #888888 !important; }
+    .stButton > button { background: #00adb5 !important; color: white !important; transition: all 0.3s ease; }
+    .stButton > button:hover { background: #007a7f !important; transform: translateY(-2px); }
     .student-badge { background: #00adb5 !important; color: white !important; }
     .parent-badge { background: #9c27b0 !important; color: white !important; }
-    .child-card { background: rgba(0, 173, 181, 0.1); border: 1px solid #00adb5; }
+    .child-card { background: rgba(0, 173, 181, 0.1); border: 1px solid #00adb5; transition: all 0.3s ease; }
+    .child-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,173,181,0.2); }
+    li[role="option"] { transition: all 0.2s ease; }
+    li[role="option"]:hover { background-color: #00adb5 !important; transform: translateX(5px); }
 </style>
 """
 
@@ -113,11 +116,9 @@ base_css = """
     *:focus { outline: none !important; box-shadow: none !important; }
     .stNumberInput input, .stTextInput input { border-radius: 10px !important; padding: 0.5rem 0.8rem !important; }
     .stNumberInput button { background-color: #2d2d44 !important; border-radius: 6px !important; }
-    .stNumberInput button:hover { background-color: #00adb5 !important; }
     div[data-baseweb="select"] > div { border-radius: 10px !important; min-height: 38px !important; padding: 0 10px !important; }
     div[data-baseweb="popover"] > div { border-radius: 10px !important; }
-    .stButton > button { border: none !important; border-radius: 50px !important; padding: 0.6rem !important; font-weight: 600 !important; transition: all 0.3s ease; cursor: pointer; }
-    .stButton > button:hover { transform: translateY(-2px); }
+    .stButton > button { border: none !important; border-radius: 50px !important; padding: 0.6rem !important; font-weight: 600 !important; cursor: pointer; }
     .result-card { border-radius: 20px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; animation: slideDown 0.4s ease-out; }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     .result-score { font-size: 3rem; font-weight: 800; }
@@ -129,14 +130,22 @@ base_css = """
     .footer-text { margin-top: 1.2rem; font-size: 0.7rem; }
     div[data-testid="column"] { padding: 0 0.5rem; }
     
-    /* Top bar - Right aligned buttons */
-    .top-bar-right {
+    /* Top bar - RIGHT aligned buttons */
+    .top-bar {
         display: flex;
-        justify-content: flex-end;
-        gap: 12px;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 1rem;
+        padding: 0.5rem 0;
     }
-    .top-bar-right button {
+    .welcome-section {
+        flex: 1;
+    }
+    .button-group {
+        display: flex;
+        gap: 10px;
+    }
+    .button-group button {
         background: rgba(0, 173, 181, 0.2) !important;
         border: 1px solid #00adb5 !important;
         border-radius: 50px !important;
@@ -145,7 +154,7 @@ base_css = """
         cursor: pointer;
         transition: all 0.3s ease;
     }
-    .top-bar-right button:hover {
+    .button-group button:hover {
         transform: scale(1.05);
         background: rgba(0, 173, 181, 0.4) !important;
     }
@@ -171,7 +180,7 @@ base_css = """
         text-align: center;
     }
     .child-name {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         font-weight: 700;
         margin-bottom: 0.3rem;
     }
@@ -184,9 +193,9 @@ base_css = """
         .main .block-container { padding: 1rem; }
         h1 { font-size: 1.4rem !important; }
         .result-score { font-size: 2rem; }
-        input, .stTextInput input, .stNumberInput input { font-size: 16px !important; padding: 0.6rem !important; }
-        .top-bar-right { gap: 8px; }
-        .top-bar-right button { padding: 0.2rem 0.6rem !important; font-size: 0.7rem !important; }
+        .button-group { gap: 5px; }
+        .button-group button { padding: 0.2rem 0.5rem !important; font-size: 0.7rem !important; }
+        .child-name { font-size: 1rem; }
     }
 </style>
 """
@@ -357,10 +366,18 @@ def show_main_app():
     users = load_users()
     user_data = users.get(st.session_state.username, {})
     
-    # Top bar - RIGHT side buttons (Theme + Sign Out)
-    st.markdown('<div class="top-bar-right">', unsafe_allow_html=True)
+    # Top bar - LEFT: Welcome, RIGHT: Buttons
+    st.markdown('<div class="top-bar">', unsafe_allow_html=True)
     
-    # Theme Toggle Button
+    # Left: Welcome and Role Badge
+    role_text = "Student" if st.session_state.user_role == "student" else "Parent"
+    role_icon = "👨‍🎓" if st.session_state.user_role == "student" else "👨‍👩‍👧"
+    role_badge_class = "student-badge" if st.session_state.user_role == "student" else "parent-badge"
+    st.markdown(f'<div class="welcome-section"><span style="font-size: 0.9rem;">Welcome, {st.session_state.username}</span> <span class="{role_badge_class}">{role_icon} {role_text}</span></div>', unsafe_allow_html=True)
+    
+    # Right: Theme Toggle + Sign Out
+    st.markdown('<div class="button-group">', unsafe_allow_html=True)
+    
     icon = theme_toggle()
     if st.button(icon, key="theme_toggle_main"):
         if st.session_state.theme == "dark":
@@ -369,7 +386,6 @@ def show_main_app():
             st.session_state.theme = "dark"
         st.rerun()
     
-    # Sign Out Button
     if st.button("Sign Out", key="logout_btn_main"):
         st.session_state.logged_in = False
         st.session_state.username = ""
@@ -377,31 +393,24 @@ def show_main_app():
         st.rerun()
     
     st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    # Welcome Section with Role Badge
-    role_text = "Student" if st.session_state.user_role == "student" else "Parent"
-    role_icon = "👨‍🎓" if st.session_state.user_role == "student" else "👨‍👩‍👧"
-    role_badge_class = "student-badge" if st.session_state.user_role == "student" else "parent-badge"
-    
-    st.markdown(f'<div style="text-align: center; margin-bottom: 1rem;"><span class="{role_badge_class}">{role_icon} {role_text}</span></div>', unsafe_allow_html=True)
-    
-    # Parent Section - Show Child Info
+    # Parent Section - Show Child Info Clearly
     if st.session_state.user_role == "parent":
-        child_name = user_data.get("child_name", "Child")
+        child_name = user_data.get("child_name", "Not specified")
         child_grade = user_data.get("child_grade", "Not specified")
         child_age = user_data.get("child_age", "")
         relation = user_data.get("relation", "Parent")
         
-        age_text = f", {child_age} years" if child_age else ""
+        age_text = f" • {child_age} years" if child_age else ""
         
         st.markdown(f"""
         <div class="child-card">
-            <div class="child-name">{child_name}</div>
+            <div class="child-name">📚 {child_name}</div>
             <div class="child-detail">{relation} • {child_grade}{age_text}</div>
+            <div class="child-detail" style="margin-top: 5px; font-size: 0.7rem;">👨‍👩‍👧 Predicting for: <strong>{child_name}</strong></div>
         </div>
         """, unsafe_allow_html=True)
-        
-        st.info(f"👨‍👩‍👧 You are accessing as {relation}. Below prediction is for {child_name}.")
     
     st.markdown("<h1 style='text-align: center;'>Student Score Predictor</h1>", unsafe_allow_html=True)
     
