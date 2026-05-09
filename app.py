@@ -123,9 +123,10 @@ light_theme_css = """
         background-color: #00adb5 !important;
         color: white !important;
     }
-    .date-input {
-        background-color: #ffffff !important;
-        color: #1a1a2e !important;
+    .theme-toggle button {
+        background: rgba(0, 173, 181, 0.15) !important;
+        border: 1px solid #00adb5 !important;
+        color: #00adb5 !important;
     }
 </style>
 """
@@ -180,6 +181,11 @@ dark_theme_css = """
     }
     .footer-text, .stCaption, .stMarkdown {
         color: #888888 !important;
+    }
+    .theme-toggle button {
+        background: rgba(0, 173, 181, 0.2) !important;
+        border: 1px solid #00adb5 !important;
+        color: #00adb5 !important;
     }
 </style>
 """
@@ -280,12 +286,15 @@ base_css = """
         z-index: 999;
     }
     .theme-toggle button {
-        background: rgba(0, 173, 181, 0.2);
-        border: 1px solid #00adb5;
-        border-radius: 50px;
-        padding: 0.4rem 0.6rem;
-        font-size: 1.1rem;
-        min-width: 40px;
+        border-radius: 50px !important;
+        padding: 0.4rem 0.7rem !important;
+        font-size: 1.1rem !important;
+        min-width: 42px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .theme-toggle button:hover {
+        transform: scale(1.05);
     }
     hr {
         margin: 1.2rem 0;
@@ -298,6 +307,14 @@ base_css = """
     }
     div[data-testid="column"] {
         padding: 0 0.5rem;
+    }
+    .role-login-hint {
+        font-size: 0.75rem;
+        margin-top: -0.5rem;
+        margin-bottom: 0.8rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 8px;
+        display: inline-block;
     }
     @media (max-width: 768px) {
         .main .block-container {
@@ -318,8 +335,8 @@ base_css = """
             right: 0.5rem;
         }
         .theme-toggle button {
-            padding: 0.3rem 0.5rem;
-            font-size: 1rem;
+            padding: 0.3rem 0.6rem !important;
+            font-size: 1rem !important;
         }
     }
 </style>
@@ -333,7 +350,7 @@ def apply_theme():
     st.markdown(base_css, unsafe_allow_html=True)
 
 def theme_toggle():
-    icon = "🌙" if st.session_state.theme == "light" else "☀️"
+    icon = "☀️" if st.session_state.theme == "dark" else "🌙"
     if st.button(icon, key="theme_toggle"):
         if st.session_state.theme == "dark":
             st.session_state.theme = "light"
@@ -347,7 +364,7 @@ def theme_toggle():
 def show_auth_page():
     apply_theme()
     
-    # Theme toggle only icon
+    # Theme toggle
     st.markdown('<div class="theme-toggle">', unsafe_allow_html=True)
     theme_toggle()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -365,6 +382,13 @@ def show_auth_page():
         
         username = st.text_input("Username", placeholder="Enter your username", key="login_username")
         password = st.text_input("Password", type="password", placeholder="Enter your password", key="login_password")
+        
+        # Show role hint after username input
+        if username and username in users:
+            role = users[username]["role"]
+            role_icon = "👨‍🎓" if role == "student" else "👨‍👩‍👧"
+            role_text = "Student" if role == "student" else "Parent"
+            st.markdown(f'<div class="role-login-hint" style="background: rgba(0,173,181,0.15);">{role_icon} Login as: <strong>{role_text}</strong></div>', unsafe_allow_html=True)
         
         if st.button("Sign In", use_container_width=True):
             if username and password:
@@ -421,6 +445,7 @@ def show_auth_page():
         else:
             child_name = st.text_input("Child's Name", placeholder="Enter your child's name", key="parent_child")
             child_dob = st.date_input("Child's Date of Birth", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="parent_dob")
+            child_age = calculate_age(child_dob) if child_dob else 0
             child_grade = st.selectbox("Child's Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"], key="parent_grade")
             relation = st.selectbox("Relationship", ["Father", "Mother", "Guardian"], key="parent_relation")
         
@@ -449,6 +474,7 @@ def show_auth_page():
                 else:
                     user_data["child_name"] = child_name
                     user_data["child_dob"] = str(child_dob)
+                    user_data["child_age"] = child_age
                     user_data["child_grade"] = child_grade
                     user_data["relation"] = relation
                 
@@ -481,7 +507,7 @@ def load_models():
 def show_main_app():
     apply_theme()
     
-    # Theme toggle only icon
+    # Theme toggle
     st.markdown('<div class="theme-toggle">', unsafe_allow_html=True)
     theme_toggle()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -491,12 +517,13 @@ def show_main_app():
     with col1:
         role_badge = 'student-badge' if st.session_state.user_role == 'student' else 'parent-badge'
         role_text = "Student" if st.session_state.user_role == 'student' else "Parent"
-        st.markdown(f'<div style="padding: 0.4rem 1rem; border-radius: 50px; display: inline-block;">Welcome, {st.session_state.username} <span class="{role_badge}">{role_text}</span></div>', unsafe_allow_html=True)
+        role_icon = "👨‍🎓" if st.session_state.user_role == 'student' else "👨‍👩‍👧"
+        st.markdown(f'<div style="padding: 0.4rem 1rem; border-radius: 50px; display: inline-block;">{role_icon} Welcome, {st.session_state.username} <span class="{role_badge}">{role_text}</span></div>', unsafe_allow_html=True)
     
     st.markdown("<h1 style='text-align: center;'>Student Score Predictor</h1>", unsafe_allow_html=True)
     
     if st.session_state.user_role == "parent":
-        st.info("You are accessing as a Parent. You can predict your child's exam score below.")
+        st.info("👨‍👩‍👧 You are accessing as a Parent. You can predict your child's exam score below.")
     
     model, columns = load_models()
     
