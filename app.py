@@ -59,7 +59,7 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# CSS - SIRF DROPDOWN KA BOX HATAYA
+# CSS
 # =====================================
 light_theme_css = """
 <style>
@@ -81,10 +81,9 @@ light_theme_css = """
         transform: translateY(-2px);
     }
     
-    /* DROPDOWN - EXTRA BOX HATAYA */
+    /* DROPDOWN - NO EXTRA BOX */
     div[data-baseweb="select"] {
         background: transparent !important;
-        box-shadow: none !important;
     }
     div[data-baseweb="select"] > div {
         background: white !important;
@@ -93,15 +92,10 @@ light_theme_css = """
         min-height: 38px !important;
         transition: all 0.3s ease !important;
         box-shadow: none !important;
-        outline: none !important;
     }
     div[data-baseweb="select"] > div:hover {
         border-color: #00adb5 !important;
         transform: translateY(-2px);
-    }
-    div[data-baseweb="select"] > div > div {
-        box-shadow: none !important;
-        border: none !important;
     }
     div[data-baseweb="select"] input {
         color: #1a1a2e !important;
@@ -133,6 +127,7 @@ light_theme_css = """
         color: white !important;
     }
     
+    /* RESULT CARD - OLD COLOR */
     .result-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
@@ -206,10 +201,9 @@ dark_theme_css = """
         transform: translateY(-2px);
     }
     
-    /* DROPDOWN - EXTRA BOX HATAYA */
+    /* DROPDOWN - NO EXTRA BOX */
     div[data-baseweb="select"] {
         background: transparent !important;
-        box-shadow: none !important;
     }
     div[data-baseweb="select"] > div {
         background: #1e1e2e !important;
@@ -218,15 +212,10 @@ dark_theme_css = """
         min-height: 38px !important;
         transition: all 0.3s ease !important;
         box-shadow: none !important;
-        outline: none !important;
     }
     div[data-baseweb="select"] > div:hover {
         border-color: #00adb5 !important;
         transform: translateY(-2px);
-    }
-    div[data-baseweb="select"] > div > div {
-        box-shadow: none !important;
-        border: none !important;
     }
     div[data-baseweb="select"] input {
         color: #ffffff !important;
@@ -257,6 +246,7 @@ dark_theme_css = """
         background: #00adb5 !important;
     }
     
+    /* RESULT CARD - OLD COLOR */
     .result-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
@@ -323,7 +313,7 @@ def theme_toggle():
         st.rerun()
 
 # =====================================
-# AUTH PAGE
+# AUTH PAGE - PROFESSIONAL CHOTA SIZE
 # =====================================
 def show_auth_page():
     apply_theme()
@@ -334,6 +324,7 @@ def show_auth_page():
     
     users = load_users()
     
+    # PROFESSIONAL SMALL CENTERED BOX
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
