@@ -59,7 +59,7 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# THEME CSS - FIX LIGHT MODE TEXT
+# THEME CSS - SIRF FIX KIYA HUA
 # =====================================
 light_theme_css = """
 <style>
@@ -67,73 +67,71 @@ light_theme_css = """
     .main .block-container { background: rgba(255, 255, 255, 0.98); border-radius: 20px; padding: 1.5rem; border: 1px solid #e0e0e0; }
     [data-testid="stSidebar"] { background: rgba(255, 255, 255, 0.95); border-right: 1px solid #e0e0e0; }
     
-    /* All text dark in light mode */
     h1, h2, h3, p, label, .stMarkdown, .auth-title, .stCaption, .footer-text {
         color: #1a1a2e !important;
     }
     
-    /* Labels */
-    .stNumberInput label, .stSelectbox label { color: #4a5568 !important; font-weight: 500 !important; transition: color 0.3s ease; }
+    .stNumberInput label, .stSelectbox label { color: #4a5568 !important; font-weight: 500 !important; }
     .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
     
-    /* Input fields */
+    /* FIX: Input fields normal size */
     .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
         border: 1px solid #d0d0d0 !important;
         border-radius: 8px !important;
-        transition: all 0.3s ease;
-        font-size: 0.9rem !important;
-        padding: 0.4rem 0.8rem !important;
-    }
-    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
-        border-color: #00adb5 !important;
-        transform: translateY(-1px);
+        font-size: 0.85rem !important;
+        padding: 0.35rem 0.7rem !important;
+        height: auto !important;
+        min-height: 32px !important;
     }
     
-    /* Increase/Decrease buttons */
+    /* FIX: Select box text visible */
+    div[data-baseweb="select"] input {
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    
+    /* FIX: Increase/Decrease buttons hover */
     .stNumberInput button {
         background-color: #e0e0e0 !important;
         border: 1px solid #c0c0c0 !important;
         color: #1a1a2e !important;
         transition: all 0.3s ease !important;
         border-radius: 6px !important;
-        font-size: 0.8rem !important;
+        min-width: 28px !important;
+        min-height: 28px !important;
     }
     .stNumberInput button:hover {
         background-color: #00adb5 !important;
         color: white !important;
-        transform: scale(1.05) !important;
         border-color: #00adb5 !important;
     }
     
-    /* Result Card */
-    .result-card { background: #ffffff; border: 2px solid #00adb5; border-radius: 20px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; transition: all 0.3s ease; }
-    .result-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,173,181,0.2); }
+    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
+        border-color: #00adb5 !important;
+    }
+    
+    .result-card { background: #ffffff; border: 2px solid #00adb5; border-radius: 20px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; }
     .result-score { color: #00adb5 !important; font-size: 2.5rem; font-weight: 800; }
     .result-label { color: #666666 !important; }
     
-    /* Buttons */
-    .stButton > button { background: #00adb5 !important; color: white !important; border: none; border-radius: 50px !important; padding: 0.5rem !important; font-weight: 600 !important; transition: all 0.3s ease; font-size: 0.9rem; }
+    .stButton > button { background: #00adb5 !important; color: white !important; border: none; border-radius: 50px !important; padding: 0.4rem 1rem !important; font-weight: 600 !important; }
     .stButton > button:hover { background: #007a7f !important; transform: translateY(-2px); }
     
-    /* Dropdown */
-    div[data-baseweb="popover"] > div { background-color: #ffffff !important; border: 1px solid #d0d0d0 !important; border-radius: 10px !important; }
-    li[role="option"] { color: #1a1a2e !important; background-color: #ffffff !important; transition: all 0.2s ease; }
-    li[role="option"]:hover { background-color: #00adb5 !important; color: white !important; transform: translateX(5px); }
+    div[data-baseweb="popover"] > div { background-color: #ffffff !important; border: 1px solid #d0d0d0 !important; }
+    li[role="option"] { color: #1a1a2e !important; background-color: #ffffff !important; }
+    li[role="option"]:hover { background-color: #00adb5 !important; color: white !important; }
     
-    /* Sidebar text */
     [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label { color: #1a1a2e !important; }
     
-    .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.1) !important; color: #1a1a2e !important; border-radius: 10px; }
+    .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.1) !important; color: #1a1a2e !important; }
     hr { background: #d0d0d0 !important; }
-    .footer-text { color: #666666 !important; }
     
-    /* Auth container */
-    .auth-container { background: rgba(255, 255, 255, 0.98); border: 1px solid #e0e0e0; }
-    .role-login-hint { background: rgba(0,173,181,0.1); color: #1a1a2e; }
-    input::placeholder { color: #999999 !important; }
+    .auth-container { background: rgba(255, 255, 255, 0.98); border: 1px solid #e0e0e0; max-width: 380px; margin: 40px auto; padding: 1.5rem; }
+    .auth-title { font-size: 1.3rem; }
+    input::placeholder { color: #999999 !important; font-size: 0.8rem; }
 </style>
 """
 
@@ -150,55 +148,63 @@ dark_theme_css = """
     .stNumberInput label, .stSelectbox label { color: #cbd5e0 !important; }
     .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
     
+    /* FIX: Input fields normal size */
     .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
         background-color: #1a1a2e !important;
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
         border: 1px solid #334155 !important;
         border-radius: 8px !important;
-        font-size: 0.9rem !important;
-        padding: 0.4rem 0.8rem !important;
-    }
-    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
-        border-color: #00adb5 !important;
-        transform: translateY(-1px);
+        font-size: 0.85rem !important;
+        padding: 0.35rem 0.7rem !important;
+        height: auto !important;
+        min-height: 32px !important;
     }
     
+    /* FIX: Select box text visible */
+    div[data-baseweb="select"] input {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+    
+    /* FIX: Increase/Decrease buttons hover */
     .stNumberInput button {
         background-color: #2d2d44 !important;
         border: 1px solid #334155 !important;
         color: #ffffff !important;
         transition: all 0.3s ease !important;
         border-radius: 6px !important;
-        font-size: 0.8rem !important;
+        min-width: 28px !important;
+        min-height: 28px !important;
     }
     .stNumberInput button:hover {
         background-color: #00adb5 !important;
-        transform: scale(1.05) !important;
         border-color: #00adb5 !important;
     }
     
-    .result-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #00adb5; border-radius: 20px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; transition: all 0.3s ease; }
-    .result-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,173,181,0.3); }
+    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
+        border-color: #00adb5 !important;
+    }
+    
+    .result-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #00adb5; border-radius: 20px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; }
     .result-score { color: #00adb5 !important; font-size: 2.5rem; font-weight: 800; }
     .result-label { color: #888888 !important; }
     
-    .stButton > button { background: #00adb5 !important; color: white !important; border: none; border-radius: 50px !important; padding: 0.5rem !important; font-weight: 600 !important; transition: all 0.3s ease; font-size: 0.9rem; }
+    .stButton > button { background: #00adb5 !important; color: white !important; border: none; border-radius: 50px !important; padding: 0.4rem 1rem !important; font-weight: 600 !important; }
     .stButton > button:hover { background: #007a7f !important; transform: translateY(-2px); }
     
     div[data-baseweb="popover"] > div { background-color: #1a1a2e !important; border: 1px solid #334155 !important; }
     li[role="option"] { color: #ffffff !important; background-color: #1a1a2e !important; }
-    li[role="option"]:hover { background-color: #00adb5 !important; transform: translateX(5px); }
+    li[role="option"]:hover { background-color: #00adb5 !important; }
     
     [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label { color: #ffffff !important; }
     
     .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.2) !important; color: #ffffff !important; }
     hr { background: #334155 !important; }
-    .footer-text { color: #888888 !important; }
     
-    .auth-container { background: rgba(18, 18, 30, 0.95); border: 1px solid #334155; }
-    .role-login-hint { background: rgba(0,173,181,0.2); color: #ffffff; }
-    input::placeholder { color: #888888 !important; }
+    .auth-container { background: rgba(18, 18, 30, 0.95); border: 1px solid #334155; max-width: 380px; margin: 40px auto; padding: 1.5rem; }
+    .auth-title { font-size: 1.3rem; }
+    input::placeholder { color: #888888 !important; font-size: 0.8rem; }
 </style>
 """
 
@@ -206,22 +212,20 @@ base_css = """
 <style>
     *:focus { outline: none !important; box-shadow: none !important; }
     div[data-testid="column"] { padding: 0 0.5rem; }
-    .auth-container { max-width: 420px; margin: 60px auto; text-align: center; padding: 2rem; border-radius: 20px; }
-    .auth-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .role-login-hint { font-size: 0.75rem; margin-top: -0.5rem; margin-bottom: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 8px; display: inline-block; }
-    hr { margin: 1rem 0; border: none; height: 1px; }
-    .footer-text { margin-top: 1rem; font-size: 0.7rem; }
+    .auth-container { border-radius: 20px; text-align: center; }
+    .role-login-hint { font-size: 0.7rem; margin-top: -0.3rem; margin-bottom: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 8px; display: inline-block; }
+    hr { margin: 0.8rem 0; }
+    .footer-text { margin-top: 1rem; font-size: 0.65rem; }
     
     /* Sidebar Profile Card */
-    .profile-card { text-align: center; padding: 0.5rem; border-radius: 15px; margin-bottom: 1rem; }
-    .profile-name { font-size: 1.1rem; font-weight: 700; margin: 0.3rem 0; }
-    .profile-role { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 50px; display: inline-block; }
-    .profile-detail { font-size: 0.7rem; margin: 0.2rem 0; opacity: 0.8; }
+    .profile-card { text-align: center; padding: 0.3rem; border-radius: 15px; margin-bottom: 0.8rem; }
+    .profile-name { font-size: 1rem; font-weight: 700; margin: 0.2rem 0; }
+    .profile-role { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block; }
     
     /* Top right theme toggle */
     .top-theme-toggle {
         position: fixed;
-        top: 0.7rem;
+        top: 0.5rem;
         right: 1rem;
         z-index: 999;
     }
@@ -229,16 +233,14 @@ base_css = """
         background: rgba(0, 173, 181, 0.2) !important;
         border: 1px solid #00adb5 !important;
         border-radius: 50px !important;
-        padding: 0.2rem 0.8rem !important;
-        font-size: 0.8rem !important;
-        font-weight: 500 !important;
+        padding: 0.15rem 0.6rem !important;
+        font-size: 0.7rem !important;
     }
     
     @media (max-width: 768px) {
-        .main .block-container { padding: 1rem; }
-        h1 { font-size: 1.3rem !important; }
-        .result-score { font-size: 2rem; }
-        .top-theme-toggle button { padding: 0.15rem 0.5rem !important; font-size: 0.7rem !important; }
+        .main .block-container { padding: 0.8rem; }
+        h1 { font-size: 1.2rem !important; }
+        .result-score { font-size: 1.8rem; }
     }
 </style>
 """
@@ -256,11 +258,10 @@ def apply_theme():
 def show_auth_page():
     apply_theme()
     
-    # Top right theme toggle
     st.markdown('<div class="top-theme-toggle">', unsafe_allow_html=True)
     mode_text = "Dark" if st.session_state.theme == "light" else "Light"
     mode_icon = "🌙" if st.session_state.theme == "light" else "☀️"
-    if st.button(f"{mode_icon} {mode_text} Mode", key="theme_toggle_auth"):
+    if st.button(f"{mode_icon} {mode_text}", key="theme_toggle_auth"):
         if st.session_state.theme == "dark":
             st.session_state.theme = "light"
         else:
@@ -272,21 +273,22 @@ def show_auth_page():
     
     st.markdown("""
     <div class="auth-container">
-        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎓</div>
+        <div style="font-size: 2.5rem;">🎓</div>
         <div class="auth-title">Student Score Predictor</div>
     """, unsafe_allow_html=True)
     
     if st.session_state.auth_mode == "login":
-        st.markdown('<p style="margin-bottom: 1rem;">Sign in to your account</p>', unsafe_allow_html=True)
+        st.markdown('<p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Sign in to your account</p>', unsafe_allow_html=True)
         
-        username = st.text_input("Username", placeholder="Username", key="login_username")
-        password = st.text_input("Password", type="password", placeholder="Password", key="login_password")
+        username = st.text_input("Username", placeholder="Username", key="login_username", label_visibility="collapsed")
+        st.markdown("<br>", unsafe_allow_html=True)
+        password = st.text_input("Password", type="password", placeholder="Password", key="login_password", label_visibility="collapsed")
         
         if username and username in users:
             role = users[username]["role"]
             role_icon = "👨‍🎓" if role == "student" else "👨‍👩‍👧"
             role_text = "Student" if role == "student" else "Parent"
-            st.markdown(f'<div class="role-login-hint">{role_icon} Login as: <strong>{role_text}</strong></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="role-login-hint">{role_icon} {role_text}</div>', unsafe_allow_html=True)
         
         if st.button("Sign In", use_container_width=True):
             if username and password:
@@ -304,19 +306,19 @@ def show_auth_page():
         
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("Sign Up as Student", use_container_width=True):
+            if st.button("Student Sign Up", use_container_width=True):
                 st.session_state.auth_mode = "signup"
                 st.session_state.signup_role = "student"
                 st.rerun()
         with col2:
-            if st.button("Sign Up as Parent", use_container_width=True):
+            if st.button("Parent Sign Up", use_container_width=True):
                 st.session_state.auth_mode = "signup"
                 st.session_state.signup_role = "parent"
                 st.rerun()
     
     else:
         role = st.session_state.signup_role
-        st.markdown(f'<p style="margin-bottom: 1rem;">Create account as <strong>{role.upper()}</strong></p>', unsafe_allow_html=True)
+        st.markdown(f'<p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Create {role} account</p>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         with col1:
@@ -330,19 +332,24 @@ def show_auth_page():
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        username = st.text_input("Username", placeholder="Username", key="signup_username")
-        password = st.text_input("Password", type="password", placeholder="Password", key="signup_password")
-        confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm Password", key="signup_confirm")
-        full_name = st.text_input("Full Name", placeholder="Full Name", key="signup_name")
+        username = st.text_input("Username", placeholder="Username", key="signup_username", label_visibility="collapsed")
+        st.markdown("<br>", unsafe_allow_html=True)
+        password = st.text_input("Password", type="password", placeholder="Password", key="signup_password", label_visibility="collapsed")
+        st.markdown("<br>", unsafe_allow_html=True)
+        confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm Password", key="signup_confirm", label_visibility="collapsed")
+        st.markdown("<br>", unsafe_allow_html=True)
+        full_name = st.text_input("Full Name", placeholder="Full Name", key="signup_name", label_visibility="collapsed")
         
         if role == "student":
+            st.markdown("<br>", unsafe_allow_html=True)
             dob = st.date_input("Date of Birth", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="student_dob")
-            grade = st.selectbox("Current Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
+            grade = st.selectbox("Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
             school = st.text_input("School Name", placeholder="School Name", key="student_school")
         else:
+            st.markdown("<br>", unsafe_allow_html=True)
             child_name = st.text_input("Child's Name", placeholder="Child's Name", key="parent_child")
-            child_dob = st.date_input("Child's Date of Birth", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="parent_dob")
-            child_grade = st.selectbox("Child's Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
+            child_dob = st.date_input("Child's DOB", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="parent_dob")
+            child_grade = st.selectbox("Child's Grade", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
             relation = st.selectbox("Relationship", ["Father", "Mother", "Guardian"])
         
         if st.button("Create Account", use_container_width=True):
@@ -375,7 +382,7 @@ def show_auth_page():
                 
                 users[username] = user_data
                 save_users(users)
-                st.success(f"Account created successfully as {role}!")
+                st.success(f"Account created successfully!")
                 st.session_state.auth_mode = "login"
                 st.rerun()
         
@@ -384,7 +391,7 @@ def show_auth_page():
             st.session_state.auth_mode = "login"
             st.rerun()
     
-    st.markdown('<div class="footer-text">Secure • Free • Student & Parent Portals</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer-text">Secure • Student & Parent Portals</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================
@@ -397,7 +404,7 @@ def load_models():
     return model, columns
 
 # =====================================
-# SIDEBAR DASHBOARD (NO THEME TOGGLE HERE)
+# SIDEBAR DASHBOARD
 # =====================================
 def show_sidebar(user_data):
     with st.sidebar:
@@ -408,37 +415,33 @@ def show_sidebar(user_data):
         
         st.markdown(f"""
         <div class="profile-card">
-            <div style="font-size: 2rem;">{role_icon}</div>
+            <div style="font-size: 1.8rem;">{role_icon}</div>
             <div class="profile-name">{user_data.get('full_name', st.session_state.username)}</div>
-            <div class="profile-role" style="background: {'#00adb5' if st.session_state.user_role == 'student' else '#9c27b0'}20; border: 1px solid {'#00adb5' if st.session_state.user_role == 'student' else '#9c27b0'};">{role_text}</div>
+            <div class="profile-rule" style="background: {'#00adb5' if st.session_state.user_role == 'student' else '#9c27b0'}20; border: 1px solid {'#00adb5' if st.session_state.user_role == 'student' else '#9c27b0'};">{role_text}</div>
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("### Profile Details")
+        st.markdown("### Details")
         st.markdown(f"**Username:** {st.session_state.username}")
         
         if st.session_state.user_role == "student":
-            st.markdown(f"**Full Name:** {user_data.get('full_name', 'N/A')}")
-            st.markdown(f"**Age:** {user_data.get('age', 'N/A')} years")
+            st.markdown(f"**Name:** {user_data.get('full_name', 'N/A')}")
+            st.markdown(f"**Age:** {user_data.get('age', 'N/A')}")
             st.markdown(f"**Grade:** {user_data.get('grade', 'N/A')}")
-            st.markdown(f"**School:** {user_data.get('school', 'N/A')}")
         else:
-            st.markdown(f"**Parent Name:** {user_data.get('full_name', 'N/A')}")
-            st.markdown(f"**Relationship:** {user_data.get('relation', 'N/A')}")
-            st.markdown(f"**Child Name:** {user_data.get('child_name', 'N/A')}")
-            st.markdown(f"**Child Age:** {user_data.get('child_age', 'N/A')} years")
+            st.markdown(f"**Parent:** {user_data.get('full_name', 'N/A')}")
+            st.markdown(f"**Child:** {user_data.get('child_name', 'N/A')}")
             st.markdown(f"**Child Grade:** {user_data.get('child_grade', 'N/A')}")
         
         st.markdown("---")
         
-        # Sign Out Button in Sidebar
-        if st.button("🚪 Sign Out", use_container_width=True, key="logout_btn_sidebar"):
+        if st.button("🚪 Sign Out", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.username = ""
             st.session_state.user_role = ""
             st.rerun()
         
-        st.caption("Student Score Predictor v2.0")
+        st.caption("v2.0")
 
 # =====================================
 # MAIN APP
@@ -446,11 +449,10 @@ def show_sidebar(user_data):
 def show_main_app():
     apply_theme()
     
-    # Top right theme toggle (outside sidebar)
     st.markdown('<div class="top-theme-toggle">', unsafe_allow_html=True)
     mode_text = "Dark" if st.session_state.theme == "light" else "Light"
     mode_icon = "🌙" if st.session_state.theme == "light" else "☀️"
-    if st.button(f"{mode_icon} {mode_text} Mode", key="theme_toggle_main"):
+    if st.button(f"{mode_icon} {mode_text}", key="theme_toggle_main"):
         if st.session_state.theme == "dark":
             st.session_state.theme = "light"
         else:
@@ -461,16 +463,13 @@ def show_main_app():
     users = load_users()
     user_data = users.get(st.session_state.username, {})
     
-    # Sidebar
     show_sidebar(user_data)
     
-    # Main Content - No duplicate profile info
     st.markdown("<h1 style='text-align: center;'>🎓 Student Score Predictor</h1>", unsafe_allow_html=True)
     
-    # Only show child info for parent (but concise, no duplicate)
     if st.session_state.user_role == "parent":
-        child_name = user_data.get("child_name", "Not specified")
-        st.info(f"👨‍👩‍👧 Predicting for: **{child_name}**")
+        child_name = user_data.get("child_name", "Child")
+        st.info(f"Predicting for: {child_name}")
     
     model, columns = load_models()
     
@@ -529,40 +528,40 @@ def show_main_app():
         """, unsafe_allow_html=True)
         
         if final_score >= 85:
-            st.success("🏆 Exceptional Performance")
+            st.success("Exceptional Performance")
             st.balloons()
         elif final_score >= 70:
-            st.success("📈 Good Performance")
+            st.success("Good Performance")
         elif final_score >= 55:
-            st.info("📚 Satisfactory Performance")
+            st.info("Satisfactory Performance")
         else:
-            st.warning("⚠️ Needs Improvement")
+            st.warning("Needs Improvement")
         
         recommendations = []
         if hours < 6:
-            recommendations.append("📖 Increase study hours to 6-8 hours daily")
+            recommendations.append("Increase study hours to 6-8 hours daily")
         if attendance < 75:
-            recommendations.append("📊 Improve attendance to 80% or higher")
+            recommendations.append("Improve attendance to 80% or higher")
         if sleep < 7:
-            recommendations.append("😴 Get 7-9 hours of sleep for better focus")
+            recommendations.append("Get 7-9 hours of sleep for better focus")
         if motivation == "Low":
-            recommendations.append("💪 Set daily goals to boost motivation")
+            recommendations.append("Set daily goals to boost motivation")
         if teacher == "Poor":
-            recommendations.append("👨‍🏫 Seek additional tutoring or online resources")
+            recommendations.append("Seek additional tutoring or online resources")
         if resources == "Low":
-            recommendations.append("📚 Utilize free online learning materials")
+            recommendations.append("Utilize free online learning materials")
         if peer == "Negative":
-            recommendations.append("🤝 Join positive study groups")
+            recommendations.append("Join positive study groups")
         
         if recommendations:
-            st.markdown("### 💡 Recommendations")
+            st.markdown("### Recommendations")
             for rec in recommendations:
                 st.info(rec)
         else:
-            st.success("✅ Excellent study habits. Maintain your routine")
+            st.success("Excellent study habits!")
     
     st.markdown("---")
-    st.caption("Student Score Predictor | Powered by Machine Learning")
+    st.caption("Student Score Predictor")
 
 # =====================================
 # MAIN ROUTER
