@@ -79,11 +79,18 @@ light_theme_css = """
         min-height: 34px !important;
     }
     
-    /* FIX: Select box text full visible */
+    /* SELECT BOX TEXT - FULL VISIBLE */
     div[data-baseweb="select"] input {
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
         font-size: 0.85rem !important;
+        opacity: 1 !important;
+    }
+    
+    /* Selected value inside select */
+    div[data-baseweb="select"] [data-testid="stMarkdownContainer"] p {
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
     }
     
     .stNumberInput button { background-color: #e0e0e0 !important; border: 1px solid #ccc !important; }
@@ -96,33 +103,33 @@ light_theme_css = """
     .stButton > button { background: #00adb5 !important; color: white !important; border-radius: 50px !important; padding: 0.3rem 1rem !important; }
     .stButton > button:hover { background: #007a7f !important; }
     
-    /* LOGIN CONTAINER - BILKUL CHOTA */
+    /* LOGIN CONTAINER - DESKTOP KE LIYE CHOTA */
     .auth-container {
-        max-width: 300px !important;
-        margin: 60px auto !important;
+        max-width: 280px !important;
+        margin: 80px auto !important;
         padding: 1.2rem !important;
         background: white !important;
         border-radius: 20px !important;
         box-shadow: 0 5px 20px rgba(0,0,0,0.08) !important;
         text-align: center !important;
     }
-    .auth-title { font-size: 1.2rem !important; font-weight: 700 !important; color: #1a1a2e !important; margin-bottom: 0.5rem !important; }
+    .auth-title { font-size: 1.1rem !important; font-weight: 700 !important; color: #1a1a2e !important; margin-bottom: 0.5rem !important; }
     
     .auth-container .stTextInput input {
         background: white !important;
         border: 1px solid #ddd !important;
         border-radius: 10px !important;
-        padding: 0.4rem 0.7rem !important;
-        height: 36px !important;
-        font-size: 0.8rem !important;
+        padding: 0.35rem 0.6rem !important;
+        height: 34px !important;
+        font-size: 0.75rem !important;
     }
     
     .auth-container .stTextInput input:focus { border-color: #00adb5 !important; }
-    .auth-container input::placeholder { color: #999 !important; font-size: 0.75rem; }
+    .auth-container input::placeholder { color: #999 !important; font-size: 0.7rem; }
     
-    .role-login-hint { font-size: 0.65rem; background: rgba(0,173,181,0.1); display: inline-block; padding: 0.15rem 0.5rem; border-radius: 20px; margin: 0.3rem 0; }
-    hr { margin: 0.6rem 0; }
-    .footer-text { font-size: 0.6rem; color: #888; margin-top: 0.8rem; }
+    .role-login-hint { font-size: 0.6rem; background: rgba(0,173,181,0.1); display: inline-block; padding: 0.1rem 0.4rem; border-radius: 20px; margin: 0.3rem 0; }
+    hr { margin: 0.5rem 0; }
+    .footer-text { font-size: 0.55rem; color: #888; margin-top: 0.6rem; }
 </style>
 """
 
@@ -147,11 +154,18 @@ dark_theme_css = """
         min-height: 34px !important;
     }
     
-    /* FIX: Select box text full visible */
+    /* SELECT BOX TEXT - FULL VISIBLE */
     div[data-baseweb="select"] input {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
         font-size: 0.85rem !important;
+        opacity: 1 !important;
+    }
+    
+    /* Selected value inside select */
+    div[data-baseweb="select"] [data-testid="stMarkdownContainer"] p {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
     
     .stNumberInput button { background-color: #2d2d44 !important; border: 1px solid #3a3a5a !important; }
@@ -164,10 +178,10 @@ dark_theme_css = """
     .stButton > button { background: #00adb5 !important; color: white !important; border-radius: 50px !important; padding: 0.3rem 1rem !important; }
     .stButton > button:hover { background: #007a7f !important; }
     
-    /* LOGIN CONTAINER - BILKUL CHOTA */
+    /* LOGIN CONTAINER - DESKTOP KE LIYE CHOTA */
     .auth-container {
-        max-width: 300px !important;
-        margin: 60px auto !important;
+        max-width: 280px !important;
+        margin: 80px auto !important;
         padding: 1.2rem !important;
         background: rgba(18, 18, 30, 0.95) !important;
         border: 1px solid #2a2a4a !important;
@@ -175,23 +189,23 @@ dark_theme_css = """
         box-shadow: 0 5px 20px rgba(0,0,0,0.3) !important;
         text-align: center !important;
     }
-    .auth-title { font-size: 1.2rem !important; font-weight: 700 !important; color: #ffffff !important; margin-bottom: 0.5rem !important; }
+    .auth-title { font-size: 1.1rem !important; font-weight: 700 !important; color: #ffffff !important; margin-bottom: 0.5rem !important; }
     
     .auth-container .stTextInput input {
         background: #1e1e2e !important;
         border: 1px solid #3a3a5a !important;
         border-radius: 10px !important;
-        padding: 0.4rem 0.7rem !important;
-        height: 36px !important;
-        font-size: 0.8rem !important;
+        padding: 0.35rem 0.6rem !important;
+        height: 34px !important;
+        font-size: 0.75rem !important;
     }
     
     .auth-container .stTextInput input:focus { border-color: #00adb5 !important; }
-    .auth-container input::placeholder { color: #888 !important; font-size: 0.75rem; }
+    .auth-container input::placeholder { color: #888 !important; font-size: 0.7rem; }
     
-    .role-login-hint { font-size: 0.65rem; background: rgba(0,173,181,0.2); display: inline-block; padding: 0.15rem 0.5rem; border-radius: 20px; margin: 0.3rem 0; color: #fff; }
-    hr { margin: 0.6rem 0; border-color: #3a3a5a; }
-    .footer-text { font-size: 0.6rem; color: #888; margin-top: 0.8rem; }
+    .role-login-hint { font-size: 0.6rem; background: rgba(0,173,181,0.2); display: inline-block; padding: 0.1rem 0.4rem; border-radius: 20px; margin: 0.3rem 0; color: #fff; }
+    hr { margin: 0.5rem 0; border-color: #3a3a5a; }
+    .footer-text { font-size: 0.55rem; color: #888; margin-top: 0.6rem; }
 </style>
 """
 
@@ -202,8 +216,8 @@ base_css = """
     
     /* Sidebar */
     .profile-card { text-align: center; padding: 0.3rem; margin-bottom: 0.3rem; }
-    .profile-name { font-size: 0.95rem; font-weight: 700; }
-    .profile-role { font-size: 0.6rem; padding: 0.1rem 0.4rem; border-radius: 50px; display: inline-block; }
+    .profile-name { font-size: 0.9rem; font-weight: 700; }
+    .profile-role { font-size: 0.55rem; padding: 0.1rem 0.4rem; border-radius: 50px; display: inline-block; }
     
     /* Top theme toggle */
     .top-theme-toggle {
@@ -216,13 +230,13 @@ base_css = """
         background: rgba(0,173,181,0.2) !important;
         border: 1px solid #00adb5 !important;
         border-radius: 50px !important;
-        padding: 0.15rem 0.5rem !important;
-        font-size: 0.65rem !important;
+        padding: 0.12rem 0.45rem !important;
+        font-size: 0.6rem !important;
     }
     
     @media (max-width: 768px) {
-        .auth-container { max-width: 260px !important; margin: 40px auto !important; padding: 1rem !important; }
-        .auth-container .stTextInput input { height: 34px !important; font-size: 0.75rem !important; }
+        .auth-container { max-width: 250px !important; margin: 50px auto !important; padding: 1rem !important; }
+        .auth-container .stTextInput input { height: 32px !important; font-size: 0.7rem !important; }
         .auth-title { font-size: 1rem !important; }
     }
 </style>
@@ -254,12 +268,12 @@ def show_auth_page():
     
     st.markdown("""
     <div class="auth-container">
-        <div style="font-size: 2rem;">🎓</div>
+        <div style="font-size: 1.8rem;">🎓</div>
         <div class="auth-title">Student Score Predictor</div>
     """, unsafe_allow_html=True)
     
     if st.session_state.auth_mode == "login":
-        st.markdown('<p style="margin-bottom: 0.8rem; font-size: 0.7rem;">Sign in to your account</p>', unsafe_allow_html=True)
+        st.markdown('<p style="margin-bottom: 0.6rem; font-size: 0.65rem;">Sign in</p>', unsafe_allow_html=True)
         
         username = st.text_input("Username", placeholder="Username", key="login_username", label_visibility="collapsed")
         password = st.text_input("Password", type="password", placeholder="Password", key="login_password", label_visibility="collapsed")
@@ -278,27 +292,27 @@ def show_auth_page():
                     st.session_state.user_role = users[username]["role"]
                     st.rerun()
                 else:
-                    st.error("Invalid username or password")
+                    st.error("Invalid")
             else:
-                st.warning("Please fill all fields")
+                st.warning("Fill all fields")
         
         st.markdown("<hr>", unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("Student Sign Up", use_container_width=True):
+            if st.button("Student", use_container_width=True):
                 st.session_state.auth_mode = "signup"
                 st.session_state.signup_role = "student"
                 st.rerun()
         with col2:
-            if st.button("Parent Sign Up", use_container_width=True):
+            if st.button("Parent", use_container_width=True):
                 st.session_state.auth_mode = "signup"
                 st.session_state.signup_role = "parent"
                 st.rerun()
     
     else:
         role = st.session_state.signup_role
-        st.markdown(f'<p style="margin-bottom: 0.5rem; font-size: 0.7rem;">Create {role} account</p>', unsafe_allow_html=True)
+        st.markdown(f'<p style="margin-bottom: 0.4rem; font-size: 0.65rem;">Sign up as {role}</p>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         with col1:
@@ -314,28 +328,28 @@ def show_auth_page():
         
         username = st.text_input("Username", placeholder="Username", key="signup_username", label_visibility="collapsed")
         password = st.text_input("Password", type="password", placeholder="Password", key="signup_password", label_visibility="collapsed")
-        confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm Password", key="signup_confirm", label_visibility="collapsed")
+        confirm_password = st.text_input("Confirm", type="password", placeholder="Confirm", key="signup_confirm", label_visibility="collapsed")
         full_name = st.text_input("Full Name", placeholder="Full Name", key="signup_name", label_visibility="collapsed")
         
         if role == "student":
-            dob = st.date_input("Date of Birth", min_value=datetime(1990, 1, 1), max_value=datetime.now())
-            grade = st.selectbox("Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
-            school = st.text_input("School Name", placeholder="School Name")
+            dob = st.date_input("DOB", min_value=datetime(1990, 1, 1), max_value=datetime.now())
+            grade = st.selectbox("Grade", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
+            school = st.text_input("School", placeholder="School Name")
         else:
-            child_name = st.text_input("Child's Name", placeholder="Child's Name")
-            child_dob = st.date_input("Child's DOB", min_value=datetime(1990, 1, 1), max_value=datetime.now())
-            child_grade = st.selectbox("Child's Grade", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
-            relation = st.selectbox("Relationship", ["Father", "Mother", "Guardian"])
+            child_name = st.text_input("Child Name", placeholder="Child's Name")
+            child_dob = st.date_input("Child DOB", min_value=datetime(1990, 1, 1), max_value=datetime.now())
+            child_grade = st.selectbox("Child Grade", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
+            relation = st.selectbox("Relation", ["Father", "Mother", "Guardian"])
         
-        if st.button("Create Account", use_container_width=True):
+        if st.button("Create", use_container_width=True):
             if not username or not password or not full_name:
-                st.warning("Please fill all fields")
+                st.warning("Fill all fields")
             elif password != confirm_password:
-                st.error("Passwords do not match")
+                st.error("Passwords don't match")
             elif len(password) < 4:
-                st.warning("Password must be at least 4 characters")
+                st.warning("Min 4 chars")
             elif username in users:
-                st.error("Username already exists")
+                st.error("Username exists")
             else:
                 user_data = {
                     "password": hash_password(password),
@@ -357,16 +371,16 @@ def show_auth_page():
                 
                 users[username] = user_data
                 save_users(users)
-                st.success("Account created!")
+                st.success("Created!")
                 st.session_state.auth_mode = "login"
                 st.rerun()
         
         st.markdown("<hr>", unsafe_allow_html=True)
-        if st.button("Back to Sign In", use_container_width=True):
+        if st.button("Back", use_container_width=True):
             st.session_state.auth_mode = "login"
             st.rerun()
     
-    st.markdown('<div class="footer-text">Secure • Student & Parent Portals</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer-text">Secure Portal</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================
@@ -391,7 +405,7 @@ def show_sidebar(user_data):
         
         st.markdown(f"""
         <div class="profile-card">
-            <div style="font-size: 1.8rem;">{role_icon}</div>
+            <div style="font-size: 1.6rem;">{role_icon}</div>
             <div class="profile-name">{user_data.get('full_name', st.session_state.username)}</div>
             <div class="profile-role" style="background: {badge_color}20; border: 1px solid {badge_color};">{role_text}</div>
         </div>
@@ -532,7 +546,7 @@ def show_main_app():
             st.success("✅ Excellent study habits!")
     
     st.markdown("---")
-    st.caption("Student Score Predictor | Powered by Machine Learning")
+    st.caption("Student Score Predictor")
 
 # =====================================
 # MAIN ROUTER
