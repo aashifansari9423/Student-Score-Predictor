@@ -6,12 +6,6 @@ import hashlib
 import json
 import os
 from datetime import datetime
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib import colors
-from reportlab.lib.units import inch
-import io
 
 # =====================================
 # PAGE CONFIG
@@ -27,6 +21,7 @@ st.set_page_config(
 # USER DATABASE FILE
 # =====================================
 USER_DB_FILE = "users.json"
+HISTORY_FILE = "prediction_history.json"
 
 def load_users():
     if os.path.exists(USER_DB_FILE):
@@ -38,6 +33,16 @@ def save_users(users):
     with open(USER_DB_FILE, 'w') as f:
         json.dump(users, f, indent=2)
 
+def load_history():
+    if os.path.exists(HISTORY_FILE):
+        with open(HISTORY_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_history(history):
+    with open(HISTORY_FILE, 'w') as f:
+        json.dump(history, f, indent=2)
+
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
@@ -47,111 +52,6 @@ def calculate_age(birth_date):
     if today.month < birth_date.month or (today.month == birth_date.month and today.day < birth_date.day):
         age -= 1
     return age
-
-def generate_pdf_report(username, final_score, user_data, hours, attendance, previous, sleep, recommendations):
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0.5*inch, bottomMargin=0.5*inch)
-    styles = getSampleStyleSheet()
-    
-    # Custom styles
-    title_style = ParagraphStyle(
-        'CustomTitle',
-        parent=styles['Heading1'],
-        fontSize=24,
-        textColor=colors.HexColor('#00adb5'),
-        alignment=1,
-        spaceAfter=30
-    )
-    heading_style = ParagraphStyle(
-        'CustomHeading',
-        parent=styles['Heading2'],
-        fontSize=16,
-        textColor=colors.HexColor('#2c3e50'),
-        spaceAfter=12
-    )
-    normal_style = ParagraphStyle(
-        'CustomNormal',
-        parent=styles['Normal'],
-        fontSize=10,
-        spaceAfter=6
-    )
-    
-    story = []
-    
-    # Title
-    story.append(Paragraph("Student Score Predictor - Report", title_style))
-    story.append(Spacer(1, 0.2*inch))
-    
-    # Student Info
-    story.append(Paragraph("Student Information", heading_style))
-    story.append(Paragraph(f"Name: {user_data.get('full_name', username)}", normal_style))
-    story.append(Paragraph(f"Username: {username}", normal_style))
-    if st.session_state.user_role == "student":
-        story.append(Paragraph(f"Grade: {user_data.get('grade', 'N/A')}", normal_style))
-        story.append(Paragraph(f"School: {user_data.get('school', 'N/A')}", normal_style))
-    else:
-        story.append(Paragraph(f"Parent Name: {user_data.get('full_name', username)}", normal_style))
-        story.append(Paragraph(f"Child Name: {user_data.get('child_name', 'N/A')}", normal_style))
-        story.append(Paragraph(f"Child Grade: {user_data.get('child_grade', 'N/A')}", normal_style))
-    story.append(Paragraph(f"Report Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", normal_style))
-    story.append(Spacer(1, 0.2*inch))
-    
-    # Score Section
-    story.append(Paragraph("Prediction Results", heading_style))
-    
-    score_data = [
-        ["Metric", "Value"],
-        ["Predicted Exam Score", f"{final_score}/100"],
-        ["Study Hours", f"{hours} hours"],
-        ["Attendance", f"{attendance}%"],
-        ["Previous Score", f"{previous}/100"],
-        ["Sleep Hours", f"{sleep} hours"]
-    ]
-    
-    score_table = Table(score_data, colWidths=[2.5*inch, 2.5*inch])
-    score_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (1, 0), colors.HexColor('#00adb5')),
-        ('TEXTCOLOR', (0, 0), (1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (1, 0), 12),
-        ('BACKGROUND', (0, 1), (1, -1), colors.beige),
-        ('GRID', (0, 0), (1, -1), 1, colors.grey)
-    ]))
-    story.append(score_table)
-    story.append(Spacer(1, 0.2*inch))
-    
-    # Performance Assessment
-    story.append(Paragraph("Performance Assessment", heading_style))
-    if final_score >= 85:
-        assessment = "🏆 EXCEPTIONAL PERFORMANCE - Outstanding results!"
-    elif final_score >= 70:
-        assessment = "📈 GOOD PERFORMANCE - Keep improving!"
-    elif final_score >= 55:
-        assessment = "📚 SATISFACTORY PERFORMANCE - Room for improvement"
-    else:
-        assessment = "⚠️ NEEDS IMPROVEMENT - Review recommendations"
-    story.append(Paragraph(assessment, normal_style))
-    story.append(Spacer(1, 0.1*inch))
-    
-    # Recommendations
-    if recommendations:
-        story.append(Paragraph("Recommendations", heading_style))
-        for rec in recommendations:
-            story.append(Paragraph(f"• {rec}", normal_style))
-    else:
-        story.append(Paragraph("✅ Excellent study habits! Maintain your routine", normal_style))
-    
-    story.append(Spacer(1, 0.2*inch))
-    
-    # Footer
-    story.append(Paragraph("Generated by Student Score Predictor - AI Powered Academic Tool", 
-                          ParagraphStyle('Footer', parent=styles['Normal'], fontSize=8, textColor=colors.grey, alignment=1)))
-    
-    doc.build(story)
-    buffer.seek(0)
-    return buffer
 
 # =====================================
 # SESSION STATE
@@ -168,8 +68,9 @@ if 'signup_role' not in st.session_state:
     st.session_state.signup_role = "student"
 if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
-if 'prediction_history' not in st.session_state:
-    st.session_state.prediction_history = []
+
+# Load history for all users
+all_history = load_history()
 
 # =====================================
 # CSS
@@ -247,6 +148,20 @@ light_theme_css = """
     .stButton > button:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0,173,181,0.4);
+    }
+    
+    /* Small download button */
+    .download-btn button {
+        background: rgba(0,173,181,0.15) !important;
+        border: 1px solid #00adb5 !important;
+        color: #00adb5 !important;
+        padding: 0.2rem 0.8rem !important;
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+    }
+    .download-btn button:hover {
+        background: rgba(0,173,181,0.3) !important;
+        transform: translateY(-2px);
     }
     
     .top-theme-toggle {
@@ -344,6 +259,20 @@ dark_theme_css = """
     .stButton > button:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0,173,181,0.4);
+    }
+    
+    /* Small download button */
+    .download-btn button {
+        background: rgba(0,173,181,0.15) !important;
+        border: 1px solid #00adb5 !important;
+        color: #00adb5 !important;
+        padding: 0.2rem 0.8rem !important;
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+    }
+    .download-btn button:hover {
+        background: rgba(0,173,181,0.3) !important;
+        transform: translateY(-2px);
     }
     
     .top-theme-toggle {
@@ -633,8 +562,16 @@ def show_main_app():
         final_score = max(40, min(100, prediction[0]))
         final_score = int(round(final_score))
         
-        # Save to history
-        st.session_state.prediction_history.append(final_score)
+        # Save to history - per user
+        if st.session_state.username not in all_history:
+            all_history[st.session_state.username] = []
+        all_history[st.session_state.username].append(final_score)
+        if len(all_history[st.session_state.username]) > 10:
+            all_history[st.session_state.username] = all_history[st.session_state.username][-10:]
+        save_history(all_history)
+        
+        # Get current user's history
+        user_history = all_history.get(st.session_state.username, [])
         
         # Result Card
         st.markdown(f"""
@@ -672,15 +609,53 @@ def show_main_app():
             recs.append("Join positive study groups")
         
         # =====================================
-        # PERFORMANCE OVERVIEW
+        # DOWNLOAD REPORT BUTTON (ABOVE RECOMMENDATIONS)
         # =====================================
-        if len(st.session_state.prediction_history) >= 1:
+        st.markdown("---")
+        col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+        with col_btn2:
+            st.markdown('<div class="download-btn">', unsafe_allow_html=True)
+            report_data = {
+                "username": st.session_state.username,
+                "full_name": user_data.get('full_name', ''),
+                "role": st.session_state.user_role,
+                "predicted_score": final_score,
+                "hours_studied": hours,
+                "attendance": attendance,
+                "previous_score": previous,
+                "sleep_hours": sleep,
+                "motivation": motivation,
+                "teacher_quality": teacher,
+                "school_type": school,
+                "internet_access": internet,
+                "family_income": income,
+                "parental_involvement": parent,
+                "parent_education": education,
+                "peer_influence": peer,
+                "learning_resources": resources,
+                "extracurricular": activities,
+                "recommendations": recs,
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+            report_json = json.dumps(report_data, indent=2)
+            st.download_button(
+                label="📄 Download Report (JSON)",
+                data=report_json,
+                file_name=f"score_report_{st.session_state.username}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                mime="application/json"
+            )
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # =====================================
+        # PERFORMANCE OVERVIEW (ONLY CURRENT USER)
+        # =====================================
+        if len(user_history) >= 1:
             st.markdown("### 📊 Performance Overview")
             
-            passing = len([s for s in st.session_state.prediction_history if s >= 60])
-            needs_improvement = len([s for s in st.session_state.prediction_history if s < 60])
-            last_score = st.session_state.prediction_history[-1]
-            avg_score = int(np.mean(st.session_state.prediction_history))
+            passing = len([s for s in user_history if s >= 60])
+            needs_improvement = len([s for s in user_history if s < 60])
+            last_score = user_history[-1]
+            avg_score = int(np.mean(user_history))
             
             col_a, col_b, col_c, col_d, col_e = st.columns(5)
             
@@ -719,14 +694,14 @@ def show_main_app():
             with col_e:
                 st.markdown(f"""
                 <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{len(st.session_state.prediction_history)}</div>
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{len(user_history)}</div>
                     <div style="font-size: 0.6rem; color: #888;">Total</div>
                 </div>
                 """, unsafe_allow_html=True)
             
-            pass_percent = (passing / len(st.session_state.prediction_history)) * 100
+            pass_percent = (passing / len(user_history)) * 100
             st.progress(pass_percent / 100)
-            st.caption(f"Success Rate: {pass_percent:.0f}% ({passing}/{len(st.session_state.prediction_history)})")
+            st.caption(f"Success Rate: {pass_percent:.0f}% ({passing}/{len(user_history)})")
         
         # =====================================
         # RECOMMENDATIONS
@@ -737,25 +712,6 @@ def show_main_app():
                 st.info(r)
         else:
             st.success("✅ Excellent habits! Keep going!")
-        
-        # =====================================
-        # PDF DOWNLOAD BUTTON
-        # =====================================
-        st.markdown("---")
-        st.markdown("### 📄 Download Report")
-        
-        pdf_buffer = generate_pdf_report(
-            st.session_state.username, final_score, user_data, 
-            hours, attendance, previous, sleep, recs
-        )
-        
-        st.download_button(
-            label="📥 Download PDF Report",
-            data=pdf_buffer,
-            file_name=f"score_report_{st.session_state.username}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-            mime="application/pdf",
-            use_container_width=True
-        )
     
     st.markdown("---")
     st.caption("Student Score Predictor | Powered by AI")
