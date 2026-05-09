@@ -5,6 +5,7 @@ import numpy as np
 import hashlib
 import json
 import os
+from datetime import datetime
 
 # =====================================
 # PAGE CONFIG
@@ -34,6 +35,13 @@ def save_users(users):
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+def calculate_age(birth_date):
+    today = datetime.now()
+    age = today.year - birth_date.year
+    if today.month < birth_date.month or (today.month == birth_date.month and today.day < birth_date.day):
+        age -= 1
+    return age
+
 # =====================================
 # SESSION STATE
 # =====================================
@@ -51,202 +59,156 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# THEME CSS - LIGHT MODE
+# THEME CSS
 # =====================================
 light_theme_css = """
 <style>
     .stApp {
         background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
     }
-    
     .main .block-container, .auth-container {
         background: rgba(255, 255, 255, 0.98);
         border: 1px solid #e0e0e0;
     }
-    
-    h1, h2, h3, .auth-title, .user-info, .result-label {
+    h1, h2, h3, .auth-title, .user-info {
         color: #1a1a2e !important;
     }
-    
     .stNumberInput label, .stSelectbox label {
         color: #4a5568 !important;
     }
-    
     .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
         color: #1a1a2e !important;
         border: 1px solid #d0d0d0 !important;
     }
-    
-    .stNumberInput input::placeholder, .stTextInput input::placeholder {
-        color: #999999 !important;
-    }
-    
     input, textarea, select, .stTextInput input, .stNumberInput input {
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
     }
-    
     .result-card {
         background: #ffffff;
         border: 2px solid #00adb5;
     }
-    
     .result-score {
         color: #00adb5 !important;
     }
-    
     .result-label {
         color: #666666 !important;
     }
-    
     .stSuccess, .stInfo, .stWarning {
         background-color: rgba(0, 173, 181, 0.1) !important;
     }
-    
     .stButton > button {
         background: #00adb5 !important;
         color: white !important;
     }
-    
     .stButton > button:hover {
         background: #007a7f !important;
     }
-    
-    .student-badge, .parent-badge {
-        color: #1a1a2e !important;
-    }
-    
     hr {
         background: #d0d0d0 !important;
     }
-    
     .footer-text, .stCaption, .stMarkdown {
         color: #666666 !important;
     }
-    
-    /* Dropdown menu light */
     div[data-baseweb="popover"] > div {
         background-color: #ffffff !important;
         border: 1px solid #d0d0d0 !important;
     }
-    
     li[role="option"] {
         color: #1a1a2e !important;
         background-color: #ffffff !important;
     }
-    
     li[role="option"]:hover {
         background-color: #00adb5 !important;
         color: white !important;
     }
+    .date-input {
+        background-color: #ffffff !important;
+        color: #1a1a2e !important;
+    }
 </style>
 """
 
-# =====================================
-# THEME CSS - DARK MODE
-# =====================================
 dark_theme_css = """
 <style>
     .stApp {
         background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     }
-    
     .main .block-container, .auth-container {
         background: rgba(18, 18, 30, 0.95);
         border: 1px solid #334155;
     }
-    
-    h1, h2, h3, .auth-title, .user-info, .result-label {
+    h1, h2, h3, .auth-title, .user-info {
         color: #ffffff !important;
     }
-    
     .stNumberInput label, .stSelectbox label {
         color: #cbd5e0 !important;
     }
-    
     .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
         background-color: #1a1a2e !important;
         color: #ffffff !important;
         border: 1px solid #334155 !important;
     }
-    
     input, textarea, select, .stTextInput input, .stNumberInput input {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
     }
-    
     .result-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
     }
-    
     .result-score {
         color: #00adb5 !important;
     }
-    
     .result-label {
         color: #888888 !important;
     }
-    
     .stSuccess, .stInfo, .stWarning {
         background-color: rgba(0, 173, 181, 0.2) !important;
         color: #ffffff !important;
     }
-    
     .stButton > button {
         background: #00adb5 !important;
         color: white !important;
     }
-    
     .stButton > button:hover {
         background: #007a7f !important;
     }
-    
     hr {
         background: #334155 !important;
     }
-    
     .footer-text, .stCaption, .stMarkdown {
         color: #888888 !important;
     }
 </style>
 """
 
-# =====================================
-# BASE CSS (Common)
-# =====================================
 base_css = """
 <style>
     *:focus {
         outline: none !important;
         box-shadow: none !important;
     }
-    
     .stNumberInput input, .stTextInput input {
         border-radius: 10px !important;
         padding: 0.5rem 0.8rem !important;
     }
-    
     .stNumberInput button {
         background-color: #2d2d44 !important;
         border-radius: 6px !important;
     }
-    
     .stNumberInput button:hover {
         background-color: #00adb5 !important;
     }
-    
     div[data-baseweb="select"] > div {
         border-radius: 10px !important;
         min-height: 38px !important;
         padding: 0 10px !important;
     }
-    
     div[data-baseweb="popover"] > div {
         border-radius: 10px !important;
     }
-    
     .stButton > button {
         border: none !important;
         border-radius: 50px !important;
@@ -255,11 +217,9 @@ base_css = """
         transition: all 0.3s ease;
         cursor: pointer;
     }
-    
     .stButton > button:hover {
         transform: translateY(-2px);
     }
-    
     .result-card {
         border-radius: 20px;
         padding: 1.5rem;
@@ -267,7 +227,6 @@ base_css = """
         margin: 1.5rem 0;
         animation: slideDown 0.4s ease-out;
     }
-    
     @keyframes slideDown {
         from {
             opacity: 0;
@@ -278,16 +237,13 @@ base_css = """
             transform: translateY(0);
         }
     }
-    
     .result-score {
         font-size: 3rem;
         font-weight: 800;
     }
-    
     .result-score span {
         font-size: 1rem;
     }
-    
     .auth-container {
         border-radius: 20px;
         padding: 2rem;
@@ -295,13 +251,11 @@ base_css = """
         margin: 60px auto;
         text-align: center;
     }
-    
     .auth-title {
         font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
     }
-    
     .student-badge {
         background: rgba(0, 173, 181, 0.2);
         padding: 0.2rem 0.8rem;
@@ -310,7 +264,6 @@ base_css = """
         display: inline-block;
         margin-left: 0.5rem;
     }
-    
     .parent-badge {
         background: rgba(156, 39, 176, 0.2);
         padding: 0.2rem 0.8rem;
@@ -318,38 +271,34 @@ base_css = """
         font-size: 0.7rem;
         display: inline-block;
         margin-left: 0.5rem;
+        color: #ce93d8 !important;
     }
-    
     .theme-toggle {
         position: fixed;
         top: 1rem;
         right: 1rem;
         z-index: 999;
     }
-    
     .theme-toggle button {
         background: rgba(0, 173, 181, 0.2);
         border: 1px solid #00adb5;
         border-radius: 50px;
-        padding: 0.3rem 0.8rem;
-        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+        font-size: 1.1rem;
+        min-width: 40px;
     }
-    
     hr {
         margin: 1.2rem 0;
         border: none;
         height: 1px;
     }
-    
     .footer-text {
         margin-top: 1.2rem;
         font-size: 0.7rem;
     }
-    
     div[data-testid="column"] {
         padding: 0 0.5rem;
     }
-    
     @media (max-width: 768px) {
         .main .block-container {
             padding: 1rem;
@@ -368,13 +317,14 @@ base_css = """
             top: 0.5rem;
             right: 0.5rem;
         }
+        .theme-toggle button {
+            padding: 0.3rem 0.5rem;
+            font-size: 1rem;
+        }
     }
 </style>
 """
 
-# =====================================
-# APPLY THEME
-# =====================================
 def apply_theme():
     if st.session_state.theme == "dark":
         st.markdown(dark_theme_css, unsafe_allow_html=True)
@@ -382,14 +332,9 @@ def apply_theme():
         st.markdown(light_theme_css, unsafe_allow_html=True)
     st.markdown(base_css, unsafe_allow_html=True)
 
-# =====================================
-# THEME TOGGLE BUTTON
-# =====================================
 def theme_toggle():
     icon = "🌙" if st.session_state.theme == "light" else "☀️"
-    mode = "Dark" if st.session_state.theme == "light" else "Light"
-    
-    if st.button(f"{icon} {mode} Mode", key="theme_toggle"):
+    if st.button(icon, key="theme_toggle"):
         if st.session_state.theme == "dark":
             st.session_state.theme = "light"
         else:
@@ -402,10 +347,10 @@ def theme_toggle():
 def show_auth_page():
     apply_theme()
     
-    # Theme toggle in top right
-    col1, col2, col3 = st.columns([5, 1, 1])
-    with col3:
-        theme_toggle()
+    # Theme toggle only icon
+    st.markdown('<div class="theme-toggle">', unsafe_allow_html=True)
+    theme_toggle()
+    st.markdown('</div>', unsafe_allow_html=True)
     
     users = load_users()
     
@@ -469,10 +414,13 @@ def show_auth_page():
         full_name = st.text_input("Full Name", placeholder="Enter your full name", key="signup_name")
         
         if role == "student":
+            dob = st.date_input("Date of Birth", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="student_dob")
+            age = calculate_age(dob) if dob else 0
             grade = st.selectbox("Current Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"], key="student_grade")
             school = st.text_input("School Name", placeholder="Enter your school name", key="student_school")
         else:
             child_name = st.text_input("Child's Name", placeholder="Enter your child's name", key="parent_child")
+            child_dob = st.date_input("Child's Date of Birth", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="parent_dob")
             child_grade = st.selectbox("Child's Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"], key="parent_grade")
             relation = st.selectbox("Relationship", ["Father", "Mother", "Guardian"], key="parent_relation")
         
@@ -494,10 +442,13 @@ def show_auth_page():
                 }
                 
                 if role == "student":
+                    user_data["dob"] = str(dob)
+                    user_data["age"] = age
                     user_data["grade"] = grade
                     user_data["school"] = school
                 else:
                     user_data["child_name"] = child_name
+                    user_data["child_dob"] = str(child_dob)
                     user_data["child_grade"] = child_grade
                     user_data["relation"] = relation
                 
@@ -530,19 +481,22 @@ def load_models():
 def show_main_app():
     apply_theme()
     
-    # Top bar with theme toggle
-    col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+    # Theme toggle only icon
+    st.markdown('<div class="theme-toggle">', unsafe_allow_html=True)
+    theme_toggle()
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Top bar
+    col1, col2 = st.columns([3, 1])
     with col1:
         role_badge = 'student-badge' if st.session_state.user_role == 'student' else 'parent-badge'
         role_text = "Student" if st.session_state.user_role == 'student' else "Parent"
         st.markdown(f'<div style="padding: 0.4rem 1rem; border-radius: 50px; display: inline-block;">Welcome, {st.session_state.username} <span class="{role_badge}">{role_text}</span></div>', unsafe_allow_html=True)
-    with col4:
-        theme_toggle()
     
     st.markdown("<h1 style='text-align: center;'>Student Score Predictor</h1>", unsafe_allow_html=True)
     
     if st.session_state.user_role == "parent":
-        st.info("👨‍👩‍👧 You are accessing as a Parent. You can predict your child's exam score below.")
+        st.info("You are accessing as a Parent. You can predict your child's exam score below.")
     
     model, columns = load_models()
     
