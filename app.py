@@ -59,7 +59,7 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# PROFESSIONAL CSS (with dropdown text full fix)
+# PROFESSIONAL CSS
 # =====================================
 light_theme_css = """
 <style>
@@ -69,8 +69,7 @@ light_theme_css = """
     
     h1, h2, h3, p, label, .stMarkdown, .stCaption { color: #1a1a2e !important; }
     
-    /* Input fields */
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+    .stNumberInput input, .stTextInput input {
         background-color: #ffffff !important;
         color: #1a1a2e !important;
         border: 1px solid #d0d0d0 !important;
@@ -78,35 +77,34 @@ light_theme_css = """
         padding: 0.4rem 0.8rem !important;
         transition: all 0.3s ease !important;
     }
-    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
+    .stNumberInput input:hover, .stTextInput input:hover {
         border-color: #00adb5 !important;
         transform: translateY(-2px);
     }
     
-    /* Remove extra box from dropdown */
-    div[data-baseweb="select"] > div > div {
-        background: transparent !important;
-        border: none !important;
+    /* Radio buttons for better visibility */
+    .stRadio > div {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    .stRadio label {
+        background: #f0f0f0;
+        padding: 0.3rem 1rem;
+        border-radius: 50px;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+    .stRadio label:hover {
+        background: #00adb5;
+        color: white !important;
+        border-color: #00adb5;
+        transform: translateY(-2px);
+    }
+    .stRadio div[role="radiogroup"] {
+        gap: 0.8rem;
     }
     
-    /* CRITICAL: Make dropdown selected text FULLY visible */
-    div[data-baseweb="select"] input {
-        color: #1a1a2e !important;
-        -webkit-text-fill-color: #1a1a2e !important;
-        opacity: 1 !important;
-        font-size: 0.85rem !important;
-        line-height: normal !important;
-        white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
-    }
-    
-    /* Ensure dropdown container doesn't clip text */
-    div[data-baseweb="select"] {
-        width: 100% !important;
-    }
-    
-    /* Number buttons hover */
     .stNumberInput button {
         background-color: #e0e0e0 !important;
         border: 1px solid #c0c0c0 !important;
@@ -118,23 +116,6 @@ light_theme_css = """
         color: white !important;
     }
     
-    /* Dropdown menu */
-    div[data-baseweb="popover"] > div {
-        background-color: #ffffff !important;
-        border: 1px solid #d0d0d0 !important;
-        border-radius: 10px !important;
-    }
-    li[role="option"] {
-        color: #1a1a2e !important;
-        transition: all 0.2s ease;
-    }
-    li[role="option"]:hover {
-        background-color: #00adb5 !important;
-        color: white !important;
-        transform: translateX(5px);
-    }
-    
-    /* Result Card */
     .result-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
@@ -151,7 +132,6 @@ light_theme_css = """
     .result-score { color: #00adb5 !important; font-size: 3rem; font-weight: 800; }
     .result-label { color: #888888 !important; font-size: 0.75rem; letter-spacing: 2px; }
     
-    /* Buttons */
     .stButton > button {
         background: #00adb5 !important;
         color: white !important;
@@ -169,7 +149,6 @@ light_theme_css = """
     
     hr { margin: 1rem 0; border-color: #e0e0e0; }
     
-    /* Theme Toggle - Right Side */
     .top-theme-toggle {
         position: fixed;
         top: 0.8rem;
@@ -188,7 +167,6 @@ light_theme_css = """
         transform: translateY(-2px);
     }
     
-    /* Profile Card */
     .profile-card { text-align: center; padding: 0.5rem; }
     .profile-name { font-size: 1rem; font-weight: 700; }
     .profile-role { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block; background: rgba(0,173,181,0.15); border: 1px solid #00adb5; }
@@ -203,7 +181,7 @@ dark_theme_css = """
     
     h1, h2, h3, p, label, .stMarkdown, .stCaption { color: #ffffff !important; }
     
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+    .stNumberInput input, .stTextInput input {
         background-color: #1a1a2e !important;
         color: #ffffff !important;
         border: 1px solid #334155 !important;
@@ -211,31 +189,31 @@ dark_theme_css = """
         padding: 0.4rem 0.8rem !important;
         transition: all 0.3s ease !important;
     }
-    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
+    .stNumberInput input:hover, .stTextInput input:hover {
         border-color: #00adb5 !important;
         transform: translateY(-2px);
     }
     
-    /* Remove extra box from dropdown */
-    div[data-baseweb="select"] > div > div {
-        background: transparent !important;
-        border: none !important;
+    .stRadio > div {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
     }
-    
-    /* CRITICAL: Make dropdown selected text FULLY visible */
-    div[data-baseweb="select"] input {
+    .stRadio label {
+        background: #1a1a2e;
+        padding: 0.3rem 1rem;
+        border-radius: 50px;
+        border: 1px solid #334155;
         color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        opacity: 1 !important;
-        font-size: 0.85rem !important;
-        line-height: normal !important;
-        white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
+        transition: all 0.3s ease;
     }
-    
-    div[data-baseweb="select"] {
-        width: 100% !important;
+    .stRadio label:hover {
+        background: #00adb5;
+        border-color: #00adb5;
+        transform: translateY(-2px);
+    }
+    .stRadio div[role="radiogroup"] {
+        gap: 0.8rem;
     }
     
     .stNumberInput button {
@@ -246,20 +224,6 @@ dark_theme_css = """
     .stNumberInput button:hover {
         background-color: #00adb5 !important;
         transform: scale(1.05);
-    }
-    
-    div[data-baseweb="popover"] > div {
-        background-color: #1a1a2e !important;
-        border: 1px solid #334155 !important;
-        border-radius: 10px !important;
-    }
-    li[role="option"] {
-        color: #ffffff !important;
-        transition: all 0.2s ease;
-    }
-    li[role="option"]:hover {
-        background-color: #00adb5 !important;
-        transform: translateX(5px);
     }
     
     .result-card {
@@ -541,18 +505,20 @@ def show_main_app():
         attendance = st.number_input("Attendance (%)", min_value=0.0, max_value=100.0, value=75.0, step=5.0)
         previous = st.number_input("Previous Score", min_value=0.0, max_value=100.0, value=60.0, step=5.0)
         sleep = st.number_input("Sleep Hours", min_value=0.0, max_value=12.0, value=7.0, step=0.5)
-        motivation = st.selectbox("Motivation Level", ["Low", "Medium", "High"])
-        teacher = st.selectbox("Teacher Quality", ["Poor", "Average", "Good"])
-        school = st.selectbox("School Type", ["Public", "Private"])
+        
+        # Using radio buttons instead of selectbox for full text visibility
+        motivation = st.radio("Motivation Level", ["Low", "Medium", "High"], horizontal=True)
+        teacher = st.radio("Teacher Quality", ["Poor", "Average", "Good"], horizontal=True)
+        school = st.radio("School Type", ["Public", "Private"], horizontal=True)
     
     with col2:
-        internet = st.selectbox("Internet Access", ["Yes", "No"])
-        income = st.selectbox("Family Income", ["Low", "Medium", "High"])
-        parent = st.selectbox("Parental Involvement", ["Low", "Medium", "High"])
-        education = st.selectbox("Parent Education", ["School", "College"])
-        peer = st.selectbox("Peer Influence", ["Negative", "Neutral", "Positive"])
-        resources = st.selectbox("Learning Resources", ["Low", "Medium", "High"])
-        activities = st.selectbox("Extracurricular Activities", ["Yes", "No"])
+        internet = st.radio("Internet Access", ["Yes", "No"], horizontal=True)
+        income = st.radio("Family Income", ["Low", "Medium", "High"], horizontal=True)
+        parent = st.radio("Parental Involvement", ["Low", "Medium", "High"], horizontal=True)
+        education = st.radio("Parent Education", ["School", "College"], horizontal=True)
+        peer = st.radio("Peer Influence", ["Negative", "Neutral", "Positive"], horizontal=True)
+        resources = st.radio("Learning Resources", ["Low", "Medium", "High"], horizontal=True)
+        activities = st.radio("Extracurricular Activities", ["Yes", "No"], horizontal=True)
     
     if st.button("Predict Score", use_container_width=True):
         data = {
