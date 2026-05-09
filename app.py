@@ -45,7 +45,7 @@ if 'auth_mode' not in st.session_state:
     st.session_state.auth_mode = "login"
 
 # =====================================
-# GLOBAL CSS - FORCE WHITE TEXT ON ALL DEVICES
+# GLOBAL CSS - FIXED CONTAINER WIDTH + DROPDOWN TEXT
 # =====================================
 global_css = """
 <style>
@@ -79,14 +79,14 @@ global_css = """
         border-radius: 10px !important;
     }
     
-    /* Select box input - FIX: Make selected text visible */
+    /* Select box input - FIX: full text visible */
     div[data-baseweb="select"] input {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
-        font-size: 0.9rem !important;
+        opacity: 1 !important;
     }
     
-    /* Selected value display */
+    /* Selected value text */
     div[data-baseweb="select"] [data-testid="stMarkdownContainer"] p {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
@@ -148,12 +148,12 @@ global_css = """
         color: #ffffff !important;
     }
     
-    /* Auth container - FIX: Chota kiya */
+    /* Auth container - FIX: CHOTA WIDTH */
     .auth-container {
         background: rgba(18, 18, 30, 0.95);
         border-radius: 20px;
         padding: 1.5rem;
-        max-width: 340px;
+        max-width: 320px !important;
         margin: 60px auto;
         border: 1px solid #334155;
         text-align: center;
@@ -162,7 +162,7 @@ global_css = """
     .auth-title {
         font-size: 1.3rem;
         font-weight: 700;
-        margin-bottom: 1.2rem;
+        margin-bottom: 1rem;
     }
     
     hr {
@@ -199,9 +199,12 @@ global_css = """
             padding: 0.6rem !important;
         }
         .auth-container {
-            max-width: 300px;
-            padding: 1.2rem;
+            max-width: 280px !important;
             margin: 40px auto;
+            padding: 1.2rem;
+        }
+        .auth-title {
+            font-size: 1.1rem;
         }
     }
 </style>
