@@ -59,7 +59,7 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# THEME CSS - SIRF FIX KIYA HUA
+# THEME CSS
 # =====================================
 light_theme_css = """
 <style>
@@ -74,26 +74,38 @@ light_theme_css = """
     .stNumberInput label, .stSelectbox label { color: #4a5568 !important; font-weight: 500 !important; }
     .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
     
-    /* FIX: Input fields normal size */
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+    /* DASHBOARD INPUTS - NORMAL SIZE (BADE) */
+    .stNumberInput input, div[data-baseweb="select"] > div {
+        background-color: #ffffff !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        border: 1px solid #d0d0d0 !important;
+        border-radius: 8px !important;
+        font-size: 0.9rem !important;
+        padding: 0.5rem 0.8rem !important;
+        min-height: 38px !important;
+    }
+    
+    /* LOGIN PAGE INPUTS - CHOTE */
+    .auth-container .stTextInput input {
         background-color: #ffffff !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
         border: 1px solid #d0d0d0 !important;
         border-radius: 8px !important;
         font-size: 0.85rem !important;
-        padding: 0.35rem 0.7rem !important;
-        height: auto !important;
-        min-height: 32px !important;
+        padding: 0.3rem 0.6rem !important;
+        height: 36px !important;
+        min-height: 36px !important;
     }
     
-    /* FIX: Select box text visible */
+    /* Select box text visible */
     div[data-baseweb="select"] input {
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
     }
     
-    /* FIX: Increase/Decrease buttons hover */
+    /* Increase/Decrease buttons hover */
     .stNumberInput button {
         background-color: #e0e0e0 !important;
         border: 1px solid #c0c0c0 !important;
@@ -109,7 +121,7 @@ light_theme_css = """
         border-color: #00adb5 !important;
     }
     
-    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
+    .stNumberInput input:hover, div[data-baseweb="select"] > div:hover {
         border-color: #00adb5 !important;
     }
     
@@ -129,7 +141,7 @@ light_theme_css = """
     .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.1) !important; color: #1a1a2e !important; }
     hr { background: #d0d0d0 !important; }
     
-    .auth-container { background: rgba(255, 255, 255, 0.98); border: 1px solid #e0e0e0; max-width: 380px; margin: 40px auto; padding: 1.5rem; }
+    .auth-container { background: rgba(255, 255, 255, 0.98); border: 1px solid #e0e0e0; max-width: 380px; margin: 40px auto; padding: 1.5rem; border-radius: 20px; }
     .auth-title { font-size: 1.3rem; }
     input::placeholder { color: #999999 !important; font-size: 0.8rem; }
 </style>
@@ -148,26 +160,38 @@ dark_theme_css = """
     .stNumberInput label, .stSelectbox label { color: #cbd5e0 !important; }
     .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
     
-    /* FIX: Input fields normal size */
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+    /* DASHBOARD INPUTS - NORMAL SIZE (BADE) */
+    .stNumberInput input, div[data-baseweb="select"] > div {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        border-radius: 8px !important;
+        font-size: 0.9rem !important;
+        padding: 0.5rem 0.8rem !important;
+        min-height: 38px !important;
+    }
+    
+    /* LOGIN PAGE INPUTS - CHOTE */
+    .auth-container .stTextInput input {
         background-color: #1a1a2e !important;
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
         border: 1px solid #334155 !important;
         border-radius: 8px !important;
         font-size: 0.85rem !important;
-        padding: 0.35rem 0.7rem !important;
-        height: auto !important;
-        min-height: 32px !important;
+        padding: 0.3rem 0.6rem !important;
+        height: 36px !important;
+        min-height: 36px !important;
     }
     
-    /* FIX: Select box text visible */
+    /* Select box text visible */
     div[data-baseweb="select"] input {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
     }
     
-    /* FIX: Increase/Decrease buttons hover */
+    /* Increase/Decrease buttons hover */
     .stNumberInput button {
         background-color: #2d2d44 !important;
         border: 1px solid #334155 !important;
@@ -182,7 +206,7 @@ dark_theme_css = """
         border-color: #00adb5 !important;
     }
     
-    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
+    .stNumberInput input:hover, div[data-baseweb="select"] > div:hover {
         border-color: #00adb5 !important;
     }
     
@@ -202,7 +226,7 @@ dark_theme_css = """
     .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.2) !important; color: #ffffff !important; }
     hr { background: #334155 !important; }
     
-    .auth-container { background: rgba(18, 18, 30, 0.95); border: 1px solid #334155; max-width: 380px; margin: 40px auto; padding: 1.5rem; }
+    .auth-container { background: rgba(18, 18, 30, 0.95); border: 1px solid #334155; max-width: 380px; margin: 40px auto; padding: 1.5rem; border-radius: 20px; }
     .auth-title { font-size: 1.3rem; }
     input::placeholder { color: #888888 !important; font-size: 0.8rem; }
 </style>
@@ -212,8 +236,8 @@ base_css = """
 <style>
     *:focus { outline: none !important; box-shadow: none !important; }
     div[data-testid="column"] { padding: 0 0.5rem; }
-    .auth-container { border-radius: 20px; text-align: center; }
-    .role-login-hint { font-size: 0.7rem; margin-top: -0.3rem; margin-bottom: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 8px; display: inline-block; }
+    .auth-container { text-align: center; }
+    .role-login-hint { font-size: 0.7rem; margin-top: 0.3rem; margin-bottom: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 8px; display: inline-block; }
     hr { margin: 0.8rem 0; }
     .footer-text { margin-top: 1rem; font-size: 0.65rem; }
     
@@ -235,6 +259,14 @@ base_css = """
         border-radius: 50px !important;
         padding: 0.15rem 0.6rem !important;
         font-size: 0.7rem !important;
+    }
+    
+    /* Remove extra spacing in auth form */
+    .auth-container .stTextInput {
+        margin-bottom: 0 !important;
+    }
+    .auth-container div[data-testid="stTextInput"] {
+        margin-bottom: 0.5rem;
     }
     
     @media (max-width: 768px) {
@@ -281,7 +313,6 @@ def show_auth_page():
         st.markdown('<p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Sign in to your account</p>', unsafe_allow_html=True)
         
         username = st.text_input("Username", placeholder="Username", key="login_username", label_visibility="collapsed")
-        st.markdown("<br>", unsafe_allow_html=True)
         password = st.text_input("Password", type="password", placeholder="Password", key="login_password", label_visibility="collapsed")
         
         if username and username in users:
@@ -333,20 +364,15 @@ def show_auth_page():
         st.markdown("<br>", unsafe_allow_html=True)
         
         username = st.text_input("Username", placeholder="Username", key="signup_username", label_visibility="collapsed")
-        st.markdown("<br>", unsafe_allow_html=True)
         password = st.text_input("Password", type="password", placeholder="Password", key="signup_password", label_visibility="collapsed")
-        st.markdown("<br>", unsafe_allow_html=True)
         confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm Password", key="signup_confirm", label_visibility="collapsed")
-        st.markdown("<br>", unsafe_allow_html=True)
         full_name = st.text_input("Full Name", placeholder="Full Name", key="signup_name", label_visibility="collapsed")
         
         if role == "student":
-            st.markdown("<br>", unsafe_allow_html=True)
             dob = st.date_input("Date of Birth", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="student_dob")
             grade = st.selectbox("Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
             school = st.text_input("School Name", placeholder="School Name", key="student_school")
         else:
-            st.markdown("<br>", unsafe_allow_html=True)
             child_name = st.text_input("Child's Name", placeholder="Child's Name", key="parent_child")
             child_dob = st.date_input("Child's DOB", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="parent_dob")
             child_grade = st.selectbox("Child's Grade", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"])
@@ -417,7 +443,7 @@ def show_sidebar(user_data):
         <div class="profile-card">
             <div style="font-size: 1.8rem;">{role_icon}</div>
             <div class="profile-name">{user_data.get('full_name', st.session_state.username)}</div>
-            <div class="profile-rule" style="background: {'#00adb5' if st.session_state.user_role == 'student' else '#9c27b0'}20; border: 1px solid {'#00adb5' if st.session_state.user_role == 'student' else '#9c27b0'};">{role_text}</div>
+            <div class="profile-role" style="background: {'#00adb5' if st.session_state.user_role == 'student' else '#9c27b0'}20; border: 1px solid {'#00adb5' if st.session_state.user_role == 'student' else '#9c27b0'};">{role_text}</div>
         </div>
         """, unsafe_allow_html=True)
         
