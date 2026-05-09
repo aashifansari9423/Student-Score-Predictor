@@ -59,7 +59,7 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# CSS
+# CSS - SIRF DROPDOWN BOX HATAYA
 # =====================================
 light_theme_css = """
 <style>
@@ -74,60 +74,42 @@ light_theme_css = """
         border: 1px solid #ddd !important;
         border-radius: 10px !important;
         padding: 0.4rem 0.8rem !important;
-        transition: all 0.3s ease !important;
-    }
-    .stNumberInput input:hover, .stTextInput input:hover {
-        border-color: #00adb5 !important;
-        transform: translateY(-2px);
     }
     
-    /* DROPDOWN - NO EXTRA BOX */
-    div[data-baseweb="select"] {
-        background: transparent !important;
-    }
+    /* SIRF YEH FIX - DROPDOWN BOX HATAYA */
     div[data-baseweb="select"] > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        padding: 0 !important;
+        min-height: auto !important;
+    }
+    div[data-baseweb="select"] > div > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    div[data-baseweb="select"] input {
         background: white !important;
         border: 1px solid #ddd !important;
         border-radius: 10px !important;
-        min-height: 38px !important;
-        transition: all 0.3s ease !important;
-        box-shadow: none !important;
-    }
-    div[data-baseweb="select"] > div:hover {
-        border-color: #00adb5 !important;
-        transform: translateY(-2px);
-    }
-    div[data-baseweb="select"] input {
+        padding: 0.4rem 0.8rem !important;
         color: #1a1a2e !important;
-        font-size: 0.85rem !important;
-        background: transparent !important;
+    }
+    div[data-baseweb="select"] input:focus {
+        border-color: #00adb5 !important;
+        outline: none !important;
     }
     
     .stNumberInput button {
         background: #f0f0f0 !important;
         border: 1px solid #ddd !important;
-        transition: all 0.3s ease !important;
     }
     .stNumberInput button:hover {
         background: #00adb5 !important;
-        transform: scale(1.05);
     }
     
-    div[data-baseweb="popover"] div {
-        background: white !important;
-        border: 1px solid #ddd !important;
-    }
-    li[role="option"] {
-        color: #1a1a2e !important;
-        padding: 6px 12px !important;
-        transition: all 0.2s ease !important;
-    }
-    li[role="option"]:hover {
-        background: #00adb5 !important;
-        color: white !important;
-    }
-    
-    /* RESULT CARD - OLD COLOR */
     .result-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
@@ -135,14 +117,9 @@ light_theme_css = """
         padding: 1rem;
         text-align: center;
         margin: 1rem 0;
-        transition: all 0.3s ease;
-    }
-    .result-card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 10px 25px rgba(0,173,181,0.2);
     }
     .result-score { color: #00adb5 !important; font-size: 2rem; font-weight: 800; }
-    .result-label { color: #888 !important; font-size: 0.7rem; letter-spacing: 2px; }
+    .result-label { color: #888 !important; font-size: 0.7rem; }
     
     .stButton > button {
         background: #00adb5 !important;
@@ -150,12 +127,9 @@ light_theme_css = """
         border: none !important;
         border-radius: 50px !important;
         padding: 0.4rem 1rem !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease !important;
     }
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,173,181,0.4);
     }
     
     .top-theme-toggle {
@@ -193,60 +167,43 @@ dark_theme_css = """
         border: 1px solid #3a3a5a !important;
         border-radius: 10px !important;
         padding: 0.4rem 0.8rem !important;
-        transition: all 0.3s ease !important;
         color: #ffffff !important;
     }
-    .stNumberInput input:hover, .stTextInput input:hover {
-        border-color: #00adb5 !important;
-        transform: translateY(-2px);
-    }
     
-    /* DROPDOWN - NO EXTRA BOX */
-    div[data-baseweb="select"] {
-        background: transparent !important;
-    }
+    /* SIRF YEH FIX - DROPDOWN BOX HATAYA */
     div[data-baseweb="select"] > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        padding: 0 !important;
+        min-height: auto !important;
+    }
+    div[data-baseweb="select"] > div > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    div[data-baseweb="select"] input {
         background: #1e1e2e !important;
         border: 1px solid #3a3a5a !important;
         border-radius: 10px !important;
-        min-height: 38px !important;
-        transition: all 0.3s ease !important;
-        box-shadow: none !important;
-    }
-    div[data-baseweb="select"] > div:hover {
-        border-color: #00adb5 !important;
-        transform: translateY(-2px);
-    }
-    div[data-baseweb="select"] input {
+        padding: 0.4rem 0.8rem !important;
         color: #ffffff !important;
-        font-size: 0.85rem !important;
-        background: transparent !important;
+    }
+    div[data-baseweb="select"] input:focus {
+        border-color: #00adb5 !important;
+        outline: none !important;
     }
     
     .stNumberInput button {
         background: #2d2d44 !important;
         border: 1px solid #3a3a5a !important;
-        transition: all 0.3s ease !important;
     }
     .stNumberInput button:hover {
         background: #00adb5 !important;
-        transform: scale(1.05);
     }
     
-    div[data-baseweb="popover"] div {
-        background: #1e1e2e !important;
-        border: 1px solid #3a3a5a !important;
-    }
-    li[role="option"] {
-        color: #ffffff !important;
-        padding: 6px 12px !important;
-        transition: all 0.2s ease !important;
-    }
-    li[role="option"]:hover {
-        background: #00adb5 !important;
-    }
-    
-    /* RESULT CARD - OLD COLOR */
     .result-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
         border: 2px solid #00adb5;
@@ -254,14 +211,9 @@ dark_theme_css = """
         padding: 1rem;
         text-align: center;
         margin: 1rem 0;
-        transition: all 0.3s ease;
-    }
-    .result-card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 10px 25px rgba(0,173,181,0.2);
     }
     .result-score { color: #00adb5 !important; font-size: 2rem; font-weight: 800; }
-    .result-label { color: #888 !important; font-size: 0.7rem; letter-spacing: 2px; }
+    .result-label { color: #888 !important; font-size: 0.7rem; }
     
     .stButton > button {
         background: #00adb5 !important;
@@ -269,12 +221,9 @@ dark_theme_css = """
         border: none !important;
         border-radius: 50px !important;
         padding: 0.4rem 1rem !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease !important;
     }
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,173,181,0.4);
     }
     
     .top-theme-toggle {
@@ -313,7 +262,7 @@ def theme_toggle():
         st.rerun()
 
 # =====================================
-# AUTH PAGE - PROFESSIONAL CHOTA SIZE
+# AUTH PAGE
 # =====================================
 def show_auth_page():
     apply_theme()
@@ -324,20 +273,17 @@ def show_auth_page():
     
     users = load_users()
     
-    # PROFESSIONAL SMALL CENTERED BOX
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
         st.markdown("""
         <div style="text-align: center; margin-bottom: 1rem;">
             <div style="font-size: 2.5rem;">🎓</div>
-            <h1 style="font-size: 1.5rem; margin: 0.2rem 0;">Student Score Predictor</h1>
+            <h1 style="font-size: 1.5rem; margin: 0;">Student Score Predictor</h1>
         </div>
         """, unsafe_allow_html=True)
         
         if st.session_state.auth_mode == "login":
-            st.markdown('<p style="text-align: center; margin-bottom: 1rem; font-size: 0.8rem;">Sign in to continue</p>', unsafe_allow_html=True)
-            
             username = st.text_input("Username", placeholder="Username", key="login_user", label_visibility="collapsed")
             password = st.text_input("Password", type="password", placeholder="Password", key="login_pass", label_visibility="collapsed")
             
@@ -345,7 +291,7 @@ def show_auth_page():
                 role = users[username]["role"]
                 role_icon = "🎓" if role == "student" else "👨‍👩‍👧"
                 role_text = "Student" if role == "student" else "Parent"
-                st.markdown(f'<p style="text-align: center; font-size: 0.7rem; margin-top: -0.3rem;">{role_icon} {role_text}</p>', unsafe_allow_html=True)
+                st.markdown(f'<p style="text-align: center; font-size: 0.7rem;">{role_icon} {role_text}</p>', unsafe_allow_html=True)
             
             if st.button("Sign In", use_container_width=True):
                 if username and password:
@@ -375,7 +321,7 @@ def show_auth_page():
         
         else:
             role = st.session_state.signup_role
-            st.markdown(f'<p style="text-align: center; margin-bottom: 0.8rem; font-size: 0.8rem;">Create {role} account</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="text-align: center;">Create {role} account</p>', unsafe_allow_html=True)
             
             col_a, col_b = st.columns(2)
             with col_a:
@@ -443,7 +389,7 @@ def show_auth_page():
                 st.session_state.auth_mode = "login"
                 st.rerun()
         
-        st.markdown('<p style="text-align: center; font-size: 0.55rem; color: #888; margin-top: 0.8rem;">Secure Portal</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; font-size: 0.55rem; color: #888;">Secure Portal</p>', unsafe_allow_html=True)
 
 # =====================================
 # LOAD MODEL
