@@ -59,30 +59,64 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# THEME CSS WITH HOVER EFFECTS
+# THEME CSS - COMPLETE FIX
 # =====================================
 light_theme_css = """
 <style>
     .stApp { background: linear-gradient(135deg, #f5f7fa, #c3cfe2); }
     .main .block-container, .auth-container { background: rgba(255, 255, 255, 0.98); border: 1px solid #e0e0e0; }
     h1, h2, h3, .auth-title, .user-info { color: #1a1a2e !important; }
-    .stNumberInput label, .stSelectbox label { color: #4a5568 !important; transition: color 0.3s ease; }
+    
+    /* Labels */
+    .stNumberInput label, .stSelectbox label { color: #4a5568 !important; }
     .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div { background-color: #ffffff !important; color: #1a1a2e !important; border: 1px solid #d0d0d0 !important; transition: all 0.3s ease; }
-    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover { border-color: #00adb5 !important; transform: translateY(-1px); }
-    .stNumberInput button { transition: all 0.3s ease; }
-    .stNumberInput button:hover { background-color: #00adb5 !important; transform: scale(1.05); }
-    .result-card { background: #ffffff; border: 2px solid #00adb5; transition: all 0.3s ease; }
+    
+    /* Input fields - Light mode text dark */
+    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+        background-color: #ffffff !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        border: 1px solid #d0d0d0 !important;
+    }
+    
+    .stNumberInput input:focus, .stTextInput input:focus {
+        border-color: #00adb5 !important;
+    }
+    
+    /* Increase/Decrease buttons - Full hover */
+    .stNumberInput button {
+        background-color: #e0e0e0 !important;
+        border: 1px solid #c0c0c0 !important;
+        color: #1a1a2e !important;
+        transition: all 0.3s ease !important;
+    }
+    .stNumberInput button:hover {
+        background-color: #00adb5 !important;
+        color: white !important;
+        transform: scale(1.05) !important;
+        border-color: #00adb5 !important;
+    }
+    
+    .result-card { background: #ffffff; border: 2px solid #00adb5; }
     .result-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,173,181,0.2); }
     .result-score { color: #00adb5 !important; }
-    .stButton > button { background: #00adb5 !important; color: white !important; transition: all 0.3s ease; }
+    .result-label { color: #666666 !important; }
+    
+    .stButton > button { background: #00adb5 !important; color: white !important; }
     .stButton > button:hover { background: #007a7f !important; transform: translateY(-2px); }
+    
     .student-badge { background: #00adb5 !important; color: white !important; }
     .parent-badge { background: #9c27b0 !important; color: white !important; }
-    .child-card { background: rgba(0, 173, 181, 0.08); border: 1px solid #00adb5; transition: all 0.3s ease; }
-    .child-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,173,181,0.15); }
-    li[role="option"] { transition: all 0.2s ease; }
-    li[role="option"]:hover { background-color: #00adb5 !important; transform: translateX(5px); }
+    .child-card { background: rgba(0, 173, 181, 0.08); border: 1px solid #00adb5; }
+    .child-card:hover { transform: translateY(-2px); }
+    
+    .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.1) !important; color: #1a1a2e !important; }
+    hr { background: #d0d0d0 !important; }
+    .footer-text, .stCaption { color: #666666 !important; }
+    
+    div[data-baseweb="popover"] > div { background-color: #ffffff !important; border: 1px solid #d0d0d0 !important; }
+    li[role="option"] { color: #1a1a2e !important; background-color: #ffffff !important; }
+    li[role="option"]:hover { background-color: #00adb5 !important; color: white !important; transform: translateX(5px); }
 </style>
 """
 
@@ -91,22 +125,51 @@ dark_theme_css = """
     .stApp { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
     .main .block-container, .auth-container { background: rgba(18, 18, 30, 0.95); border: 1px solid #334155; }
     h1, h2, h3, .auth-title, .user-info { color: #ffffff !important; }
-    .stNumberInput label, .stSelectbox label { color: #cbd5e0 !important; transition: color 0.3s ease; }
+    
+    /* Labels */
+    .stNumberInput label, .stSelectbox label { color: #cbd5e0 !important; }
     .stNumberInput label:hover, .stSelectbox label:hover { color: #00adb5 !important; }
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div { background-color: #1a1a2e !important; color: #ffffff !important; border: 1px solid #334155 !important; transition: all 0.3s ease; }
-    .stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover { border-color: #00adb5 !important; transform: translateY(-1px); }
-    .stNumberInput button { transition: all 0.3s ease; }
-    .stNumberInput button:hover { background-color: #00adb5 !important; transform: scale(1.05); }
-    .result-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #00adb5; transition: all 0.3s ease; }
+    
+    /* Input fields - Dark mode text white */
+    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    /* Increase/Decrease buttons - Full hover */
+    .stNumberInput button {
+        background-color: #2d2d44 !important;
+        border: 1px solid #334155 !important;
+        color: #ffffff !important;
+        transition: all 0.3s ease !important;
+    }
+    .stNumberInput button:hover {
+        background-color: #00adb5 !important;
+        transform: scale(1.05) !important;
+        border-color: #00adb5 !important;
+    }
+    
+    .result-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #00adb5; }
     .result-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,173,181,0.3); }
     .result-score { color: #00adb5 !important; }
-    .stButton > button { background: #00adb5 !important; color: white !important; transition: all 0.3s ease; }
+    .result-label { color: #888888 !important; }
+    
+    .stButton > button { background: #00adb5 !important; color: white !important; }
     .stButton > button:hover { background: #007a7f !important; transform: translateY(-2px); }
+    
     .student-badge { background: #00adb5 !important; color: white !important; }
     .parent-badge { background: #9c27b0 !important; color: white !important; }
-    .child-card { background: rgba(0, 173, 181, 0.1); border: 1px solid #00adb5; transition: all 0.3s ease; }
-    .child-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,173,181,0.2); }
-    li[role="option"] { transition: all 0.2s ease; }
+    .child-card { background: rgba(0, 173, 181, 0.1); border: 1px solid #00adb5; }
+    .child-card:hover { transform: translateY(-2px); }
+    
+    .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.2) !important; color: #ffffff !important; }
+    hr { background: #334155 !important; }
+    .footer-text, .stCaption { color: #888888 !important; }
+    
+    div[data-baseweb="popover"] > div { background-color: #1a1a2e !important; border: 1px solid #334155 !important; }
+    li[role="option"] { color: #ffffff !important; background-color: #1a1a2e !important; }
     li[role="option"]:hover { background-color: #00adb5 !important; transform: translateX(5px); }
 </style>
 """
@@ -115,11 +178,10 @@ base_css = """
 <style>
     *:focus { outline: none !important; box-shadow: none !important; }
     .stNumberInput input, .stTextInput input { border-radius: 10px !important; padding: 0.5rem 0.8rem !important; }
-    .stNumberInput button { background-color: #2d2d44 !important; border-radius: 6px !important; }
     div[data-baseweb="select"] > div { border-radius: 10px !important; min-height: 38px !important; padding: 0 10px !important; }
     div[data-baseweb="popover"] > div { border-radius: 10px !important; }
-    .stButton > button { border: none !important; border-radius: 50px !important; padding: 0.6rem !important; font-weight: 600 !important; cursor: pointer; }
-    .result-card { border-radius: 20px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; animation: slideDown 0.4s ease-out; }
+    .stButton > button { border: none !important; border-radius: 50px !important; padding: 0.6rem !important; font-weight: 600 !important; transition: all 0.3s ease !important; cursor: pointer; }
+    .result-card { border-radius: 20px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; transition: all 0.3s ease !important; animation: slideDown 0.4s ease-out; }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     .result-score { font-size: 3rem; font-weight: 800; }
     .result-score span { font-size: 1rem; }
@@ -140,44 +202,43 @@ base_css = """
     }
     .welcome-section {
         flex: 1;
+        text-align: left;
     }
     .button-group {
         display: flex;
-        gap: 10px;
+        gap: 12px;
+        justify-content: flex-end;
     }
     .button-group button {
         background: rgba(0, 173, 181, 0.2) !important;
         border: 1px solid #00adb5 !important;
         border-radius: 50px !important;
-        padding: 0.3rem 0.8rem !important;
-        font-size: 0.8rem !important;
+        padding: 0.4rem 1rem !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s ease !important;
     }
     .button-group button:hover {
-        transform: scale(1.05);
+        transform: translateY(-2px) !important;
         background: rgba(0, 173, 181, 0.4) !important;
     }
-    .theme-btn {
-        font-size: 1rem !important;
-        padding: 0.3rem 0.7rem !important;
-    }
     
-    /* Role Badge */
     .student-badge, .parent-badge {
         padding: 0.3rem 1rem;
         border-radius: 50px;
         font-size: 0.75rem;
         font-weight: 600;
         display: inline-block;
+        margin-left: 0.5rem;
     }
     
-    /* Child Info Card */
     .child-card {
         padding: 1rem;
         border-radius: 15px;
         margin: 1rem 0;
         text-align: center;
+        transition: all 0.3s ease !important;
     }
     .child-name {
         font-size: 1.3rem;
@@ -193,8 +254,8 @@ base_css = """
         .main .block-container { padding: 1rem; }
         h1 { font-size: 1.4rem !important; }
         .result-score { font-size: 2rem; }
-        .button-group { gap: 5px; }
-        .button-group button { padding: 0.2rem 0.5rem !important; font-size: 0.7rem !important; }
+        .button-group { gap: 6px; }
+        .button-group button { padding: 0.2rem 0.6rem !important; font-size: 0.7rem !important; }
         .child-name { font-size: 1rem; }
     }
 </style>
@@ -207,21 +268,18 @@ def apply_theme():
         st.markdown(light_theme_css, unsafe_allow_html=True)
     st.markdown(base_css, unsafe_allow_html=True)
 
-def theme_toggle():
-    icon = "☀️" if st.session_state.theme == "dark" else "🌙"
-    return icon
-
 # =====================================
 # AUTH PAGE
 # =====================================
 def show_auth_page():
     apply_theme()
     
-    # Theme toggle top right
-    col1, col2, col3 = st.columns([4, 1, 1])
+    # Theme toggle top right with text
+    col1, col2, col3 = st.columns([4, 1, 2])
     with col3:
-        icon = theme_toggle()
-        if st.button(icon, key="theme_toggle_auth"):
+        mode_text = "Light Mode" if st.session_state.theme == "dark" else "Dark Mode"
+        mode_icon = "☀️" if st.session_state.theme == "dark" else "🌙"
+        if st.button(f"{mode_icon} {mode_text}", key="theme_toggle_auth"):
             if st.session_state.theme == "dark":
                 st.session_state.theme = "light"
             else:
@@ -362,24 +420,24 @@ def load_models():
 def show_main_app():
     apply_theme()
     
-    # Load user data
     users = load_users()
     user_data = users.get(st.session_state.username, {})
     
     # Top bar - LEFT: Welcome, RIGHT: Buttons
     st.markdown('<div class="top-bar">', unsafe_allow_html=True)
     
-    # Left: Welcome and Role Badge
+    # Left side - Welcome and Role Badge
     role_text = "Student" if st.session_state.user_role == "student" else "Parent"
     role_icon = "👨‍🎓" if st.session_state.user_role == "student" else "👨‍👩‍👧"
     role_badge_class = "student-badge" if st.session_state.user_role == "student" else "parent-badge"
     st.markdown(f'<div class="welcome-section"><span style="font-size: 0.9rem;">Welcome, {st.session_state.username}</span> <span class="{role_badge_class}">{role_icon} {role_text}</span></div>', unsafe_allow_html=True)
     
-    # Right: Theme Toggle + Sign Out
+    # Right side - Theme Toggle + Sign Out
     st.markdown('<div class="button-group">', unsafe_allow_html=True)
     
-    icon = theme_toggle()
-    if st.button(icon, key="theme_toggle_main"):
+    mode_text = "Dark Mode" if st.session_state.theme == "light" else "Light Mode"
+    mode_icon = "🌙" if st.session_state.theme == "light" else "☀️"
+    if st.button(f"{mode_icon} {mode_text}", key="theme_toggle_main"):
         if st.session_state.theme == "dark":
             st.session_state.theme = "light"
         else:
@@ -395,13 +453,12 @@ def show_main_app():
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # Parent Section - Show Child Info Clearly
+    # Parent Section
     if st.session_state.user_role == "parent":
         child_name = user_data.get("child_name", "Not specified")
         child_grade = user_data.get("child_grade", "Not specified")
         child_age = user_data.get("child_age", "")
         relation = user_data.get("relation", "Parent")
-        
         age_text = f" • {child_age} years" if child_age else ""
         
         st.markdown(f"""
