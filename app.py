@@ -18,7 +18,7 @@ st.set_page_config(
 )
 
 # =====================================
-# USER DATABASE
+# USER DATABASE FILE
 # =====================================
 USER_DB_FILE = "users.json"
 
@@ -59,7 +59,7 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# CSS
+# CSS - SIRF DROPDOWN TEXT FIX
 # =====================================
 light_theme_css = """
 <style>
@@ -82,9 +82,12 @@ light_theme_css = """
         transform: translateY(-2px);
     }
     
+    /* DROPDOWN TEXT FIX - YAHI SE HAL HUA */
     div[data-baseweb="select"] input {
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        font-size: 0.85rem !important;
+        background: transparent !important;
     }
     
     .stNumberInput button {
@@ -191,9 +194,12 @@ dark_theme_css = """
         transform: translateY(-2px);
     }
     
+    /* DROPDOWN TEXT FIX - YAHI SE HAL HUA */
     div[data-baseweb="select"] input {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
+        font-size: 0.85rem !important;
+        background: transparent !important;
     }
     
     .stNumberInput button {
