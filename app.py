@@ -59,7 +59,7 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 
 # =====================================
-# CSS - SIRF DROPDOWN KA BOX HATAYA
+# CSS - SIRF DROPDOWN KA BOX HATAYA (STRONG SELECTORS)
 # =====================================
 light_theme_css = """
 <style>
@@ -81,10 +81,11 @@ light_theme_css = """
         transform: translateY(-2px);
     }
     
-    /* DROPDOWN - EXTRA BOX HATAYA */
+    /* DROPDOWN - EXTRA BOX COMPLETELY HATAYA */
     div[data-baseweb="select"] {
         background: transparent !important;
         box-shadow: none !important;
+        border: none !important;
     }
     div[data-baseweb="select"] > div {
         background: white !important;
@@ -94,6 +95,7 @@ light_theme_css = """
         transition: all 0.3s ease !important;
         box-shadow: none !important;
         outline: none !important;
+        padding: 0 8px !important;
     }
     div[data-baseweb="select"] > div:hover {
         border-color: #00adb5 !important;
@@ -102,11 +104,17 @@ light_theme_css = """
     div[data-baseweb="select"] > div > div {
         box-shadow: none !important;
         border: none !important;
+        background: transparent !important;
     }
     div[data-baseweb="select"] input {
         color: #1a1a2e !important;
         font-size: 0.85rem !important;
         background: transparent !important;
+        box-shadow: none !important;
+    }
+    .stSelectbox div[data-baseweb="select"] * {
+        box-shadow: none !important;
+        border: none !important;
     }
     
     .stNumberInput button {
@@ -206,10 +214,11 @@ dark_theme_css = """
         transform: translateY(-2px);
     }
     
-    /* DROPDOWN - EXTRA BOX HATAYA */
+    /* DROPDOWN - EXTRA BOX COMPLETELY HATAYA */
     div[data-baseweb="select"] {
         background: transparent !important;
         box-shadow: none !important;
+        border: none !important;
     }
     div[data-baseweb="select"] > div {
         background: #1e1e2e !important;
@@ -219,6 +228,7 @@ dark_theme_css = """
         transition: all 0.3s ease !important;
         box-shadow: none !important;
         outline: none !important;
+        padding: 0 8px !important;
     }
     div[data-baseweb="select"] > div:hover {
         border-color: #00adb5 !important;
@@ -227,11 +237,17 @@ dark_theme_css = """
     div[data-baseweb="select"] > div > div {
         box-shadow: none !important;
         border: none !important;
+        background: transparent !important;
     }
     div[data-baseweb="select"] input {
         color: #ffffff !important;
         font-size: 0.85rem !important;
         background: transparent !important;
+        box-shadow: none !important;
+    }
+    .stSelectbox div[data-baseweb="select"] * {
+        box-shadow: none !important;
+        border: none !important;
     }
     
     .stNumberInput button {
