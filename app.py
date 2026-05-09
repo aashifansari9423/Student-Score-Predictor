@@ -63,281 +63,80 @@ if 'theme' not in st.session_state:
 # =====================================
 light_theme_css = """
 <style>
-    .stApp {
-        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-    }
-    .main .block-container, .auth-container {
-        background: rgba(255, 255, 255, 0.98);
-        border: 1px solid #e0e0e0;
-    }
-    h1, h2, h3, .auth-title, .user-info {
-        color: #1a1a2e !important;
-    }
-    .stNumberInput label, .stSelectbox label {
-        color: #4a5568 !important;
-    }
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
-        background-color: #ffffff !important;
-        color: #1a1a2e !important;
-        border: 1px solid #d0d0d0 !important;
-    }
-    input, textarea, select, .stTextInput input, .stNumberInput input {
-        color: #1a1a2e !important;
-        -webkit-text-fill-color: #1a1a2e !important;
-    }
-    .result-card {
-        background: #ffffff;
-        border: 2px solid #00adb5;
-    }
-    .result-score {
-        color: #00adb5 !important;
-    }
-    .result-label {
-        color: #666666 !important;
-    }
-    .stSuccess, .stInfo, .stWarning {
-        background-color: rgba(0, 173, 181, 0.1) !important;
-    }
-    .stButton > button {
-        background: #00adb5 !important;
-        color: white !important;
-    }
-    .stButton > button:hover {
-        background: #007a7f !important;
-    }
-    hr {
-        background: #d0d0d0 !important;
-    }
-    .footer-text, .stCaption, .stMarkdown {
-        color: #666666 !important;
-    }
-    div[data-baseweb="popover"] > div {
-        background-color: #ffffff !important;
-        border: 1px solid #d0d0d0 !important;
-    }
-    li[role="option"] {
-        color: #1a1a2e !important;
-        background-color: #ffffff !important;
-    }
-    li[role="option"]:hover {
-        background-color: #00adb5 !important;
-        color: white !important;
-    }
-    .theme-toggle button {
-        background: rgba(0, 173, 181, 0.15) !important;
-        border: 1px solid #00adb5 !important;
-        color: #00adb5 !important;
-    }
+    .stApp { background: linear-gradient(135deg, #f5f7fa, #c3cfe2); }
+    .main .block-container, .auth-container { background: rgba(255, 255, 255, 0.98); border: 1px solid #e0e0e0; }
+    h1, h2, h3, .auth-title, .user-info { color: #1a1a2e !important; }
+    .stNumberInput label, .stSelectbox label { color: #4a5568 !important; }
+    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div { background-color: #ffffff !important; color: #1a1a2e !important; border: 1px solid #d0d0d0 !important; }
+    input, textarea, select, .stTextInput input, .stNumberInput input { color: #1a1a2e !important; -webkit-text-fill-color: #1a1a2e !important; }
+    .result-card { background: #ffffff; border: 2px solid #00adb5; }
+    .result-score { color: #00adb5 !important; }
+    .result-label { color: #666666 !important; }
+    .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.1) !important; }
+    .stButton > button { background: #00adb5 !important; color: white !important; }
+    .stButton > button:hover { background: #007a7f !important; }
+    hr { background: #d0d0d0 !important; }
+    .footer-text, .stCaption, .stMarkdown { color: #666666 !important; }
+    div[data-baseweb="popover"] > div { background-color: #ffffff !important; border: 1px solid #d0d0d0 !important; }
+    li[role="option"] { color: #1a1a2e !important; background-color: #ffffff !important; }
+    li[role="option"]:hover { background-color: #00adb5 !important; color: white !important; }
+    .student-badge { background: #00adb5 !important; color: white !important; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.7rem; }
+    .parent-badge { background: #9c27b0 !important; color: white !important; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.7rem; }
 </style>
 """
 
 dark_theme_css = """
 <style>
-    .stApp {
-        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    }
-    .main .block-container, .auth-container {
-        background: rgba(18, 18, 30, 0.95);
-        border: 1px solid #334155;
-    }
-    h1, h2, h3, .auth-title, .user-info {
-        color: #ffffff !important;
-    }
-    .stNumberInput label, .stSelectbox label {
-        color: #cbd5e0 !important;
-    }
-    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
-        background-color: #1a1a2e !important;
-        color: #ffffff !important;
-        border: 1px solid #334155 !important;
-    }
-    input, textarea, select, .stTextInput input, .stNumberInput input {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-    }
-    .result-card {
-        background: linear-gradient(135deg, #1a1a2e, #16213e);
-        border: 2px solid #00adb5;
-    }
-    .result-score {
-        color: #00adb5 !important;
-    }
-    .result-label {
-        color: #888888 !important;
-    }
-    .stSuccess, .stInfo, .stWarning {
-        background-color: rgba(0, 173, 181, 0.2) !important;
-        color: #ffffff !important;
-    }
-    .stButton > button {
-        background: #00adb5 !important;
-        color: white !important;
-    }
-    .stButton > button:hover {
-        background: #007a7f !important;
-    }
-    hr {
-        background: #334155 !important;
-    }
-    .footer-text, .stCaption, .stMarkdown {
-        color: #888888 !important;
-    }
-    .theme-toggle button {
-        background: rgba(0, 173, 181, 0.2) !important;
-        border: 1px solid #00adb5 !important;
-        color: #00adb5 !important;
-    }
+    .stApp { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+    .main .block-container, .auth-container { background: rgba(18, 18, 30, 0.95); border: 1px solid #334155; }
+    h1, h2, h3, .auth-title, .user-info { color: #ffffff !important; }
+    .stNumberInput label, .stSelectbox label { color: #cbd5e0 !important; }
+    .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div { background-color: #1a1a2e !important; color: #ffffff !important; border: 1px solid #334155 !important; }
+    input, textarea, select, .stTextInput input, .stNumberInput input { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; }
+    .result-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #00adb5; }
+    .result-score { color: #00adb5 !important; }
+    .result-label { color: #888888 !important; }
+    .stSuccess, .stInfo, .stWarning { background-color: rgba(0, 173, 181, 0.2) !important; color: #ffffff !important; }
+    .stButton > button { background: #00adb5 !important; color: white !important; }
+    .stButton > button:hover { background: #007a7f !important; }
+    hr { background: #334155 !important; }
+    .footer-text, .stCaption, .stMarkdown { color: #888888 !important; }
+    .student-badge { background: #00adb5 !important; color: white !important; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.7rem; }
+    .parent-badge { background: #9c27b0 !important; color: white !important; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.7rem; }
 </style>
 """
 
 base_css = """
 <style>
-    *:focus {
-        outline: none !important;
-        box-shadow: none !important;
-    }
-    .stNumberInput input, .stTextInput input {
-        border-radius: 10px !important;
-        padding: 0.5rem 0.8rem !important;
-    }
-    .stNumberInput button {
-        background-color: #2d2d44 !important;
-        border-radius: 6px !important;
-    }
-    .stNumberInput button:hover {
-        background-color: #00adb5 !important;
-    }
-    div[data-baseweb="select"] > div {
-        border-radius: 10px !important;
-        min-height: 38px !important;
-        padding: 0 10px !important;
-    }
-    div[data-baseweb="popover"] > div {
-        border-radius: 10px !important;
-    }
-    .stButton > button {
-        border: none !important;
-        border-radius: 50px !important;
-        padding: 0.6rem !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-    .stButton > button:hover {
-        transform: translateY(-2px);
-    }
-    .result-card {
-        border-radius: 20px;
-        padding: 1.5rem;
-        text-align: center;
-        margin: 1.5rem 0;
-        animation: slideDown 0.4s ease-out;
-    }
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    .result-score {
-        font-size: 3rem;
-        font-weight: 800;
-    }
-    .result-score span {
-        font-size: 1rem;
-    }
-    .auth-container {
-        border-radius: 20px;
-        padding: 2rem;
-        max-width: 450px;
-        margin: 60px auto;
-        text-align: center;
-    }
-    .auth-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-    .student-badge {
-        background: rgba(0, 173, 181, 0.2);
-        padding: 0.2rem 0.8rem;
-        border-radius: 50px;
-        font-size: 0.7rem;
-        display: inline-block;
-        margin-left: 0.5rem;
-    }
-    .parent-badge {
-        background: rgba(156, 39, 176, 0.2);
-        padding: 0.2rem 0.8rem;
-        border-radius: 50px;
-        font-size: 0.7rem;
-        display: inline-block;
-        margin-left: 0.5rem;
-        color: #ce93d8 !important;
-    }
-    .theme-toggle {
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        z-index: 999;
-    }
-    .theme-toggle button {
-        border-radius: 50px !important;
-        padding: 0.4rem 0.7rem !important;
-        font-size: 1.1rem !important;
-        min-width: 42px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .theme-toggle button:hover {
-        transform: scale(1.05);
-    }
-    hr {
-        margin: 1.2rem 0;
-        border: none;
-        height: 1px;
-    }
-    .footer-text {
-        margin-top: 1.2rem;
-        font-size: 0.7rem;
-    }
-    div[data-testid="column"] {
-        padding: 0 0.5rem;
-    }
-    .role-login-hint {
-        font-size: 0.75rem;
-        margin-top: -0.5rem;
-        margin-bottom: 0.8rem;
-        padding: 0.3rem 0.6rem;
-        border-radius: 8px;
-        display: inline-block;
-    }
+    *:focus { outline: none !important; box-shadow: none !important; }
+    .stNumberInput input, .stTextInput input { border-radius: 10px !important; padding: 0.5rem 0.8rem !important; }
+    .stNumberInput button { background-color: #2d2d44 !important; border-radius: 6px !important; }
+    .stNumberInput button:hover { background-color: #00adb5 !important; }
+    div[data-baseweb="select"] > div { border-radius: 10px !important; min-height: 38px !important; padding: 0 10px !important; }
+    div[data-baseweb="popover"] > div { border-radius: 10px !important; }
+    .stButton > button { border: none !important; border-radius: 50px !important; padding: 0.6rem !important; font-weight: 600 !important; transition: all 0.3s ease; cursor: pointer; }
+    .stButton > button:hover { transform: translateY(-2px); }
+    .result-card { border-radius: 20px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; animation: slideDown 0.4s ease-out; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    .result-score { font-size: 3rem; font-weight: 800; }
+    .result-score span { font-size: 1rem; }
+    .auth-container { border-radius: 20px; padding: 2rem; max-width: 450px; margin: 60px auto; text-align: center; }
+    .auth-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .role-login-hint { font-size: 0.75rem; margin-top: -0.5rem; margin-bottom: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 8px; display: inline-block; background: rgba(0,173,181,0.15); }
+    hr { margin: 1.2rem 0; border: none; height: 1px; }
+    .footer-text { margin-top: 1.2rem; font-size: 0.7rem; }
+    div[data-testid="column"] { padding: 0 0.5rem; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .theme-toggle { margin-left: auto; }
+    .theme-toggle button { background: rgba(0, 173, 181, 0.2) !important; border: 1px solid #00adb5 !important; border-radius: 50px !important; padding: 0.3rem 0.7rem !important; font-size: 1.1rem !important; cursor: pointer; transition: all 0.3s ease; }
+    .theme-toggle button:hover { transform: scale(1.05); }
+    .signout-btn button { background: rgba(0, 173, 181, 0.2) !important; border: 1px solid #00adb5 !important; border-radius: 50px !important; padding: 0.3rem 1rem !important; font-size: 0.8rem !important; font-weight: 500 !important; }
     @media (max-width: 768px) {
-        .main .block-container {
-            padding: 1rem;
-        }
-        h1 {
-            font-size: 1.4rem !important;
-        }
-        .result-score {
-            font-size: 2rem;
-        }
-        input, .stTextInput input, .stNumberInput input {
-            font-size: 16px !important;
-            padding: 0.6rem !important;
-        }
-        .theme-toggle {
-            top: 0.5rem;
-            right: 0.5rem;
-        }
-        .theme-toggle button {
-            padding: 0.3rem 0.6rem !important;
-            font-size: 1rem !important;
-        }
+        .main .block-container { padding: 1rem; }
+        h1 { font-size: 1.4rem !important; }
+        .result-score { font-size: 2rem; }
+        input, .stTextInput input, .stNumberInput input { font-size: 16px !important; padding: 0.6rem !important; }
+        .top-bar { flex-wrap: wrap; gap: 0.5rem; }
     }
 </style>
 """
@@ -364,8 +163,8 @@ def theme_toggle():
 def show_auth_page():
     apply_theme()
     
-    # Theme toggle
-    st.markdown('<div class="theme-toggle">', unsafe_allow_html=True)
+    # Theme toggle top right
+    st.markdown('<div style="display: flex; justify-content: flex-end; padding: 0.5rem;">', unsafe_allow_html=True)
     theme_toggle()
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -383,12 +182,11 @@ def show_auth_page():
         username = st.text_input("Username", placeholder="Enter your username", key="login_username")
         password = st.text_input("Password", type="password", placeholder="Enter your password", key="login_password")
         
-        # Show role hint after username input
         if username and username in users:
             role = users[username]["role"]
             role_icon = "👨‍🎓" if role == "student" else "👨‍👩‍👧"
             role_text = "Student" if role == "student" else "Parent"
-            st.markdown(f'<div class="role-login-hint" style="background: rgba(0,173,181,0.15);">{role_icon} Login as: <strong>{role_text}</strong></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="role-login-hint">{role_icon} Login as: <strong>{role_text}</strong></div>', unsafe_allow_html=True)
         
         if st.button("Sign In", use_container_width=True):
             if username and password:
@@ -439,13 +237,11 @@ def show_auth_page():
         
         if role == "student":
             dob = st.date_input("Date of Birth", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="student_dob")
-            age = calculate_age(dob) if dob else 0
             grade = st.selectbox("Current Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"], key="student_grade")
             school = st.text_input("School Name", placeholder="Enter your school name", key="student_school")
         else:
             child_name = st.text_input("Child's Name", placeholder="Enter your child's name", key="parent_child")
             child_dob = st.date_input("Child's Date of Birth", min_value=datetime(1990, 1, 1), max_value=datetime.now(), key="parent_dob")
-            child_age = calculate_age(child_dob) if child_dob else 0
             child_grade = st.selectbox("Child's Grade/Class", ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "College"], key="parent_grade")
             relation = st.selectbox("Relationship", ["Father", "Mother", "Guardian"], key="parent_relation")
         
@@ -465,16 +261,15 @@ def show_auth_page():
                     "full_name": full_name,
                     "created_at": str(pd.Timestamp.now())
                 }
-                
                 if role == "student":
                     user_data["dob"] = str(dob)
-                    user_data["age"] = age
+                    user_data["age"] = calculate_age(dob)
                     user_data["grade"] = grade
                     user_data["school"] = school
                 else:
                     user_data["child_name"] = child_name
                     user_data["child_dob"] = str(child_dob)
-                    user_data["child_age"] = child_age
+                    user_data["child_age"] = calculate_age(child_dob)
                     user_data["child_grade"] = child_grade
                     user_data["relation"] = relation
                 
@@ -507,18 +302,27 @@ def load_models():
 def show_main_app():
     apply_theme()
     
-    # Theme toggle
-    st.markdown('<div class="theme-toggle">', unsafe_allow_html=True)
-    theme_toggle()
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Top bar with welcome, role badge, theme toggle, and sign out
+    st.markdown('<div class="top-bar">', unsafe_allow_html=True)
     
-    # Top bar
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        role_badge = 'student-badge' if st.session_state.user_role == 'student' else 'parent-badge'
-        role_text = "Student" if st.session_state.user_role == 'student' else "Parent"
-        role_icon = "👨‍🎓" if st.session_state.user_role == 'student' else "👨‍👩‍👧"
-        st.markdown(f'<div style="padding: 0.4rem 1rem; border-radius: 50px; display: inline-block;">{role_icon} Welcome, {st.session_state.username} <span class="{role_badge}">{role_text}</span></div>', unsafe_allow_html=True)
+    # Left: Welcome and role badge
+    role_badge_class = 'student-badge' if st.session_state.user_role == 'student' else 'parent-badge'
+    role_text = "Student" if st.session_state.user_role == 'student' else "Parent"
+    role_icon = "👨‍🎓" if st.session_state.user_role == 'student' else "👨‍👩‍👧"
+    st.markdown(f'<div><span style="font-size: 0.9rem;">Welcome, {st.session_state.username}</span> <span class="{role_badge_class}">{role_icon} {role_text}</span></div>', unsafe_allow_html=True)
+    
+    # Right: Theme toggle and Sign Out button
+    col_toggle, col_signout = st.columns([1, 1])
+    with col_toggle:
+        theme_toggle()
+    with col_signout:
+        if st.button("Sign Out", key="logout_btn"):
+            st.session_state.logged_in = False
+            st.session_state.username = ""
+            st.session_state.user_role = ""
+            st.rerun()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown("<h1 style='text-align: center;'>Student Score Predictor</h1>", unsafe_allow_html=True)
     
