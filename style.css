@@ -378,3 +378,21 @@ hr {
         font-size: 14px !important;
     }
 }
+/* =====================================
+   PERFECT COLUMN ALIGNMENT FIX
+   ===================================== */
+
+div[data-testid="stHorizontalBlock"] {
+    align-items: stretch !important;
+}
+
+div[data-testid="column"] {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Remove top spacing differences */
+div[data-testid="column"] > div {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
