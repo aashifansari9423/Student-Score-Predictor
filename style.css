@@ -8,7 +8,7 @@
     color: #ffffff !important;
 }
 
-/* Main background */
+/* Background */
 .stApp {
     background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
 }
@@ -27,7 +27,7 @@
     border-right: 1px solid #2a2a4a;
 }
 
-/* Headings */
+/* Titles */
 h1,
 h2,
 h3 {
@@ -36,10 +36,36 @@ h3 {
     color: #ffffff !important;
 }
 
-/* Remove focus border */
+/* Remove focus outline */
 *:focus {
     outline: none !important;
     box-shadow: none !important;
+}
+
+/* =====================================
+   PERFECT COLUMN FIX
+   ===================================== */
+
+div[data-testid="stHorizontalBlock"] {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 1rem !important;
+    align-items: flex-start !important;
+}
+
+div[data-testid="column"] {
+    flex: 1 !important;
+    min-width: 0 !important;
+
+    display: block !important;
+
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+div[data-testid="column"] > div {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
 }
 
 /* =====================================
@@ -62,22 +88,6 @@ h3 {
 }
 
 /* =====================================
-   FIX COLUMNS
-   ===================================== */
-
-div[data-testid="stHorizontalBlock"] {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 1rem !important;
-    align-items: flex-start !important;
-}
-
-div[data-testid="column"] {
-    flex: 1 !important;
-    min-width: 0 !important;
-}
-
-/* =====================================
    INPUT FIELDS
    ===================================== */
 
@@ -85,6 +95,7 @@ div[data-testid="column"] {
 .stTextInput input {
     background-color: #1e1e2e !important;
     color: #ffffff !important;
+
     border: 1px solid #3a3a5a !important;
     border-radius: 10px !important;
 
@@ -102,7 +113,7 @@ div[data-testid="column"] {
 }
 
 /* =====================================
-   SELECT BOX FIX
+   SELECT BOX
    ===================================== */
 
 div[data-baseweb="select"] > div {
@@ -155,7 +166,7 @@ div[data-baseweb="popover"] > div {
     overflow: hidden !important;
 }
 
-/* Dropdown options */
+/* Options */
 li[role="option"] {
     color: #ffffff !important;
     background-color: #1e1e2e !important;
@@ -195,7 +206,7 @@ li[aria-selected="true"] {
 }
 
 /* =====================================
-   BUTTONS
+   MAIN BUTTON
    ===================================== */
 
 .stButton > button {
@@ -258,7 +269,7 @@ li[aria-selected="true"] {
 }
 
 /* =====================================
-   ALERTS
+   ALERT BOXES
    ===================================== */
 
 .stInfo,
@@ -328,10 +339,7 @@ li[aria-selected="true"] {
     background: rgba(0, 173, 181, 0.3) !important;
 }
 
-/* =====================================
-   DIVIDER
-   ===================================== */
-
+/* Divider */
 hr {
     margin: 1rem 0;
     border: none;
@@ -377,22 +385,4 @@ hr {
     li[role="option"] {
         font-size: 14px !important;
     }
-}
-/* =====================================
-   PERFECT COLUMN ALIGNMENT FIX
-   ===================================== */
-
-div[data-testid="stHorizontalBlock"] {
-    align-items: stretch !important;
-}
-
-div[data-testid="column"] {
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-/* Remove top spacing differences */
-div[data-testid="column"] > div {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
 }
