@@ -78,7 +78,6 @@ def get_theme_css():
             .download-btn-left button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; padding: 0.2rem 0.8rem !important; font-size: 0.75rem !important; }
             hr { border-color: #3a3a5a; }
             input::placeholder { color: #888 !important; }
-            .admin-table { background: rgba(0,173,181,0.1); border-radius: 10px; padding: 0.5rem; margin: 0.5rem 0; }
         </style>
         """
     else:
@@ -108,7 +107,6 @@ def get_theme_css():
             .download-btn-left button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; padding: 0.2rem 0.8rem !important; font-size: 0.75rem !important; }
             hr { border-color: #eee; }
             input::placeholder { color: #999 !important; }
-            .admin-table { background: rgba(0,173,181,0.05); border-radius: 10px; padding: 0.5rem; margin: 0.5rem 0; }
         </style>
         """
 
@@ -269,12 +267,12 @@ def show_admin_page():
     theme_toggle()
     st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown("<h1 style='text-align: center;'>👑 Admin Dashboard</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>Admin Dashboard</h1>", unsafe_allow_html=True)
     
     users = load_users()
     history = load_history()
     
-    tab1, tab2, tab3 = st.tabs(["📋 Registered Users", "📊 Prediction History", "📈 Statistics"])
+    tab1, tab2, tab3 = st.tabs(["Registered Users", "Prediction History", "Statistics"])
     
     with tab1:
         st.markdown("### All Registered Users")
@@ -295,7 +293,7 @@ def show_admin_page():
             
             csv = user_df.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 Export Users to CSV",
+                label="Export Users to CSV",
                 data=csv,
                 file_name=f"users_export_{datetime.now().strftime('%Y%m%d')}.csv",
                 mime="text/csv"
@@ -314,7 +312,7 @@ def show_admin_page():
                         "Username": username,
                         "Prediction #": idx + 1,
                         "Score": score,
-                        "Status": "✅ Pass" if score >= 60 else "⚠️ Fail"
+                        "Status": "Pass" if score >= 60 else "Fail"
                     })
             
             history_df = pd.DataFrame(all_predictions)
@@ -322,7 +320,7 @@ def show_admin_page():
             
             csv = history_df.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 Export History to CSV",
+                label="Export History to CSV",
                 data=csv,
                 file_name=f"history_export_{datetime.now().strftime('%Y%m%d')}.csv",
                 mime="text/csv"
@@ -363,7 +361,7 @@ def show_admin_page():
                 st.metric("Parents", parent_count)
     
     st.markdown("---")
-    if st.button("🔙 Back to Main App"):
+    if st.button("Back to Main App"):
         st.session_state.is_admin = False
         st.session_state.logged_in = False
         st.session_state.username = ""
@@ -392,19 +390,25 @@ def show_auth_page():
         </div>
         """, unsafe_allow_html=True)
         
-        # Admin login option
-        with st.expander("🔐 Admin Login"):
-            admin_user = st.text_input("Admin Username", key="admin_user", placeholder="aashif")
-            admin_pass = st.text_input("Admin Password", type="password", key="admin_pass", placeholder="••••••")
+        # =====================================
+        # ADMIN LOGIN - FIXED (NO PREFILLED VALUES)
+        # =====================================
+        with st.expander("Admin Login"):
+            admin_user = st.text_input("Admin Username", key="admin_user_clear", placeholder="Enter username", value="")
+            admin_pass = st.text_input("Admin Password", type="password", key="admin_pass_clear", placeholder="Enter password", value="")
+            
             if st.button("Login as Admin", use_container_width=True):
-                if admin_user == ADMIN_USERNAME and admin_pass == ADMIN_PASSWORD:
-                    st.session_state.is_admin = True
-                    st.session_state.logged_in = True
-                    st.session_state.username = "aashif"
-                    st.session_state.user_role = "admin"
-                    st.rerun()
+                if admin_user and admin_pass:
+                    if admin_user == ADMIN_USERNAME and admin_pass == ADMIN_PASSWORD:
+                        st.session_state.is_admin = True
+                        st.session_state.logged_in = True
+                        st.session_state.username = "aashif"
+                        st.session_state.user_role = "admin"
+                        st.rerun()
+                    else:
+                        st.error("Invalid admin credentials")
                 else:
-                    st.error("Invalid admin credentials")
+                    st.warning("Please enter both username and password")
         
         st.markdown("<hr>", unsafe_allow_html=True)
         
@@ -512,7 +516,7 @@ def show_auth_page():
                     st.rerun()
             
             st.markdown("<hr>", unsafe_allow_html=True)
-            if st.button("← Back to Sign In", use_container_width=True):
+            if st.button("Back to Sign In", use_container_width=True):
                 st.session_state.auth_mode = "login"
                 st.rerun()
         
@@ -556,7 +560,7 @@ def show_sidebar(user_data):
             st.markdown(f"**Child Grade:** {user_data.get('child_grade', 'N/A')}")
         
         st.markdown("---")
-        if st.button("🚪 Sign Out", use_container_width=True):
+        if st.button("Sign Out", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.username = ""
             st.session_state.user_role = ""
@@ -586,7 +590,7 @@ def show_main_app():
     
     if st.session_state.user_role == "parent":
         child_name = user_data.get("child_name", "Child")
-        st.info(f"👨‍👩‍👧 Predicting for: **{child_name}**")
+        st.info(f"Predicting for: {child_name}")
     
     model, columns = load_models()
     
@@ -653,14 +657,14 @@ def show_main_app():
         """, unsafe_allow_html=True)
         
         if final_score >= 85:
-            st.success("🎉 Exceptional Performance!")
+            st.success("Exceptional Performance!")
             st.balloons()
         elif final_score >= 70:
-            st.success("📈 Good Performance!")
+            st.success("Good Performance!")
         elif final_score >= 55:
-            st.info("📚 Satisfactory")
+            st.info("Satisfactory")
         else:
-            st.warning("⚠️ Needs Improvement")
+            st.warning("Needs Improvement")
         
         recs = []
         if hours < 6:
@@ -684,7 +688,7 @@ def show_main_app():
             hours, attendance, previous, sleep, recs
         )
         st.download_button(
-            label="📄 Download PDF Report",
+            label="Download PDF Report",
             data=pdf_buffer,
             file_name=f"score_report_{st.session_state.username}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
             mime="application/pdf"
@@ -692,7 +696,7 @@ def show_main_app():
         st.markdown('</div>', unsafe_allow_html=True)
         
         if len(user_history) >= 1:
-            st.markdown("### 📊 Performance Overview")
+            st.markdown("### Performance Overview")
             passing = len([s for s in user_history if s >= 60])
             needs_improvement = len([s for s in user_history if s < 60])
             last_score = user_history[-1]
@@ -741,11 +745,11 @@ def show_main_app():
             st.caption(f"Success Rate: {pass_percent:.0f}% ({passing}/{len(user_history)})")
         
         if recs:
-            st.markdown("### 💡 Recommendations")
+            st.markdown("### Recommendations")
             for r in recs:
                 st.info(r)
         else:
-            st.success("✅ Excellent habits! Keep going!")
+            st.success("Excellent habits! Keep going!")
     
     st.markdown("---")
     st.caption("Student Score Predictor | Powered by AI")
