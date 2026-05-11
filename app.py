@@ -42,12 +42,10 @@ if 'is_admin' not in st.session_state:
     st.session_state.is_admin = False
 
 # =====================================
-# ADMIN CREDENTIALS - ENVIRONMENT VARIABLES
+# ADMIN CREDENTIALS - AASHIF
 # =====================================
-# Get from environment variables (Streamlit Cloud secrets)
-# Default values for local testing
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "aashif")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "aashif123")
+ADMIN_USERNAME = "aashif"
+ADMIN_PASSWORD = "aashif123"
 
 # =====================================
 # THEME CSS
@@ -276,7 +274,6 @@ def show_admin_page():
     users = load_users()
     history = load_history()
     
-    # Tabs for different views
     tab1, tab2, tab3 = st.tabs(["📋 Registered Users", "📊 Prediction History", "📈 Statistics"])
     
     with tab1:
@@ -296,7 +293,6 @@ def show_admin_page():
             user_df = pd.DataFrame(user_data)
             st.dataframe(user_df, use_container_width=True, hide_index=True)
             
-            # Export button
             csv = user_df.to_csv(index=False).encode('utf-8')
             st.download_button(
                 label="📥 Export Users to CSV",
@@ -324,7 +320,6 @@ def show_admin_page():
             history_df = pd.DataFrame(all_predictions)
             st.dataframe(history_df, use_container_width=True, hide_index=True)
             
-            # Export button
             csv = history_df.to_csv(index=False).encode('utf-8')
             st.download_button(
                 label="📥 Export History to CSV",
@@ -357,7 +352,6 @@ def show_admin_page():
                 avg_score = int(np.mean(all_scores))
             st.metric("Average Score", f"{avg_score}/100")
         
-        # Role distribution
         if users:
             student_count = sum(1 for u in users.values() if u.get("role") == "student")
             parent_count = sum(1 for u in users.values() if u.get("role") == "parent")
@@ -371,6 +365,9 @@ def show_admin_page():
     st.markdown("---")
     if st.button("🔙 Back to Main App"):
         st.session_state.is_admin = False
+        st.session_state.logged_in = False
+        st.session_state.username = ""
+        st.session_state.user_role = ""
         st.rerun()
 
 # =====================================
@@ -397,13 +394,13 @@ def show_auth_page():
         
         # Admin login option
         with st.expander("🔐 Admin Login"):
-            admin_user = st.text_input("Admin Username", key="admin_user", placeholder="admin")
+            admin_user = st.text_input("Admin Username", key="admin_user", placeholder="aashif")
             admin_pass = st.text_input("Admin Password", type="password", key="admin_pass", placeholder="••••••")
             if st.button("Login as Admin", use_container_width=True):
                 if admin_user == ADMIN_USERNAME and admin_pass == ADMIN_PASSWORD:
                     st.session_state.is_admin = True
                     st.session_state.logged_in = True
-                    st.session_state.username = "admin"
+                    st.session_state.username = "aashif"
                     st.session_state.user_role = "admin"
                     st.rerun()
                 else:
@@ -570,7 +567,7 @@ def show_sidebar(user_data):
 # =====================================
 def show_main_app():
     # Check if admin
-    if st.session_state.is_admin or st.session_state.username == "admin":
+    if st.session_state.is_admin:
         show_admin_page()
         return
     
