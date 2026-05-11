@@ -24,36 +24,103 @@ st.set_page_config(
 )
 
 # =====================================
-# LOAD EXTERNAL CSS
+# SESSION STATE (Must be first)
 # =====================================
-def load_css():
-    if os.path.exists("style.css"):
-        with open("style.css", "r") as f:
-            css = f.read()
-            st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
-    else:
-        st.markdown("""
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+if 'username' not in st.session_state:
+    st.session_state.username = ""
+if 'user_role' not in st.session_state:
+    st.session_state.user_role = ""
+if 'auth_mode' not in st.session_state:
+    st.session_state.auth_mode = "login"
+if 'signup_role' not in st.session_state:
+    st.session_state.signup_role = "student"
+if 'theme' not in st.session_state:
+    st.session_state.theme = "dark"
+
+# =====================================
+# THEME CSS
+# =====================================
+def get_theme_css():
+    if st.session_state.theme == "dark":
+        return """
         <style>
             .stApp { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
-            .main .block-container { background: rgba(18,18,30,0.95); border-radius: 20px; padding: 1.5rem; }
-            .result-card { background: #1a1a2e; border: 2px solid #00adb5; border-radius: 20px; padding: 1rem; text-align: center; }
-            .result-score { color: #00adb5; font-size: 2rem; font-weight: 800; }
-            .result-label { color: #888; font-size: 0.7rem; }
-            .stButton > button { background: #00adb5; color: white; border-radius: 50px; }
+            .main .block-container { background: rgba(18, 18, 30, 0.95); border-radius: 20px; padding: 1.5rem; border: 1px solid #2a2a4a; }
+            [data-testid="stSidebar"] { background: rgba(18, 18, 30, 0.95); border-right: 1px solid #2a2a4a; }
+            h1, h2, h3, p, label, .stMarkdown, .stCaption { color: #ffffff !important; }
+            .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+                background-color: #1e1e2e !important;
+                color: #ffffff !important;
+                border: 1px solid #3a3a5a !important;
+                border-radius: 10px !important;
+            }
+            .stNumberInput button { background-color: #2d2d44 !important; border: 1px solid #3a3a5a !important; }
+            .stNumberInput button:hover { background-color: #00adb5 !important; }
+            .result-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #00adb5; border-radius: 20px; padding: 1rem; text-align: center; }
+            .result-score { color: #00adb5 !important; font-size: 2rem; font-weight: 800; }
+            .result-label { color: #888 !important; font-size: 0.7rem; }
+            .stButton > button { background: #00adb5 !important; color: white !important; border-radius: 50px !important; }
+            .top-theme-toggle { position: fixed; top: 0.8rem; right: 1rem; z-index: 999; }
+            .top-theme-toggle button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; border-radius: 50px !important; padding: 0.2rem 0.7rem !important; font-size: 0.7rem !important; }
+            .profile-card { text-align: center; }
+            .profile-name { font-size: 1rem; font-weight: 700; color: white !important; }
+            .profile-role { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block; background: #00adb520; border: 1px solid #00adb5; }
+            .download-btn-left button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; padding: 0.2rem 0.8rem !important; font-size: 0.75rem !important; }
+            hr { border-color: #3a3a5a; }
+            input::placeholder { color: #888 !important; }
         </style>
-        """, unsafe_allow_html=True)
+        """
+    else:
+        return """
+        <style>
+            .stApp { background: linear-gradient(135deg, #e0eafc, #cfdef3); }
+            .main .block-container { background: #ffffff; border-radius: 20px; padding: 1.5rem; border: 1px solid #e0e0e0; }
+            [data-testid="stSidebar"] { background: #f8f9fa; border-right: 1px solid #e0e0e0; }
+            h1, h2, h3, p, label, .stMarkdown, .stCaption { color: #1a1a2e !important; }
+            .stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+                background-color: #ffffff !important;
+                color: #1a1a2e !important;
+                border: 1px solid #ddd !important;
+                border-radius: 10px !important;
+            }
+            .stNumberInput button { background-color: #f0f0f0 !important; border: 1px solid #ddd !important; }
+            .stNumberInput button:hover { background-color: #00adb5 !important; color: white !important; }
+            .result-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #00adb5; border-radius: 20px; padding: 1rem; text-align: center; }
+            .result-score { color: #00adb5 !important; font-size: 2rem; font-weight: 800; }
+            .result-label { color: #888 !important; font-size: 0.7rem; }
+            .stButton > button { background: #00adb5 !important; color: white !important; border-radius: 50px !important; }
+            .top-theme-toggle { position: fixed; top: 0.8rem; right: 1rem; z-index: 999; }
+            .top-theme-toggle button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; border-radius: 50px !important; padding: 0.2rem 0.7rem !important; font-size: 0.7rem !important; color: #1a1a2e !important; }
+            .profile-card { text-align: center; }
+            .profile-name { font-size: 1rem; font-weight: 700; color: #1a1a2e !important; }
+            .profile-role { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block; background: #00adb520; border: 1px solid #00adb5; }
+            .download-btn-left button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; padding: 0.2rem 0.8rem !important; font-size: 0.75rem !important; }
+            hr { border-color: #eee; }
+            input::placeholder { color: #999 !important; }
+        </style>
+        """
 
-load_css()
+def apply_theme():
+    st.markdown(get_theme_css(), unsafe_allow_html=True)
+
+def theme_toggle():
+    mode_text = "Light" if st.session_state.theme == "dark" else "Dark"
+    mode_icon = "☀️" if st.session_state.theme == "dark" else "🌙"
+    if st.button(f"{mode_icon} {mode_text}", key="theme_toggle"):
+        if st.session_state.theme == "dark":
+            st.session_state.theme = "light"
+        else:
+            st.session_state.theme = "dark"
+        st.rerun()
 
 # =====================================
-# FILE PATHS
+# USER DATABASE FILE
 # =====================================
 USER_DB_FILE = "users.json"
 HISTORY_FILE = "prediction_history.json"
 
-# =====================================
-# HELPER FUNCTIONS
-# =====================================
 def load_users():
     if os.path.exists(USER_DB_FILE):
         with open(USER_DB_FILE, 'r') as f:
@@ -178,34 +245,16 @@ def generate_pdf_report(username, final_score, user_data, hours, attendance, pre
     return buffer
 
 # =====================================
-# SESSION STATE
+# GLOBAL VARIABLES
 # =====================================
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
-if 'username' not in st.session_state:
-    st.session_state.username = ""
-if 'user_role' not in st.session_state:
-    st.session_state.user_role = ""
-if 'auth_mode' not in st.session_state:
-    st.session_state.auth_mode = "login"
-if 'signup_role' not in st.session_state:
-    st.session_state.signup_role = "student"
-if 'theme' not in st.session_state:
-    st.session_state.theme = "dark"
-
 all_history = load_history()
-
-def theme_toggle():
-    mode_text = "Light" if st.session_state.theme == "dark" else "Dark"
-    mode_icon = "☀️" if st.session_state.theme == "dark" else "🌙"
-    if st.button(f"{mode_icon} {mode_text}", key="theme_toggle"):
-        st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
-        st.rerun()
 
 # =====================================
 # AUTH PAGE
 # =====================================
 def show_auth_page():
+    apply_theme()
+    
     st.markdown('<div class="top-theme-toggle">', unsafe_allow_html=True)
     theme_toggle()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -380,6 +429,8 @@ def show_sidebar(user_data):
 # MAIN APP
 # =====================================
 def show_main_app():
+    apply_theme()
+    
     st.markdown('<div class="top-theme-toggle">', unsafe_allow_html=True)
     theme_toggle()
     st.markdown('</div>', unsafe_allow_html=True)
