@@ -33,86 +33,177 @@ h1, h2, h3 {
     color: #ffffff !important;
 }
 
-/* Remove all focus rings */
+/* Remove focus rings */
 *:focus {
     outline: none !important;
     box-shadow: none !important;
 }
 
 /* Labels */
-.stNumberInput label, .stSelectbox label {
+.stNumberInput label,
+.stSelectbox label,
+.stTextInput label {
     color: #cbd5e0 !important;
     font-weight: 500 !important;
     font-size: 0.75rem !important;
     text-transform: uppercase;
     transition: color 0.3s ease;
 }
-.stNumberInput label:hover, .stSelectbox label:hover {
+
+.stNumberInput label:hover,
+.stSelectbox label:hover,
+.stTextInput label:hover {
     color: #00adb5 !important;
 }
 
-/* Input fields */
-.stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+/* =====================================
+   INPUT FIELDS
+   ===================================== */
+
+.stNumberInput input,
+.stTextInput input {
     background-color: #1e1e2e !important;
     color: #ffffff !important;
     border: 1px solid #3a3a5a !important;
     border-radius: 10px !important;
-    padding: 0.4rem 0.8rem !important;
-    min-height: 36px !important;
+    padding: 0.5rem 0.8rem !important;
+    min-height: 42px !important;
     transition: all 0.3s ease;
 }
-.stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
+
+.stNumberInput input:hover,
+.stTextInput input:hover {
     border-color: #00adb5 !important;
     transform: translateY(-1px);
 }
 
-/* Number buttons */
+/* =====================================
+   DROPDOWN FIX
+   ===================================== */
+
+/* Main select box */
+div[data-baseweb="select"] > div {
+    background-color: #1e1e2e !important;
+    color: #ffffff !important;
+    border: 1px solid #3a3a5a !important;
+    border-radius: 10px !important;
+
+    min-height: 48px !important;
+    height: auto !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+
+    overflow: visible !important;
+
+    transition: all 0.3s ease !important;
+}
+
+/* Hover effect */
+div[data-baseweb="select"] > div:hover {
+    border-color: #00adb5 !important;
+    transform: translateY(-1px);
+}
+
+/* Selected text */
+div[data-baseweb="select"] span {
+    color: #ffffff !important;
+    font-size: 15px !important;
+    line-height: 22px !important;
+
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+}
+
+/* Dropdown arrow */
+div[data-baseweb="select"] svg {
+    fill: #ffffff !important;
+}
+
+/* Dropdown popup */
+div[data-baseweb="popover"] > div {
+    background-color: #1e1e2e !important;
+    border: 1px solid #3a3a5a !important;
+    border-radius: 10px !important;
+
+    overflow: hidden !important;
+}
+
+/* Dropdown options */
+li[role="option"] {
+    color: #ffffff !important;
+    background-color: #1e1e2e !important;
+
+    padding: 12px !important;
+    min-height: 45px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    font-size: 15px !important;
+    line-height: 20px !important;
+
+    transition: all 0.2s ease !important;
+}
+
+/* Option hover */
+li[role="option"]:hover {
+    background-color: #00adb5 !important;
+    color: #ffffff !important;
+    transform: translateX(5px);
+}
+
+/* Selected option */
+li[aria-selected="true"] {
+    background-color: rgba(0, 173, 181, 0.25) !important;
+}
+
+/* =====================================
+   NUMBER BUTTONS
+   ===================================== */
+
 .stNumberInput button {
     background-color: #2d2d44 !important;
     border: 1px solid #3a3a5a !important;
     transition: all 0.3s ease;
     border-radius: 6px;
 }
+
 .stNumberInput button:hover {
     background-color: #00adb5 !important;
     transform: scale(1.05);
 }
 
-/* Dropdown menu */
-div[data-baseweb="popover"] > div {
-    background-color: #1e1e2e !important;
-    border: 1px solid #3a3a5a !important;
-    border-radius: 10px;
-}
-li[role="option"] {
-    color: #ffffff !important;
-    background-color: #1e1e2e !important;
-    padding: 8px 12px;
-    transition: all 0.2s ease;
-}
-li[role="option"]:hover {
-    background-color: #00adb5 !important;
-    transform: translateX(5px);
-}
+/* =====================================
+   MAIN BUTTON
+   ===================================== */
 
-/* Main predict button */
 .stButton > button {
     background: #00adb5 !important;
     color: white !important;
     border: none !important;
     border-radius: 50px !important;
-    padding: 0.5rem 1rem !important;
+    padding: 0.7rem 1rem !important;
     font-weight: 600 !important;
     transition: all 0.3s ease;
     width: 100%;
+    min-height: 45px;
 }
+
 .stButton > button:hover {
     background: #007a7f !important;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,173,181,0.4);
 }
 
-/* Result Card */
+/* =====================================
+   RESULT CARD
+   ===================================== */
+
 .result-card {
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     border: 2px solid #00adb5;
@@ -122,28 +213,40 @@ li[role="option"]:hover {
     margin: 1rem 0;
     transition: all 0.3s ease;
 }
+
 .result-card:hover {
     transform: scale(1.02);
     box-shadow: 0 10px 30px rgba(0,173,181,0.2);
 }
+
 .result-score {
     color: #00adb5 !important;
     font-size: 2rem;
     font-weight: 800;
 }
+
 .result-label {
     color: #888888 !important;
     font-size: 0.7rem;
     letter-spacing: 2px;
 }
 
-/* Dark mode specifics - keeping same as original */
-.stInfo, .stSuccess, .stWarning {
+/* =====================================
+   ALERTS
+   ===================================== */
+
+.stInfo,
+.stSuccess,
+.stWarning {
     background-color: rgba(0,173,181,0.2) !important;
     color: #ffffff !important;
+    border-radius: 10px !important;
 }
 
-/* Auth container */
+/* =====================================
+   AUTH CONTAINER
+   ===================================== */
+
 .auth-container {
     background: rgba(18, 18, 30, 0.95);
     border: 1px solid #2a2a4a;
@@ -153,13 +256,17 @@ li[role="option"]:hover {
     padding: 1.5rem;
     text-align: center;
 }
+
 .auth-title {
     font-size: 1.2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
 }
 
-/* Divider */
+/* =====================================
+   DIVIDER
+   ===================================== */
+
 hr {
     margin: 1rem 0;
     border: none;
@@ -167,13 +274,17 @@ hr {
     background: #3a3a5a;
 }
 
-/* Top theme toggle */
+/* =====================================
+   THEME TOGGLE
+   ===================================== */
+
 .top-theme-toggle {
     position: fixed;
     top: 0.8rem;
     right: 1rem;
     z-index: 999;
 }
+
 .top-theme-toggle button {
     background: rgba(0,173,181,0.15) !important;
     border: 1px solid #00adb5 !important;
@@ -182,22 +293,28 @@ hr {
     font-size: 0.7rem !important;
     font-weight: 500;
 }
+
 .top-theme-toggle button:hover {
     background: rgba(0,173,181,0.3) !important;
     transform: translateY(-2px);
 }
 
-/* Profile card */
+/* =====================================
+   PROFILE CARD
+   ===================================== */
+
 .profile-card {
     text-align: center;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
 }
+
 .profile-name {
     font-size: 1rem;
     font-weight: 700;
     color: white !important;
 }
+
 .profile-role {
     font-size: 0.65rem;
     padding: 0.15rem 0.5rem;
@@ -208,39 +325,61 @@ hr {
     color: white !important;
 }
 
-/* Download button left side */
+/* =====================================
+   DOWNLOAD BUTTON
+   ===================================== */
+
 .download-btn-left {
     text-align: left;
     margin: 0.5rem 0;
 }
+
 .download-btn-left button {
     background: rgba(0,173,181,0.15) !important;
     border: 1px solid #00adb5 !important;
     color: #00adb5 !important;
-    padding: 0.2rem 0.8rem !important;
+    padding: 0.4rem 0.8rem !important;
     font-size: 0.75rem !important;
     font-weight: 500 !important;
     width: auto !important;
 }
+
 .download-btn-left button:hover {
     background: rgba(0,173,181,0.3) !important;
     transform: translateY(-2px);
 }
 
-/* Mobile responsive */
+/* =====================================
+   MOBILE RESPONSIVE
+   ===================================== */
+
 @media (max-width: 768px) {
+
     .main .block-container {
         padding: 1rem;
     }
+
     h1 {
         font-size: 1.3rem !important;
     }
+
     .result-score {
         font-size: 1.6rem;
     }
+
     .auth-container {
         max-width: 300px;
         margin: 30px auto;
         padding: 1rem;
+    }
+
+    /* Mobile dropdown fix */
+    div[data-baseweb="select"] > div {
+        min-height: 52px !important;
+    }
+
+    li[role="option"] {
+        font-size: 14px !important;
+        min-height: 48px !important;
     }
 }
