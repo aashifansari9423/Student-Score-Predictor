@@ -24,7 +24,7 @@ st.set_page_config(
 )
 
 # =====================================
-# SESSION STATE (Must be first)
+# SESSION STATE
 # =====================================
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -38,6 +38,16 @@ if 'signup_role' not in st.session_state:
     st.session_state.signup_role = "student"
 if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
+if 'is_admin' not in st.session_state:
+    st.session_state.is_admin = False
+
+# =====================================
+# ADMIN CREDENTIALS - ENVIRONMENT VARIABLES
+# =====================================
+# Get from environment variables (Streamlit Cloud secrets)
+# Default values for local testing
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "aashif")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "aashif123")
 
 # =====================================
 # THEME CSS
@@ -70,6 +80,7 @@ def get_theme_css():
             .download-btn-left button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; padding: 0.2rem 0.8rem !important; font-size: 0.75rem !important; }
             hr { border-color: #3a3a5a; }
             input::placeholder { color: #888 !important; }
+            .admin-table { background: rgba(0,173,181,0.1); border-radius: 10px; padding: 0.5rem; margin: 0.5rem 0; }
         </style>
         """
     else:
@@ -99,6 +110,7 @@ def get_theme_css():
             .download-btn-left button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; padding: 0.2rem 0.8rem !important; font-size: 0.75rem !important; }
             hr { border-color: #eee; }
             input::placeholder { color: #999 !important; }
+            .admin-table { background: rgba(0,173,181,0.05); border-radius: 10px; padding: 0.5rem; margin: 0.5rem 0; }
         </style>
         """
 
@@ -250,6 +262,118 @@ def generate_pdf_report(username, final_score, user_data, hours, attendance, pre
 all_history = load_history()
 
 # =====================================
+# ADMIN PAGE
+# =====================================
+def show_admin_page():
+    apply_theme()
+    
+    st.markdown('<div class="top-theme-toggle">', unsafe_allow_html=True)
+    theme_toggle()
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown("<h1 style='text-align: center;'>👑 Admin Dashboard</h1>", unsafe_allow_html=True)
+    
+    users = load_users()
+    history = load_history()
+    
+    # Tabs for different views
+    tab1, tab2, tab3 = st.tabs(["📋 Registered Users", "📊 Prediction History", "📈 Statistics"])
+    
+    with tab1:
+        st.markdown("### All Registered Users")
+        
+        if users:
+            user_data = []
+            for username, data in users.items():
+                user_data.append({
+                    "Username": username,
+                    "Role": data.get("role", "N/A"),
+                    "Full Name": data.get("full_name", "N/A"),
+                    "Age/Grade": data.get("grade", data.get("child_grade", "N/A")),
+                    "Created": data.get("created_at", "N/A")[:10] if data.get("created_at") else "N/A"
+                })
+            
+            user_df = pd.DataFrame(user_data)
+            st.dataframe(user_df, use_container_width=True, hide_index=True)
+            
+            # Export button
+            csv = user_df.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="📥 Export Users to CSV",
+                data=csv,
+                file_name=f"users_export_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv"
+            )
+        else:
+            st.info("No users registered yet.")
+    
+    with tab2:
+        st.markdown("### Prediction History")
+        
+        if history:
+            all_predictions = []
+            for username, predictions in history.items():
+                for idx, score in enumerate(predictions):
+                    all_predictions.append({
+                        "Username": username,
+                        "Prediction #": idx + 1,
+                        "Score": score,
+                        "Status": "✅ Pass" if score >= 60 else "⚠️ Fail"
+                    })
+            
+            history_df = pd.DataFrame(all_predictions)
+            st.dataframe(history_df, use_container_width=True, hide_index=True)
+            
+            # Export button
+            csv = history_df.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="📥 Export History to CSV",
+                data=csv,
+                file_name=f"history_export_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv"
+            )
+        else:
+            st.info("No predictions made yet.")
+    
+    with tab3:
+        st.markdown("### Statistics")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            total_users = len(users)
+            st.metric("Total Users", total_users)
+        
+        with col2:
+            total_predictions = sum(len(p) for p in history.values())
+            st.metric("Total Predictions", total_predictions)
+        
+        with col3:
+            avg_score = 0
+            all_scores = []
+            for preds in history.values():
+                all_scores.extend(preds)
+            if all_scores:
+                avg_score = int(np.mean(all_scores))
+            st.metric("Average Score", f"{avg_score}/100")
+        
+        # Role distribution
+        if users:
+            student_count = sum(1 for u in users.values() if u.get("role") == "student")
+            parent_count = sum(1 for u in users.values() if u.get("role") == "parent")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Students", student_count)
+            with col2:
+                st.metric("Parents", parent_count)
+    
+    st.markdown("---")
+    if st.button("🔙 Back to Main App"):
+        st.session_state.is_admin = False
+        st.rerun()
+
+# =====================================
 # AUTH PAGE
 # =====================================
 def show_auth_page():
@@ -270,6 +394,22 @@ def show_auth_page():
             <h1 style="font-size: 1.5rem; margin: 0.2rem 0;">Student Score Predictor</h1>
         </div>
         """, unsafe_allow_html=True)
+        
+        # Admin login option
+        with st.expander("🔐 Admin Login"):
+            admin_user = st.text_input("Admin Username", key="admin_user", placeholder="admin")
+            admin_pass = st.text_input("Admin Password", type="password", key="admin_pass", placeholder="••••••")
+            if st.button("Login as Admin", use_container_width=True):
+                if admin_user == ADMIN_USERNAME and admin_pass == ADMIN_PASSWORD:
+                    st.session_state.is_admin = True
+                    st.session_state.logged_in = True
+                    st.session_state.username = "admin"
+                    st.session_state.user_role = "admin"
+                    st.rerun()
+                else:
+                    st.error("Invalid admin credentials")
+        
+        st.markdown("<hr>", unsafe_allow_html=True)
         
         if st.session_state.auth_mode == "login":
             st.markdown('<p style="text-align: center; margin-bottom: 1rem; font-size: 0.8rem;">Sign in to continue</p>', unsafe_allow_html=True)
@@ -429,6 +569,11 @@ def show_sidebar(user_data):
 # MAIN APP
 # =====================================
 def show_main_app():
+    # Check if admin
+    if st.session_state.is_admin or st.session_state.username == "admin":
+        show_admin_page()
+        return
+    
     apply_theme()
     
     st.markdown('<div class="top-theme-toggle">', unsafe_allow_html=True)
