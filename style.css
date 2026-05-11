@@ -1,0 +1,246 @@
+/* =====================================
+   MAIN STYLES - PROFESSIONAL DARK THEME
+   ===================================== */
+
+/* Force all text white on ALL devices */
+.stApp, .stApp * {
+    color: #ffffff !important;
+}
+
+/* Main background */
+.stApp {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+}
+
+/* Main container */
+.main .block-container {
+    background: rgba(18, 18, 30, 0.95);
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid #2a2a4a;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background: rgba(18, 18, 30, 0.95);
+    border-right: 1px solid #2a2a4a;
+}
+
+/* Title */
+h1, h2, h3 {
+    text-align: center;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+}
+
+/* Remove all focus rings */
+*:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Labels */
+.stNumberInput label, .stSelectbox label {
+    color: #cbd5e0 !important;
+    font-weight: 500 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+.stNumberInput label:hover, .stSelectbox label:hover {
+    color: #00adb5 !important;
+}
+
+/* Input fields */
+.stNumberInput input, .stTextInput input, div[data-baseweb="select"] > div {
+    background-color: #1e1e2e !important;
+    color: #ffffff !important;
+    border: 1px solid #3a3a5a !important;
+    border-radius: 10px !important;
+    padding: 0.4rem 0.8rem !important;
+    min-height: 36px !important;
+    transition: all 0.3s ease;
+}
+.stNumberInput input:hover, .stTextInput input:hover, div[data-baseweb="select"] > div:hover {
+    border-color: #00adb5 !important;
+    transform: translateY(-1px);
+}
+
+/* Number buttons */
+.stNumberInput button {
+    background-color: #2d2d44 !important;
+    border: 1px solid #3a3a5a !important;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+}
+.stNumberInput button:hover {
+    background-color: #00adb5 !important;
+    transform: scale(1.05);
+}
+
+/* Dropdown menu */
+div[data-baseweb="popover"] > div {
+    background-color: #1e1e2e !important;
+    border: 1px solid #3a3a5a !important;
+    border-radius: 10px;
+}
+li[role="option"] {
+    color: #ffffff !important;
+    background-color: #1e1e2e !important;
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+}
+li[role="option"]:hover {
+    background-color: #00adb5 !important;
+    transform: translateX(5px);
+}
+
+/* Main predict button */
+.stButton > button {
+    background: #00adb5 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+.stButton > button:hover {
+    background: #007a7f !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,173,181,0.4);
+}
+
+/* Result Card */
+.result-card {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 2px solid #00adb5;
+    border-radius: 20px;
+    padding: 1.2rem;
+    text-align: center;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+.result-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 30px rgba(0,173,181,0.2);
+}
+.result-score {
+    color: #00adb5 !important;
+    font-size: 2rem;
+    font-weight: 800;
+}
+.result-label {
+    color: #888888 !important;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+}
+
+/* Dark mode specifics - keeping same as original */
+.stInfo, .stSuccess, .stWarning {
+    background-color: rgba(0,173,181,0.2) !important;
+    color: #ffffff !important;
+}
+
+/* Auth container */
+.auth-container {
+    background: rgba(18, 18, 30, 0.95);
+    border: 1px solid #2a2a4a;
+    border-radius: 20px;
+    max-width: 380px;
+    margin: 40px auto;
+    padding: 1.5rem;
+    text-align: center;
+}
+.auth-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* Divider */
+hr {
+    margin: 1rem 0;
+    border: none;
+    height: 1px;
+    background: #3a3a5a;
+}
+
+/* Top theme toggle */
+.top-theme-toggle {
+    position: fixed;
+    top: 0.8rem;
+    right: 1rem;
+    z-index: 999;
+}
+.top-theme-toggle button {
+    background: rgba(0,173,181,0.15) !important;
+    border: 1px solid #00adb5 !important;
+    border-radius: 50px !important;
+    padding: 0.2rem 0.7rem !important;
+    font-size: 0.7rem !important;
+    font-weight: 500;
+}
+.top-theme-toggle button:hover {
+    background: rgba(0,173,181,0.3) !important;
+    transform: translateY(-2px);
+}
+
+/* Profile card */
+.profile-card {
+    text-align: center;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.profile-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white !important;
+}
+.profile-role {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 50px;
+    display: inline-block;
+    background: #00adb520;
+    border: 1px solid #00adb5;
+    color: white !important;
+}
+
+/* Download button left side */
+.download-btn-left {
+    text-align: left;
+    margin: 0.5rem 0;
+}
+.download-btn-left button {
+    background: rgba(0,173,181,0.15) !important;
+    border: 1px solid #00adb5 !important;
+    color: #00adb5 !important;
+    padding: 0.2rem 0.8rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    width: auto !important;
+}
+.download-btn-left button:hover {
+    background: rgba(0,173,181,0.3) !important;
+    transform: translateY(-2px);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .main .block-container {
+        padding: 1rem;
+    }
+    h1 {
+        font-size: 1.3rem !important;
+    }
+    .result-score {
+        font-size: 1.6rem;
+    }
+    .auth-container {
+        max-width: 300px;
+        margin: 30px auto;
+        padding: 1rem;
+    }
+}
