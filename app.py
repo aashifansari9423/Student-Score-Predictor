@@ -14,6 +14,7 @@ from reportlab.lib.units import inch
 import io
 import plotly.express as px
 import plotly.graph_objects as go
+import random
 
 # =====================================
 # PAGE CONFIG
@@ -42,12 +43,66 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "dark"
 if 'is_admin' not in st.session_state:
     st.session_state.is_admin = False
+if 'chat_messages' not in st.session_state:
+    st.session_state.chat_messages = []
 
 # =====================================
 # ADMIN CREDENTIALS
 # =====================================
 ADMIN_USERNAME = "aashif"
 ADMIN_PASSWORD = "aashif123"
+
+# =====================================
+# CHATBOT RESPONSES
+# =====================================
+def get_bot_response(user_message):
+    user_message = user_message.lower().strip()
+    
+    # Study tips
+    if any(word in user_message for word in ['study', 'padhai', 'tips', 'how to study']):
+        return "📚 **Study Tips:**\n\n1. 🎯 Set daily goals\n2. ⏰ Study for 45-50 min then take 10 min break\n3. 📝 Revise what you learned before sleeping\n4. 🧪 Practice previous year papers\n5. 💡 Teach someone else - it helps you remember better!"
+    
+    # Motivation
+    elif any(word in user_message for word in ['motivation', 'inspire', 'demotivated', 'sad', 'stress']):
+        return "💪 **Stay Motivated!**\n\nRemember: 'Success is not final, failure is not fatal. It's the courage to continue that matters.'\n\n🌟 Every small step counts towards your goal. Keep going! You've got this! 💯"
+    
+    # Time management
+    elif any(word in user_message for word in ['time management', 'schedule', 'routine', 'plan']):
+        return "⏰ **Time Management Tips:**\n\n• Wake up early (5-6 AM is best for study)\n• Make a daily timetable\n• Prioritize difficult subjects first\n• Use Pomodoro technique (25 min study, 5 min break)\n• Take 7-8 hours of sleep daily"
+    
+    # Exam fear
+    elif any(word in user_message for word in ['exam fear', 'nervous', 'anxiety', 'scared']):
+        return "🧘 **Overcome Exam Fear:**\n\n1. Prepare well - confidence comes from preparation\n2. Take deep breaths before exam\n3. Get good sleep before exam day\n4. Reach exam hall early\n5. Read questions carefully\n6. Believe in yourself! You can do it! 🎯"
+    
+    # Score improvement
+    elif any(word in user_message for word in ['improve score', 'bad score', 'low marks']):
+        return "📈 **How to Improve Your Score:**\n\n• Identify weak topics and focus on them\n• Practice more questions\n• Take regular mock tests\n• Revise daily\n• Stay consistent - small daily efforts work best!"
+    
+    # Concentration
+    elif any(word in user_message for word in ['concentrate', 'focus', 'distraction']):
+        return "🎯 **Improve Concentration:**\n\n• Remove mobile/TV while studying\n• Study in a quiet place\n• Use headphones with instrumental music\n• Set small achievable targets\n• Take breaks after every hour"
+    
+    # Subject help
+    elif any(word in user_message for word in ['maths', 'math', 'mathematics']):
+        return "📐 **Maths Tips:**\n\n• Practice daily - at least 10-15 problems\n• Memorize formulas and their derivations\n• Solve previous year papers\n• Start with easy problems then move to difficult ones\n• Don't skip steps while solving"
+    
+    elif any(word in user_message for word in ['science', 'physics', 'chemistry', 'biology']):
+        return "🔬 **Science Tips:**\n\n• Understand concepts, don't just memorize\n• Draw diagrams for biology\n• Practice numericals for physics\n• Write chemical equations regularly\n• Relate concepts to real-life examples"
+    
+    elif any(word in user_message for word in ['english']):
+        return "📖 **English Tips:**\n\n• Read English newspapers daily\n• Learn 5 new words everyday\n• Practice writing essays\n• Watch English videos with subtitles\n• Speak in English with friends"
+    
+    # Hello/greeting
+    elif any(word in user_message for word in ['hello', 'hi', 'hey', 'namaste']):
+        return "👋 Hello! I'm your AI Study Assistant. How can I help you today? Ask me about study tips, motivation, exam preparation, or any study-related questions!"
+    
+    # Thanks
+    elif any(word in user_message for word in ['thanks', 'thank you', 'dhanyavad']):
+        return "🙏 You're welcome! Keep studying hard. Remember, consistency is the key to success. Feel free to ask me anything anytime! 🌟"
+    
+    # Default response
+    else:
+        return "🤖 I'm your AI Study Assistant! Here are things I can help with:\n\n• 📚 **Study Tips & Techniques**\n• 💪 **Motivation & Inspiration**\n• ⏰ **Time Management**\n• 🧘 **Exam Fear & Anxiety**\n• 📈 **Score Improvement**\n• 🎯 **Concentration Tips**\n• 📐 **Subject-wise Help (Maths, Science, English)**\n\nWhat would you like to know?"
 
 # =====================================
 # THEME CSS - NAVY BLUE BACKGROUND
@@ -83,6 +138,9 @@ def get_theme_css():
             .metric-card { background: rgba(0,173,181,0.1); border-radius: 12px; padding: 0.5rem; text-align: center; border: 1px solid rgba(0,173,181,0.3); }
             .metric-value { font-size: 1.3rem; font-weight: 700; color: #00adb5 !important; }
             .metric-label { font-size: 0.6rem; color: #888 !important; }
+            /* Chatbot Styles */
+            .chat-message-user { background: rgba(0,173,181,0.15); border-radius: 15px; padding: 0.8rem; margin: 0.5rem 0; }
+            .chat-message-bot { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 0.8rem; margin: 0.5rem 0; }
         </style>
         """
     else:
@@ -115,6 +173,8 @@ def get_theme_css():
             .metric-card { background: rgba(0,173,181,0.05); border-radius: 12px; padding: 0.5rem; text-align: center; border: 1px solid rgba(0,173,181,0.2); }
             .metric-value { font-size: 1.3rem; font-weight: 700; color: #00adb5 !important; }
             .metric-label { font-size: 0.6rem; color: #666 !important; }
+            .chat-message-user { background: rgba(0,173,181,0.1); border-radius: 15px; padding: 0.8rem; margin: 0.5rem 0; }
+            .chat-message-bot { background: rgba(0,0,0,0.03); border-radius: 15px; padding: 0.8rem; margin: 0.5rem 0; }
         </style>
         """
 
@@ -534,6 +594,39 @@ def load_models():
     return model, columns
 
 # =====================================
+# CHATBOT COMPONENT
+# =====================================
+def show_chatbot():
+    st.markdown("### 🤖 AI Study Assistant")
+    st.markdown("Ask me anything about studies, motivation, exam preparation, or study tips!")
+    
+    # Display chat history
+    for msg in st.session_state.chat_messages:
+        if msg["role"] == "user":
+            st.markdown(f'<div class="chat-message-user">🙋‍♂️ **You:** {msg["content"]}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="chat-message-bot">🤖 **Assistant:** {msg["content"]}</div>', unsafe_allow_html=True)
+    
+    # Chat input
+    user_input = st.text_input("Type your question here...", key="chat_input", placeholder="e.g., How to improve concentration?")
+    
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        if st.button("Send", use_container_width=True):
+            if user_input:
+                # Add user message
+                st.session_state.chat_messages.append({"role": "user", "content": user_input})
+                # Get bot response
+                bot_response = get_bot_response(user_input)
+                st.session_state.chat_messages.append({"role": "bot", "content": bot_response})
+                st.rerun()
+    
+    with col2:
+        if st.button("Clear Chat", use_container_width=True):
+            st.session_state.chat_messages = []
+            st.rerun()
+
+# =====================================
 # SIDEBAR
 # =====================================
 def show_sidebar(user_data):
@@ -560,6 +653,11 @@ def show_sidebar(user_data):
         else:
             st.markdown(f"**Child:** {user_data.get('child_name', 'N/A')}")
             st.markdown(f"**Child Grade:** {user_data.get('child_grade', 'N/A')}")
+        
+        st.markdown("---")
+        
+        # Chatbot in sidebar
+        show_chatbot()
         
         st.markdown("---")
         if st.button("Sign Out", use_container_width=True):
@@ -697,7 +795,7 @@ def show_main_app():
         st.markdown('</div>', unsafe_allow_html=True)
         
         # =====================================
-        # PERFORMANCE OVERVIEW - 3 BLOCKS + 3 PART PIE
+        # PERFORMANCE OVERVIEW - 3 BLOCKS + 3 PART PIE (NO RED COLOR)
         # =====================================
         if len(user_history) >= 1:
             st.markdown("### Performance Overview")
@@ -768,7 +866,7 @@ def show_main_app():
             fig_bar = px.bar(bar_df, x='Score Range', y='Count', 
                             title='Score Distribution',
                             color='Count', 
-                            color_continuous_scale=['#f44336', '#00adb5', '#764ba2'],
+                            color_continuous_scale=['#00adb5', '#764ba2', '#f39c12'],
                             text='Count')
             fig_bar.update_traces(marker_line_color='#007a7f', marker_line_width=1, textposition='outside')
             fig_bar.update_layout(
@@ -780,7 +878,7 @@ def show_main_app():
             st.plotly_chart(fig_bar, use_container_width=True)
             
             # =====================================
-            # PIE CHART + LINE CHART
+            # PIE CHART + LINE CHART (NO RED COLOR)
             # =====================================
             col_p1, col_p2 = st.columns(2)
             
@@ -791,7 +889,7 @@ def show_main_app():
                 })
                 fig_pie = px.pie(pie_data, values='Count', names='Status',
                                 title='Score Distribution',
-                                color_discrete_sequence=['#f44336', '#00adb5', '#764ba2'],
+                                color_discrete_sequence=['#00adb5', '#764ba2', '#f39c12'],
                                 hole=0.3)
                 fig_pie.update_traces(textposition='inside', textinfo='percent+label')
                 fig_pie.update_layout(
@@ -838,7 +936,7 @@ def show_main_app():
             st.success("Excellent habits! Keep going!")
     
     st.markdown("---")
-    st.caption("Student Score Predictor | Powered by AI")
+    st.caption("Student Score Predictor | Developed by Aashif Ansari")
 
 # =====================================
 # MAIN
