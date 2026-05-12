@@ -695,8 +695,13 @@ def show_main_app():
         )
         st.markdown('</div>', unsafe_allow_html=True)
         
+        # =====================================
+        # PERFORMANCE OVERVIEW WITH GRAPH
+        # =====================================
         if len(user_history) >= 1:
             st.markdown("### Performance Overview")
+            
+            # Metrics Cards
             passing = len([s for s in user_history if s >= 60])
             needs_improvement = len([s for s in user_history if s < 60])
             last_score = user_history[-1]
@@ -705,45 +710,36 @@ def show_main_app():
             col_a, col_b, col_c, col_d, col_e = st.columns(5)
             
             with col_a:
-                st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{last_score}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Last Score</div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.metric("Last Score", last_score)
             with col_b:
-                st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{avg_score}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Average</div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.metric("Average", avg_score)
             with col_c:
-                st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{passing}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Passed</div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.metric("Passed", passing)
             with col_d:
-                st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #f44336;">{needs_improvement}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Need Improve</div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.metric("Need Improve", needs_improvement)
             with col_e:
-                st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{len(user_history)}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Total</div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.metric("Total", len(user_history))
             
+            # Graph - Score Trend
+            st.markdown("#### Score Trend")
+            
+            # Create dataframe for chart
+            chart_data = pd.DataFrame({
+                'Prediction': range(1, len(user_history) + 1),
+                'Score': user_history
+            })
+            
+            # Area chart for better visualization
+            st.area_chart(chart_data.set_index('Prediction'), use_container_width=True)
+            
+            # Progress bar
             pass_percent = (passing / len(user_history)) * 100
             st.progress(pass_percent / 100)
             st.caption(f"Success Rate: {pass_percent:.0f}% ({passing}/{len(user_history)})")
         
+        # =====================================
+        # RECOMMENDATIONS
+        # =====================================
         if recs:
             st.markdown("### Recommendations")
             for r in recs:
