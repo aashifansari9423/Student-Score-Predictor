@@ -50,7 +50,7 @@ ADMIN_USERNAME = "aashif"
 ADMIN_PASSWORD = "aashif123"
 
 # =====================================
-# THEME CSS
+# THEME CSS (Premium Colors)
 # =====================================
 def get_theme_css():
     if st.session_state.theme == "dark":
@@ -80,7 +80,7 @@ def get_theme_css():
             .download-btn-left button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; padding: 0.2rem 0.8rem !important; font-size: 0.75rem !important; }
             hr { border-color: #3a3a5a; }
             input::placeholder { color: #888 !important; }
-            .metric-card { background: rgba(0,173,181,0.1); border-radius: 12px; padding: 0.5rem; text-align: center; border: 1px solid rgba(0,173,181,0.2); }
+            .metric-card { background: rgba(0,173,181,0.1); border-radius: 12px; padding: 0.5rem; text-align: center; border: 1px solid rgba(0,173,181,0.3); }
             .metric-value { font-size: 1.3rem; font-weight: 700; color: #00adb5 !important; }
             .metric-label { font-size: 0.6rem; color: #888 !important; }
         </style>
@@ -125,10 +125,7 @@ def theme_toggle():
     mode_text = "Light" if st.session_state.theme == "dark" else "Dark"
     mode_icon = "☀️" if st.session_state.theme == "dark" else "🌙"
     if st.button(f"{mode_icon} {mode_text}", key="theme_toggle"):
-        if st.session_state.theme == "dark":
-            st.session_state.theme = "light"
-        else:
-            st.session_state.theme = "dark"
+        st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
         st.rerun()
 
 # =====================================
@@ -700,7 +697,7 @@ def show_main_app():
         st.markdown('</div>', unsafe_allow_html=True)
         
         # =====================================
-        # PERFORMANCE OVERVIEW - PEHLE JAISA
+        # PERFORMANCE OVERVIEW - PREMIUM GRAPHS
         # =====================================
         if len(user_history) >= 1:
             st.markdown("### Performance Overview")
@@ -753,10 +750,11 @@ def show_main_app():
                 </div>
                 """, unsafe_allow_html=True)
             
-            # BAR CHART
+            # =====================================
+            # BAR CHART - PREMIUM COLORS
+            # =====================================
             st.markdown("#### Score Distribution")
             
-            # Create data for bar chart
             score_ranges = ['40-50', '51-60', '61-70', '71-80', '81-90', '91-100']
             range_counts = [0, 0, 0, 0, 0, 0]
             
@@ -781,55 +779,65 @@ def show_main_app():
             
             fig_bar = px.bar(bar_df, x='Score Range', y='Count', 
                             title='Score Distribution',
-                            color='Count', color_continuous_scale='tealgrn',
+                            color='Count', 
+                            color_continuous_scale=['#00adb5', '#764ba2'],
                             text='Count')
+            fig_bar.update_traces(marker_line_color='#007a7f', marker_line_width=1, textposition='outside')
             fig_bar.update_layout(
                 plot_bgcolor='rgba(0,0,0,0)',
                 paper_bgcolor='rgba(0,0,0,0)',
-                font_color='white' if st.session_state.theme == 'dark' else '#1a1a2e'
+                font_color='white' if st.session_state.theme == 'dark' else '#1a1a2e',
+                title_font_color='#00adb5'
             )
             st.plotly_chart(fig_bar, use_container_width=True)
             
-            # PIE CHART
+            # =====================================
+            # PIE CHART + LINE CHART SIDE BY SIDE
+            # =====================================
             col_p1, col_p2 = st.columns(2)
             
             with col_p1:
-                # Passing vs Failing Pie Chart
                 pie_data = pd.DataFrame({
                     'Status': ['Passing (60+)', 'Needs Improvement (<60)'],
                     'Count': [passing, needs_improvement]
                 })
                 fig_pie = px.pie(pie_data, values='Count', names='Status',
                                 title='Passing vs Failing',
-                                color_discrete_sequence=['#00adb5', '#f44336'])
+                                color_discrete_sequence=['#00adb5', '#f44336'],
+                                hole=0.3)
+                fig_pie.update_traces(textposition='inside', textinfo='percent+label')
                 fig_pie.update_layout(
                     plot_bgcolor='rgba(0,0,0,0)',
                     paper_bgcolor='rgba(0,0,0,0)',
-                    font_color='white' if st.session_state.theme == 'dark' else '#1a1a2e'
+                    font_color='white' if st.session_state.theme == 'dark' else '#1a1a2e',
+                    title_font_color='#00adb5'
                 )
                 st.plotly_chart(fig_pie, use_container_width=True)
             
             with col_p2:
-                # Score Trend Line Chart
                 trend_df = pd.DataFrame({
                     'Prediction': range(1, len(user_history) + 1),
                     'Score': user_history
                 })
                 fig_line = px.line(trend_df, x='Prediction', y='Score',
                                    title='Score Trend',
-                                   markers=True, line_shape='linear')
-                fig_line.update_traces(line_color='#00adb5', marker_color='#00adb5')
+                                   markers=True, line_shape='spline')
+                fig_line.update_traces(line_color='#00adb5', line_width=3,
+                                       marker_color='#764ba2', marker_size=10,
+                                       marker_line_color='white', marker_line_width=1.5)
                 fig_line.update_layout(
                     plot_bgcolor='rgba(0,0,0,0)',
                     paper_bgcolor='rgba(0,0,0,0)',
-                    font_color='white' if st.session_state.theme == 'dark' else '#1a1a2e'
+                    font_color='white' if st.session_state.theme == 'dark' else '#1a1a2e',
+                    title_font_color='#00adb5'
                 )
                 st.plotly_chart(fig_line, use_container_width=True)
             
             # Progress Bar
             pass_percent = (passing / len(user_history)) * 100
             st.progress(pass_percent / 100)
-            st.caption(f"Success Rate: {pass_percent:.0f}% ({passing}/{len(user_history)})")
+            caption_color = "#888" if st.session_state.theme == "dark" else "#666"
+            st.markdown(f"<p style='text-align: center; color: {caption_color}; font-size: 0.8rem;'>Success Rate: {pass_percent:.0f}% ({passing}/{len(user_history)})</p>", unsafe_allow_html=True)
         
         # =====================================
         # RECOMMENDATIONS
