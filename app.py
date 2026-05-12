@@ -660,6 +660,7 @@ def show_main_app():
         if final_score >= 85:
             st.success("Exceptional Performance!")
             st.balloons()
+            st.snow()
         elif final_score >= 70:
             st.success("Good Performance!")
         elif final_score >= 55:
