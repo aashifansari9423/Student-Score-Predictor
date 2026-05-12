@@ -696,44 +696,86 @@ def show_main_app():
         st.markdown('</div>', unsafe_allow_html=True)
         
         # =====================================
-        # PERFORMANCE OVERVIEW WITH GRAPH
+        # PERFORMANCE OVERVIEW (PEHLE JAISA)
         # =====================================
         if len(user_history) >= 1:
             st.markdown("### Performance Overview")
             
-            # Metrics Cards
             passing = len([s for s in user_history if s >= 60])
             needs_improvement = len([s for s in user_history if s < 60])
             last_score = user_history[-1]
             avg_score = int(np.mean(user_history))
             
+            # 5 Cards
             col_a, col_b, col_c, col_d, col_e = st.columns(5)
             
             with col_a:
-                st.metric("Last Score", last_score)
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{last_score}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Last Score</div>
+                </div>
+                """, unsafe_allow_html=True)
             with col_b:
-                st.metric("Average", avg_score)
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{avg_score}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Average</div>
+                </div>
+                """, unsafe_allow_html=True)
             with col_c:
-                st.metric("Passed", passing)
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{passing}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Passed</div>
+                </div>
+                """, unsafe_allow_html=True)
             with col_d:
-                st.metric("Need Improve", needs_improvement)
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #f44336;">{needs_improvement}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Need Improve</div>
+                </div>
+                """, unsafe_allow_html=True)
             with col_e:
-                st.metric("Total", len(user_history))
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{len(user_history)}</div>
+                    <div style="font-size: 0.6rem; color: #888;">Total</div>
+                </div>
+                """, unsafe_allow_html=True)
             
-            # Graph - Score Trend
-            st.markdown("#### Score Trend")
-            
-            # Create dataframe for chart
+            # Bar Graph
+            st.markdown("#### Score History")
             chart_data = pd.DataFrame({
                 'Prediction': range(1, len(user_history) + 1),
                 'Score': user_history
             })
+            st.bar_chart(chart_data.set_index('Prediction'), use_container_width=True)
             
-            # Area chart for better visualization
-            st.area_chart(chart_data.set_index('Prediction'), use_container_width=True)
+            # Pie Chart Style - Passing vs Needs Improvement
+            st.markdown("#### Performance Distribution")
+            pie_col1, pie_col2, pie_col3 = st.columns([1, 2, 1])
+            
+            with pie_col2:
+                # Simple pie chart using percentage bars
+                pass_percent = (passing / len(user_history)) * 100
+                fail_percent = (needs_improvement / len(user_history)) * 100
+                
+                st.markdown(f"""
+                <div style="background: rgba(0,173,181,0.08); border-radius: 15px; padding: 1rem; text-align: center;">
+                    <div style="display: flex; justify-content: space-around; margin-bottom: 1rem;">
+                        <div>
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: conic-gradient(#00adb5 0deg {pass_percent * 3.6}deg, #f44336 {pass_percent * 3.6}deg 360deg); margin: 0 auto;"></div>
+                            <div style="margin-top: 0.5rem;"><span style="color: #00adb5;">●</span> Pass: {passing}</div>
+                            <div><span style="color: #f44336;">●</span> Fail: {needs_improvement}</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.8rem;">Success Rate: {pass_percent:.0f}%</div>
+                </div>
+                """, unsafe_allow_html=True)
             
             # Progress bar
-            pass_percent = (passing / len(user_history)) * 100
             st.progress(pass_percent / 100)
             st.caption(f"Success Rate: {pass_percent:.0f}% ({passing}/{len(user_history)})")
         
