@@ -44,13 +44,13 @@ if 'is_admin' not in st.session_state:
     st.session_state.is_admin = False
 
 # =====================================
-# ADMIN CREDENTIALS - AASHIF
+# ADMIN CREDENTIALS
 # =====================================
 ADMIN_USERNAME = "aashif"
 ADMIN_PASSWORD = "aashif123"
 
 # =====================================
-# THEME CSS (Premium Colors)
+# THEME CSS
 # =====================================
 def get_theme_css():
     if st.session_state.theme == "dark":
@@ -697,17 +697,19 @@ def show_main_app():
         st.markdown('</div>', unsafe_allow_html=True)
         
         # =====================================
-        # PERFORMANCE OVERVIEW - PREMIUM GRAPHS
+        # PERFORMANCE OVERVIEW - 3 BLOCKS + 3 PART PIE
         # =====================================
         if len(user_history) >= 1:
             st.markdown("### Performance Overview")
             
-            # 5 Metric Cards
-            passing = len([s for s in user_history if s >= 60])
-            needs_improvement = len([s for s in user_history if s < 60])
+            # Calculate 3 categories
+            below_60 = len([s for s in user_history if s < 60])
+            between_60_80 = len([s for s in user_history if 60 <= s <= 80])
+            above_80 = len([s for s in user_history if s > 80])
             last_score = user_history[-1]
             avg_score = int(np.mean(user_history))
             
+            # 5 Metric Cards
             col_a, col_b, col_c, col_d, col_e = st.columns(5)
             
             with col_a:
@@ -729,58 +731,44 @@ def show_main_app():
             with col_c:
                 st.markdown(f"""
                 <div class="metric-card">
-                    <div class="metric-value">{passing}</div>
-                    <div class="metric-label">Passed</div>
+                    <div class="metric-value">{below_60}</div>
+                    <div class="metric-label">Below 60</div>
                 </div>
                 """, unsafe_allow_html=True)
             
             with col_d:
                 st.markdown(f"""
                 <div class="metric-card">
-                    <div class="metric-value">{needs_improvement}</div>
-                    <div class="metric-label">Need Improve</div>
+                    <div class="metric-value">{between_60_80}</div>
+                    <div class="metric-label">60 - 80</div>
                 </div>
                 """, unsafe_allow_html=True)
             
             with col_e:
                 st.markdown(f"""
                 <div class="metric-card">
-                    <div class="metric-value">{len(user_history)}</div>
-                    <div class="metric-label">Total</div>
+                    <div class="metric-value">{above_80}</div>
+                    <div class="metric-label">Above 80</div>
                 </div>
                 """, unsafe_allow_html=True)
             
             # =====================================
-            # BAR CHART - PREMIUM COLORS
+            # BAR CHART - SIRF 3 BLOCKS
             # =====================================
             st.markdown("#### Score Distribution")
             
-            score_ranges = ['40-50', '51-60', '61-70', '71-80', '81-90', '91-100']
-            range_counts = [0, 0, 0, 0, 0, 0]
-            
-            for score in user_history:
-                if 40 <= score <= 50:
-                    range_counts[0] += 1
-                elif 51 <= score <= 60:
-                    range_counts[1] += 1
-                elif 61 <= score <= 70:
-                    range_counts[2] += 1
-                elif 71 <= score <= 80:
-                    range_counts[3] += 1
-                elif 81 <= score <= 90:
-                    range_counts[4] += 1
-                elif 91 <= score <= 100:
-                    range_counts[5] += 1
+            categories = ['Below 60', '60 - 80', 'Above 80']
+            counts = [below_60, between_60_80, above_80]
             
             bar_df = pd.DataFrame({
-                'Score Range': score_ranges,
-                'Count': range_counts
+                'Score Range': categories,
+                'Count': counts
             })
             
             fig_bar = px.bar(bar_df, x='Score Range', y='Count', 
                             title='Score Distribution',
                             color='Count', 
-                            color_continuous_scale=['#00adb5', '#764ba2'],
+                            color_continuous_scale=['#f44336', '#00adb5', '#764ba2'],
                             text='Count')
             fig_bar.update_traces(marker_line_color='#007a7f', marker_line_width=1, textposition='outside')
             fig_bar.update_layout(
@@ -792,18 +780,18 @@ def show_main_app():
             st.plotly_chart(fig_bar, use_container_width=True)
             
             # =====================================
-            # PIE CHART + LINE CHART SIDE BY SIDE
+            # PIE CHART + LINE CHART
             # =====================================
             col_p1, col_p2 = st.columns(2)
             
             with col_p1:
                 pie_data = pd.DataFrame({
-                    'Status': ['Passing (60+)', 'Needs Improvement (<60)'],
-                    'Count': [passing, needs_improvement]
+                    'Status': ['Below 60', '60 - 80', 'Above 80'],
+                    'Count': [below_60, between_60_80, above_80]
                 })
                 fig_pie = px.pie(pie_data, values='Count', names='Status',
-                                title='Passing vs Failing',
-                                color_discrete_sequence=['#00adb5', '#f44336'],
+                                title='Score Distribution',
+                                color_discrete_sequence=['#f44336', '#00adb5', '#764ba2'],
                                 hole=0.3)
                 fig_pie.update_traces(textposition='inside', textinfo='percent+label')
                 fig_pie.update_layout(
@@ -834,10 +822,10 @@ def show_main_app():
                 st.plotly_chart(fig_line, use_container_width=True)
             
             # Progress Bar
-            pass_percent = (passing / len(user_history)) * 100
+            pass_percent = ((between_60_80 + above_80) / len(user_history)) * 100
             st.progress(pass_percent / 100)
             caption_color = "#888" if st.session_state.theme == "dark" else "#666"
-            st.markdown(f"<p style='text-align: center; color: {caption_color}; font-size: 0.8rem;'>Success Rate: {pass_percent:.0f}% ({passing}/{len(user_history)})</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='text-align: center; color: {caption_color}; font-size: 0.8rem;'>Success Rate (60+): {pass_percent:.0f}% ({between_60_80 + above_80}/{len(user_history)})</p>", unsafe_allow_html=True)
         
         # =====================================
         # RECOMMENDATIONS
