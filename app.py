@@ -152,7 +152,7 @@ def load_history():
 
 def save_history(history):
     with open(HISTORY_FILE, 'w') as f:
-        json.dump(history, f, indent-2)
+        json.dump(history, f, indent=2)
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
