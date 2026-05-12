@@ -12,6 +12,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 import io
+import plotly.express as px
+import plotly.graph_objects as go
 
 # =====================================
 # PAGE CONFIG
@@ -78,6 +80,9 @@ def get_theme_css():
             .download-btn-left button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; padding: 0.2rem 0.8rem !important; font-size: 0.75rem !important; }
             hr { border-color: #3a3a5a; }
             input::placeholder { color: #888 !important; }
+            .metric-card { background: rgba(0,173,181,0.1); border-radius: 12px; padding: 0.5rem; text-align: center; border: 1px solid rgba(0,173,181,0.2); }
+            .metric-value { font-size: 1.3rem; font-weight: 700; color: #00adb5 !important; }
+            .metric-label { font-size: 0.6rem; color: #888 !important; }
         </style>
         """
     else:
@@ -107,6 +112,9 @@ def get_theme_css():
             .download-btn-left button { background: rgba(0,173,181,0.15) !important; border: 1px solid #00adb5 !important; padding: 0.2rem 0.8rem !important; font-size: 0.75rem !important; }
             hr { border-color: #eee; }
             input::placeholder { color: #999 !important; }
+            .metric-card { background: rgba(0,173,181,0.05); border-radius: 12px; padding: 0.5rem; text-align: center; border: 1px solid rgba(0,173,181,0.2); }
+            .metric-value { font-size: 1.3rem; font-weight: 700; color: #00adb5 !important; }
+            .metric-label { font-size: 0.6rem; color: #666 !important; }
         </style>
         """
 
@@ -390,9 +398,6 @@ def show_auth_page():
         </div>
         """, unsafe_allow_html=True)
         
-        # =====================================
-        # ADMIN LOGIN - FIXED (NO PREFILLED VALUES)
-        # =====================================
         with st.expander("Admin Login"):
             admin_user = st.text_input("Admin Username", key="admin_user_clear", placeholder="Enter username", value="")
             admin_pass = st.text_input("Admin Password", type="password", key="admin_pass_clear", placeholder="Enter password", value="")
@@ -570,7 +575,6 @@ def show_sidebar(user_data):
 # MAIN APP
 # =====================================
 def show_main_app():
-    # Check if admin
     if st.session_state.is_admin:
         show_admin_page()
         return
@@ -696,86 +700,134 @@ def show_main_app():
         st.markdown('</div>', unsafe_allow_html=True)
         
         # =====================================
-        # PERFORMANCE OVERVIEW (PEHLE JAISA)
+        # PERFORMANCE OVERVIEW - PEHLE JAISA
         # =====================================
         if len(user_history) >= 1:
             st.markdown("### Performance Overview")
             
+            # 5 Metric Cards
             passing = len([s for s in user_history if s >= 60])
             needs_improvement = len([s for s in user_history if s < 60])
             last_score = user_history[-1]
             avg_score = int(np.mean(user_history))
             
-            # 5 Cards
             col_a, col_b, col_c, col_d, col_e = st.columns(5)
             
             with col_a:
                 st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{last_score}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Last Score</div>
+                <div class="metric-card">
+                    <div class="metric-value">{last_score}</div>
+                    <div class="metric-label">Last Score</div>
                 </div>
                 """, unsafe_allow_html=True)
+            
             with col_b:
                 st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{avg_score}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Average</div>
+                <div class="metric-card">
+                    <div class="metric-value">{avg_score}</div>
+                    <div class="metric-label">Average</div>
                 </div>
                 """, unsafe_allow_html=True)
+            
             with col_c:
                 st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{passing}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Passed</div>
+                <div class="metric-card">
+                    <div class="metric-value">{passing}</div>
+                    <div class="metric-label">Passed</div>
                 </div>
                 """, unsafe_allow_html=True)
+            
             with col_d:
                 st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #f44336;">{needs_improvement}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Need Improve</div>
+                <div class="metric-card">
+                    <div class="metric-value">{needs_improvement}</div>
+                    <div class="metric-label">Need Improve</div>
                 </div>
                 """, unsafe_allow_html=True)
+            
             with col_e:
                 st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); border-radius: 10px; padding: 0.5rem; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 700; color: #00adb5;">{len(user_history)}</div>
-                    <div style="font-size: 0.6rem; color: #888;">Total</div>
+                <div class="metric-card">
+                    <div class="metric-value">{len(user_history)}</div>
+                    <div class="metric-label">Total</div>
                 </div>
                 """, unsafe_allow_html=True)
             
-            # Bar Graph
-            st.markdown("#### Score History")
-            chart_data = pd.DataFrame({
-                'Prediction': range(1, len(user_history) + 1),
-                'Score': user_history
+            # BAR CHART
+            st.markdown("#### Score Distribution")
+            
+            # Create data for bar chart
+            score_ranges = ['40-50', '51-60', '61-70', '71-80', '81-90', '91-100']
+            range_counts = [0, 0, 0, 0, 0, 0]
+            
+            for score in user_history:
+                if 40 <= score <= 50:
+                    range_counts[0] += 1
+                elif 51 <= score <= 60:
+                    range_counts[1] += 1
+                elif 61 <= score <= 70:
+                    range_counts[2] += 1
+                elif 71 <= score <= 80:
+                    range_counts[3] += 1
+                elif 81 <= score <= 90:
+                    range_counts[4] += 1
+                elif 91 <= score <= 100:
+                    range_counts[5] += 1
+            
+            bar_df = pd.DataFrame({
+                'Score Range': score_ranges,
+                'Count': range_counts
             })
-            st.bar_chart(chart_data.set_index('Prediction'), use_container_width=True)
             
-            # Pie Chart Style - Passing vs Needs Improvement
-            st.markdown("#### Performance Distribution")
-            pie_col1, pie_col2, pie_col3 = st.columns([1, 2, 1])
+            fig_bar = px.bar(bar_df, x='Score Range', y='Count', 
+                            title='Score Distribution',
+                            color='Count', color_continuous_scale='tealgrn',
+                            text='Count')
+            fig_bar.update_layout(
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                font_color='white' if st.session_state.theme == 'dark' else '#1a1a2e'
+            )
+            st.plotly_chart(fig_bar, use_container_width=True)
             
-            with pie_col2:
-                # Simple pie chart using percentage bars
-                pass_percent = (passing / len(user_history)) * 100
-                fail_percent = (needs_improvement / len(user_history)) * 100
-                
-                st.markdown(f"""
-                <div style="background: rgba(0,173,181,0.08); border-radius: 15px; padding: 1rem; text-align: center;">
-                    <div style="display: flex; justify-content: space-around; margin-bottom: 1rem;">
-                        <div>
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: conic-gradient(#00adb5 0deg {pass_percent * 3.6}deg, #f44336 {pass_percent * 3.6}deg 360deg); margin: 0 auto;"></div>
-                            <div style="margin-top: 0.5rem;"><span style="color: #00adb5;">●</span> Pass: {passing}</div>
-                            <div><span style="color: #f44336;">●</span> Fail: {needs_improvement}</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 0.8rem;">Success Rate: {pass_percent:.0f}%</div>
-                </div>
-                """, unsafe_allow_html=True)
+            # PIE CHART
+            col_p1, col_p2 = st.columns(2)
             
-            # Progress bar
+            with col_p1:
+                # Passing vs Failing Pie Chart
+                pie_data = pd.DataFrame({
+                    'Status': ['Passing (60+)', 'Needs Improvement (<60)'],
+                    'Count': [passing, needs_improvement]
+                })
+                fig_pie = px.pie(pie_data, values='Count', names='Status',
+                                title='Passing vs Failing',
+                                color_discrete_sequence=['#00adb5', '#f44336'])
+                fig_pie.update_layout(
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    font_color='white' if st.session_state.theme == 'dark' else '#1a1a2e'
+                )
+                st.plotly_chart(fig_pie, use_container_width=True)
+            
+            with col_p2:
+                # Score Trend Line Chart
+                trend_df = pd.DataFrame({
+                    'Prediction': range(1, len(user_history) + 1),
+                    'Score': user_history
+                })
+                fig_line = px.line(trend_df, x='Prediction', y='Score',
+                                   title='Score Trend',
+                                   markers=True, line_shape='linear')
+                fig_line.update_traces(line_color='#00adb5', marker_color='#00adb5')
+                fig_line.update_layout(
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    font_color='white' if st.session_state.theme == 'dark' else '#1a1a2e'
+                )
+                st.plotly_chart(fig_line, use_container_width=True)
+            
+            # Progress Bar
+            pass_percent = (passing / len(user_history)) * 100
             st.progress(pass_percent / 100)
             st.caption(f"Success Rate: {pass_percent:.0f}% ({passing}/{len(user_history)})")
         
