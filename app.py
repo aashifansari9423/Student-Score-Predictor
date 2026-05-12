@@ -657,12 +657,13 @@ def show_main_app():
         </div>
         """, unsafe_allow_html=True)
         
-        if final_score >= 85:
+        if final_score >= 80:
             st.success("Exceptional Performance!")
             st.balloons()
-            st.snow()
+            
         elif final_score >= 70:
             st.success("Good Performance!")
+            st.snow()
         elif final_score >= 55:
             st.info("Satisfactory")
         else:
