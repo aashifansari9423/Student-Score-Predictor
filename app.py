@@ -697,17 +697,19 @@ def show_main_app():
         st.markdown('</div>', unsafe_allow_html=True)
         
         # =====================================
-        # PERFORMANCE OVERVIEW
+        # PERFORMANCE OVERVIEW - 3 BLOCKS + 3 PART PIE
         # =====================================
         if len(user_history) >= 1:
             st.markdown("### Performance Overview")
             
+            # Calculate 3 categories
             below_60 = len([s for s in user_history if s < 60])
             between_60_80 = len([s for s in user_history if 60 <= s <= 80])
             above_80 = len([s for s in user_history if s > 80])
             last_score = user_history[-1]
             avg_score = int(np.mean(user_history))
             
+            # 5 Metric Cards
             col_a, col_b, col_c, col_d, col_e = st.columns(5)
             
             with col_a:
@@ -750,7 +752,9 @@ def show_main_app():
                 </div>
                 """, unsafe_allow_html=True)
             
-            # BAR CHART - SIRF 3 BLOCKS (No change)
+            # =====================================
+            # BAR CHART - SIRF 3 BLOCKS
+            # =====================================
             st.markdown("#### Score Distribution")
             
             categories = ['Below 60', '60 - 80', 'Above 80']
@@ -775,7 +779,9 @@ def show_main_app():
             )
             st.plotly_chart(fig_bar, use_container_width=True)
             
+            # =====================================
             # PIE CHART + LINE CHART
+            # =====================================
             col_p1, col_p2 = st.columns(2)
             
             with col_p1:
@@ -783,7 +789,6 @@ def show_main_app():
                     'Status': ['Below 60', '60 - 80', 'Above 80'],
                     'Count': [below_60, between_60_80, above_80]
                 })
-                # RED color for Below 60 (lowest value), Teal for 60-80, Purple for Above 80
                 fig_pie = px.pie(pie_data, values='Count', names='Status',
                                 title='Score Distribution',
                                 color_discrete_sequence=['#f44336', '#00adb5', '#764ba2'],
@@ -816,11 +821,15 @@ def show_main_app():
                 )
                 st.plotly_chart(fig_line, use_container_width=True)
             
+            # Progress Bar
             pass_percent = ((between_60_80 + above_80) / len(user_history)) * 100
             st.progress(pass_percent / 100)
             caption_color = "#888" if st.session_state.theme == "dark" else "#666"
             st.markdown(f"<p style='text-align: center; color: {caption_color}; font-size: 0.8rem;'>Success Rate (60+): {pass_percent:.0f}% ({between_60_80 + above_80}/{len(user_history)})</p>", unsafe_allow_html=True)
         
+        # =====================================
+        # RECOMMENDATIONS
+        # =====================================
         if recs:
             st.markdown("### Recommendations")
             for r in recs:
@@ -829,7 +838,7 @@ def show_main_app():
             st.success("Excellent habits! Keep going!")
     
     st.markdown("---")
-    st.caption("Student Score Predictor | Developed by Aashif Ansari")
+    st.caption("Student Score Predictor | Powered by AI")
 
 # =====================================
 # MAIN
