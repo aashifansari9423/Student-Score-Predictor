@@ -50,13 +50,13 @@ ADMIN_USERNAME = "aashif"
 ADMIN_PASSWORD = "aashif123"
 
 # =====================================
-# THEME CSS - DEEP TEAL BACKGROUND
+# THEME CSS - NAVY BLUE BACKGROUND
 # =====================================
 def get_theme_css():
     if st.session_state.theme == "dark":
         return """
         <style>
-            .stApp { background: linear-gradient(135deg, #0f2d2d, #143d3d, #1a4d4d); }
+            .stApp { background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77); }
             .main .block-container { background: rgba(18, 18, 30, 0.95); border-radius: 20px; padding: 1.5rem; border: 1px solid #2a2a4a; }
             [data-testid="stSidebar"] { background: rgba(18, 18, 30, 0.95); border-right: 1px solid #2a2a4a; }
             h1, h2, h3, p, label, .stMarkdown, .stCaption { color: #ffffff !important; }
