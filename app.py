@@ -838,7 +838,7 @@ def show_main_app():
             st.success("Excellent habits! Keep going!")
     
     st.markdown("---")
-    st.caption("Student Score Predictor | Powered by AI")
+    st.caption("Student Score Predictor | Developed by Aashif Ansari")
 
 # =====================================
 # MAIN
