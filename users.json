@@ -8,5 +8,15 @@
     "age": 0,
     "grade": "Class 8",
     "school": "Dav"
+  },
+  "dxyz": {
+    "password": "96cae35ce8a9b0244178bf28e4966c2ce1b8385723a96a6b838858cdd6ca0a1e",
+    "role": "student",
+    "full_name": "mohd",
+    "created_at": "2026-05-13 05:25:38.317107",
+    "dob": "2026-05-13",
+    "age": 0,
+    "grade": "Class 8",
+    "school": "falana"
   }
 }
