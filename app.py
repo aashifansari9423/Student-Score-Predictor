@@ -5,6 +5,8 @@ import numpy as np
 import hashlib
 import json
 import os
+import base64
+import requests
 from datetime import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
@@ -26,6 +28,76 @@ st.set_page_config(
 )
 
 # =====================================
+# GITHUB CONFIG (From Streamlit Secrets)
+# =====================================
+GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
+GITHUB_REPO = st.secrets.get("GITHUB_REPO", "")
+GITHUB_BRANCH = "main"
+USERS_FILE = "users.json"
+HISTORY_FILE = "prediction_history.json"
+
+def github_read_file(file_path):
+    """Read file from GitHub"""
+    try:
+        if not GITHUB_TOKEN or not GITHUB_REPO:
+            return {}
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{file_path}?ref={GITHUB_BRANCH}"
+        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            content = response.json().get("content", "")
+            if content:
+                decoded = base64.b64decode(content).decode('utf-8')
+                return json.loads(decoded)
+    except Exception as e:
+        print(f"GitHub read error: {e}")
+    return {}
+
+def github_write_file(file_path, data, commit_message):
+    """Write file to GitHub"""
+    try:
+        if not GITHUB_TOKEN or not GITHUB_REPO:
+            return False
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{file_path}"
+        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+        
+        # Get current file SHA if exists
+        get_response = requests.get(url, headers=headers)
+        sha = get_response.json().get("sha", "") if get_response.status_code == 200 else ""
+        
+        # Prepare commit
+        content = base64.b64encode(json.dumps(data, indent=2).encode()).decode()
+        payload = {
+            "message": commit_message,
+            "content": content,
+            "branch": GITHUB_BRANCH
+        }
+        if sha:
+            payload["sha"] = sha
+        
+        response = requests.put(url, headers=headers, json=payload)
+        return response.status_code in [200, 201]
+    except Exception as e:
+        print(f"GitHub write error: {e}")
+        return False
+
+def load_users():
+    """Load users from GitHub"""
+    return github_read_file(USERS_FILE)
+
+def save_users(users):
+    """Save users to GitHub"""
+    return github_write_file(USERS_FILE, users, "Update users data")
+
+def load_history():
+    """Load history from GitHub"""
+    return github_read_file(HISTORY_FILE)
+
+def save_history(history):
+    """Save history to GitHub"""
+    return github_write_file(HISTORY_FILE, history, "Update prediction history")
+
+# =====================================
 # SESSION STATE
 # =====================================
 if 'logged_in' not in st.session_state:
@@ -44,13 +116,13 @@ if 'is_admin' not in st.session_state:
     st.session_state.is_admin = False
 
 # =====================================
-# ADMIN CREDENTIALS
+# ADMIN CREDENTIALS (From Secrets)
 # =====================================
-ADMIN_USERNAME = "aashif"
-ADMIN_PASSWORD = "aashif123"
+ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "aashif")
+ADMIN_PASSWORD = st.secrets.get("ADMIN_PASSWORD", "aashif123")
 
 # =====================================
-# THEME CSS - NAVY BLUE BACKGROUND
+# THEME CSS
 # =====================================
 def get_theme_css():
     if st.session_state.theme == "dark":
@@ -127,32 +199,6 @@ def theme_toggle():
     if st.button(f"{mode_icon} {mode_text}", key="theme_toggle"):
         st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
         st.rerun()
-
-# =====================================
-# USER DATABASE FILE
-# =====================================
-USER_DB_FILE = "users.json"
-HISTORY_FILE = "prediction_history.json"
-
-def load_users():
-    if os.path.exists(USER_DB_FILE):
-        with open(USER_DB_FILE, 'r') as f:
-            return json.load(f)
-    return {}
-
-def save_users(users):
-    with open(USER_DB_FILE, 'w') as f:
-        json.dump(users, f, indent=2)
-
-def load_history():
-    if os.path.exists(HISTORY_FILE):
-        with open(HISTORY_FILE, 'r') as f:
-            return json.load(f)
-    return {}
-
-def save_history(history):
-    with open(HISTORY_FILE, 'w') as f:
-        json.dump(history, f, indent=2)
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -256,11 +302,6 @@ def generate_pdf_report(username, final_score, user_data, hours, attendance, pre
     doc.build(story)
     buffer.seek(0)
     return buffer
-
-# =====================================
-# GLOBAL VARIABLES
-# =====================================
-all_history = load_history()
 
 # =====================================
 # ADMIN PAGE
@@ -512,10 +553,12 @@ def show_auth_page():
                         data["relation"] = relation
                     
                     users[username] = data
-                    save_users(users)
-                    st.success("Account created!")
-                    st.session_state.auth_mode = "login"
-                    st.rerun()
+                    if save_users(users):
+                        st.success("Account created successfully!")
+                        st.session_state.auth_mode = "login"
+                        st.rerun()
+                    else:
+                        st.error("Failed to save user data. Check GitHub token and repo name.")
             
             st.markdown("<hr>", unsafe_allow_html=True)
             if st.button("Back to Sign In", use_container_width=True):
@@ -583,6 +626,7 @@ def show_main_app():
     st.markdown('</div>', unsafe_allow_html=True)
     
     users = load_users()
+    all_history = load_history()
     user_data = users.get(st.session_state.username, {})
     
     show_sidebar(user_data)
@@ -657,13 +701,11 @@ def show_main_app():
         </div>
         """, unsafe_allow_html=True)
         
-        if final_score >= 80:
+        if final_score >= 85:
             st.success("Exceptional Performance!")
             st.balloons()
-            
         elif final_score >= 70:
             st.success("Good Performance!")
-            st.snow()
         elif final_score >= 55:
             st.info("Satisfactory")
         else:
@@ -698,20 +740,15 @@ def show_main_app():
         )
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # =====================================
-        # PERFORMANCE OVERVIEW - 3 BLOCKS + 3 PART PIE
-        # =====================================
         if len(user_history) >= 1:
             st.markdown("### Performance Overview")
             
-            # Calculate 3 categories
             below_60 = len([s for s in user_history if s < 60])
             between_60_80 = len([s for s in user_history if 60 <= s <= 80])
             above_80 = len([s for s in user_history if s > 80])
             last_score = user_history[-1]
             avg_score = int(np.mean(user_history))
             
-            # 5 Metric Cards
             col_a, col_b, col_c, col_d, col_e = st.columns(5)
             
             with col_a:
@@ -754,9 +791,6 @@ def show_main_app():
                 </div>
                 """, unsafe_allow_html=True)
             
-            # =====================================
-            # BAR CHART - SIRF 3 BLOCKS
-            # =====================================
             st.markdown("#### Score Distribution")
             
             categories = ['Below 60', '60 - 80', 'Above 80']
@@ -781,9 +815,6 @@ def show_main_app():
             )
             st.plotly_chart(fig_bar, use_container_width=True)
             
-            # =====================================
-            # PIE CHART + LINE CHART
-            # =====================================
             col_p1, col_p2 = st.columns(2)
             
             with col_p1:
@@ -823,15 +854,11 @@ def show_main_app():
                 )
                 st.plotly_chart(fig_line, use_container_width=True)
             
-            # Progress Bar
             pass_percent = ((between_60_80 + above_80) / len(user_history)) * 100
             st.progress(pass_percent / 100)
             caption_color = "#888" if st.session_state.theme == "dark" else "#666"
             st.markdown(f"<p style='text-align: center; color: {caption_color}; font-size: 0.8rem;'>Success Rate (60+): {pass_percent:.0f}% ({between_60_80 + above_80}/{len(user_history)})</p>", unsafe_allow_html=True)
         
-        # =====================================
-        # RECOMMENDATIONS
-        # =====================================
         if recs:
             st.markdown("### Recommendations")
             for r in recs:
