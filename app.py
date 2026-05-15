@@ -706,6 +706,7 @@ def show_main_app():
             st.balloons()
         elif final_score >= 70:
             st.success("Good Performance!")
+            st.snows()
         elif final_score >= 55:
             st.info("Satisfactory")
         else:
